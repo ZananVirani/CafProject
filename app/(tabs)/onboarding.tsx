@@ -5,7 +5,7 @@ import { ABeeZee_400Regular } from "@expo-google-fonts/aBeeZee";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "react-native-paper";
 
-export default function splash_screen() {
+export default function onboarding() {
   return (
     <ImageBackground
       source={require("../../assets/images/splash_background.jpg")}

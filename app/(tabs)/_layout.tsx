@@ -4,12 +4,13 @@ import React from "react";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import splash_screen from "./splash_screen";
+import splash_screen from "./onboarding";
+import onboarding from "./onboarding";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
-  return splash_screen();
+  return onboarding();
   // <Tabs
   //   screenOptions={{
   //     tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,

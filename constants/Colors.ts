@@ -5,6 +5,7 @@
 
 const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
+const WPurple = '#4F2683';
 
 export const Colors = {
   light: {
