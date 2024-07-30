@@ -4,8 +4,11 @@ import { Inter_600SemiBold } from "@expo-google-fonts/inter";
 import { ABeeZee_400Regular } from "@expo-google-fonts/aBeeZee";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "react-native-paper";
+import { router } from "expo-router";
+import colors from "../../constants/Colors";
+import { getIntro, setIntro } from "@/utils/AsyncStorage";
 
-export default function onboarding() {
+export default function OnBoarding() {
   return (
     <ImageBackground
       source={require("../../assets/images/splash_background.jpg")}
@@ -19,8 +22,8 @@ export default function onboarding() {
         <Button
           style={styles.button}
           mode="contained"
-          buttonColor="#9019EE"
-          onPress={() => console.log("Pressed")}
+          buttonColor={colors.lpurple}
+          onPress={async () => {}}
         >
           <Text style={styles.buttonText}>Login</Text>
         </Button>
@@ -28,6 +31,8 @@ export default function onboarding() {
     </ImageBackground>
   );
 }
+
+// export default OnBoarding;
 
 const styles = StyleSheet.create({
   bg: {
