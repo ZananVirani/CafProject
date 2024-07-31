@@ -3,11 +3,17 @@ import React from "react";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import OnBoarding from "./onboarding";
 import AccountInfo from "./account_info";
+import { Provider } from "react-redux";
+import { store } from "@/state/store";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
-  return <AccountInfo />;
+  return (
+    <Provider store={store}>
+      <AccountInfo />
+    </Provider>
+  );
   // <Tabs
   //   screenOptions={{
   //     tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,

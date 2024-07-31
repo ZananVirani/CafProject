@@ -1,14 +1,18 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useState, createContext } from "react";
 import { Inter_400Regular } from "@expo-google-fonts/inter";
 import CustomButton from "@/components/CustomButton";
 import colors from "../../constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TextField from "@/components/TextField";
 import { Checkbox } from "react-native-paper";
-import { FlatList } from "react-native-reanimated/lib/typescript/Animated";
+import { useSelector } from "react-redux";
+import { RootState, store } from "@/state/store";
+import CustomDropdown from "@/components/CustomDropdown";
 
 export default function AccountInfo() {
+  //////////////////////////////////////////////
+
   const [checked, setChecked] = useState(false);
   const [map, setMap] = useState(
     new Map<string, boolean>([
@@ -35,7 +39,7 @@ export default function AccountInfo() {
         <View style={{ flex: 0.1 }}>
           <Text style={styles.title}>Account Setup</Text>
         </View>
-        <View style={{ flex: 0.75 }}>
+        <View style={{ flex: 0.78 }}>
           <TextField placeText="First Name" marginTop="10%"></TextField>
           <TextField placeText="Last Name" marginTop={30}></TextField>
           <View
@@ -45,7 +49,7 @@ export default function AccountInfo() {
               flexDirection: "row",
             }}
           >
-            <Text style={styles.subtitle}>Allergies?</Text>
+            <Text style={styles.subtitle}>Food Restrictions?</Text>
             <Checkbox.Android
               status={checked ? "checked" : "unchecked"}
               uncheckedColor={colors.wpurple}
@@ -65,6 +69,7 @@ export default function AccountInfo() {
             {allergyList.map((item) => {
               return (
                 <CustomButton
+                  key={item}
                   onPress={() => {
                     let newValue = !map.get(item);
                     setMap(
@@ -90,8 +95,9 @@ export default function AccountInfo() {
               );
             })}
           </View>
+          <CustomDropdown></CustomDropdown>
         </View>
-        <View style={{ flex: 0.15 }}>
+        <View style={{ flex: 0.12 }}>
           <CustomButton
             onPress={() => {}}
             borderRadius={16}
