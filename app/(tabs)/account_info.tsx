@@ -10,15 +10,16 @@ import { FlatList } from "react-native-reanimated/lib/typescript/Animated";
 
 export default function AccountInfo() {
   const [checked, setChecked] = useState(false);
-  const allergyMap = new Map<string, boolean>([
-    ["Vegan", false],
-    ["Gluten", false],
-    ["Halal", false],
-    ["Lactose", false],
-    ["Seafood", false],
-    ["Vegetarian", false],
-  ]);
-  const [map, setMap] = useState(allergyMap);
+  const [map, setMap] = useState(
+    new Map<string, boolean>([
+      ["Vegan", false],
+      ["Gluten", false],
+      ["Halal", false],
+      ["Lactose", false],
+      ["Seafood", false],
+      ["Vegetarian", false],
+    ])
+  );
   const allergyList = [
     "Vegan",
     "Gluten",
