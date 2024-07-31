@@ -4,6 +4,7 @@ import { Button } from "react-native-paper";
 import colors from "@/constants/Colors";
 
 type ButtonProps = {
+  marginVertical?: number;
   buttonColor?: string;
   onPress: any;
   marginHorizontal?: any;
@@ -15,6 +16,9 @@ type ButtonProps = {
   borderRadius?: number;
   children: any;
   width?: number;
+  fontWeight?: any;
+  lSpacing?: number;
+  disabled?: boolean;
 };
 
 export default function CustomButton(props: ButtonProps) {
@@ -23,13 +27,16 @@ export default function CustomButton(props: ButtonProps) {
       onPress={props.onPress}
       mode="contained"
       buttonColor={props.buttonColor ?? colors.lpurple}
+      disabled={props.disabled}
       style={{
-        width: props.width ?? undefined,
+        width: props.width,
         height: props.height ?? 60,
         marginHorizontal: props.marginHorizontal ?? "10%",
         justifyContent: "center",
         borderColor: props.borderColor,
+        borderWidth: props.borderColor ? 1 : undefined,
         borderRadius: props.borderRadius,
+        marginVertical: props.marginVertical,
       }}
     >
       <Text
@@ -37,7 +44,9 @@ export default function CustomButton(props: ButtonProps) {
           fontSize: props.fontSize ?? 20,
           fontFamily: props.fontFamily ?? "ABeeZee_400Regular",
           color: props.textColor ?? "white",
-          fontWeight: "bold",
+          fontWeight: props.fontWeight ?? "bold",
+          padding: 0,
+          letterSpacing: props.lSpacing,
         }}
       >
         {props.children}

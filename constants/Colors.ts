@@ -10,7 +10,9 @@ export default {
   wpurple : '#4F2683',
   lpurple : "#9019EE",
   black: "#000000",
-  white : '#FFFFFF'
+  white : '#FFFFFF',
+  verylightgray : "#F3F8FE",
+  gray: "#B8B8B8"
 };
 
 // export const Colors = {

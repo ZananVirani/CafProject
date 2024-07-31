@@ -19,7 +19,9 @@ export default function OnBoarding() {
         <Text style={styles.subtitle}>Home of Western {"\n"}Dining</Text>
       </View>
       <View style={{ flex: 0.2 }}>
-        <CustomButton onPress={async () => {}}>Login</CustomButton>
+        <CustomButton borderRadius={16} onPress={async () => {}}>
+          Login
+        </CustomButton>
       </View>
     </ImageBackground>
   );

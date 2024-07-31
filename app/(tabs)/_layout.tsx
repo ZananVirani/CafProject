@@ -2,11 +2,12 @@ import React from "react";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import OnBoarding from "./onboarding";
+import AccountInfo from "./account_info";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
-  return <OnBoarding />;
+  return <AccountInfo />;
   // <Tabs
   //   screenOptions={{
   //     tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
