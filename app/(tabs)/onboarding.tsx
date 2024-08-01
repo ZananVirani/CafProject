@@ -1,4 +1,10 @@
-import { ImageBackground, StyleSheet, Text, View } from "react-native";
+import {
+  ImageBackground,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import React from "react";
 import { Inter_600SemiBold } from "@expo-google-fonts/inter";
 import { ABeeZee_400Regular } from "@expo-google-fonts/aBeeZee";
@@ -19,7 +25,10 @@ export default function OnBoarding() {
         <Text style={styles.subtitle}>Home of Western {"\n"}Dining</Text>
       </View>
       <View style={{ flex: 0.2 }}>
-        <CustomButton borderRadius={16} onPress={async () => {}}>
+        <CustomButton
+          borderRadius={16}
+          onPress={() => router.push("/(tabs)/account")}
+        >
           Login
         </CustomButton>
       </View>

@@ -9,9 +9,9 @@ import { Checkbox } from "react-native-paper";
 import { useSelector } from "react-redux";
 import { RootState, store } from "@/state/store";
 import CustomDropdown from "@/components/CustomDropdown";
+import { router } from "expo-router";
 
 export default function AccountInfo() {
-  //////////////////////////////////////////////
   const [checked, setChecked] = useState(false);
   const [map, setMap] = useState(
     new Map<string, boolean>([
@@ -56,7 +56,6 @@ export default function AccountInfo() {
           <View
             style={{
               marginTop: 30,
-              marginBottom: 10,
               flexDirection: "row",
             }}
           >
@@ -93,7 +92,7 @@ export default function AccountInfo() {
                   marginHorizontal={2.8}
                   buttonColor={map.get(item) ? colors.wpurple : colors.white}
                   height={40}
-                  fontSize={item.length > 6 ? 12 : 13}
+                  fontSize={item == "Vegetarian" ? 10.5 : 13}
                   width={105}
                   borderRadius={60}
                   textColor={map.get(item) ? colors.white : colors.wpurple}
@@ -128,7 +127,7 @@ const styles = StyleSheet.create({
     color: "black",
     fontFamily: "inter",
     fontWeight: "500",
-    fontSize: 34,
+    fontSize: 36,
     position: "absolute",
     bottom: 0,
     marginLeft: "12%",

@@ -50,6 +50,7 @@ const MultiSelectComponent = () => {
   return (
     <View style={{ marginHorizontal: "8%" }}>
       <MultiSelect
+        dropdownPosition="auto"
         style={styles.dropdown}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
@@ -102,83 +103,6 @@ const MultiSelectComponent = () => {
 
 export default MultiSelectComponent;
 
-// import React, { useState } from "react";
-// import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
-// import { MultiSelect } from "react-native-element-dropdown";
-// import AntDesign from "@expo/vector-icons/AntDesign";
-// import { useDispatch, useSelector } from "react-redux";
-// import { RootState } from "@/state/store";
-// import { add, rid } from "@/state/residence/resSlice";
-
-// const MultiSelectComponent = () => {
-//   const resList = useSelector((state: RootState) => state.resList);
-//   const dispatch = useDispatch();
-//   type itemType = { label: string; value: string };
-
-//   const data = [
-//     { label: "Ontario Hall", value: "Ontario Hall" },
-//     { label: "Saugeen Hall", value: "Saugeen Hall" },
-//     { label: "Sydenham Hall", value: "Sydenham Hall" },
-//     { label: "Delaware Hall", value: "Delaware Hall" },
-//     { label: "Perth Hall", value: "Perth Hall" },
-//     { label: "Elgin Hall", value: "Elgin Hall" },
-//     { label: "Essex Hall", value: "Essex Hall" },
-//   ];
-
-//   const renderItem = (item: itemType) => {
-//     return (
-//       <View style={styles.item}>
-//         <Text style={styles.selectedTextStyle}>{item.label}</Text>
-//         <AntDesign style={styles.icon} color="black" name="Safety" size={10} />
-//       </View>
-//     );
-//   };
-
-//   return (
-//     <View style={styles.container}>
-//       <MultiSelect
-//         style={styles.dropdown}
-//         placeholderStyle={styles.placeholderStyle}
-//         selectedTextStyle={styles.selectedTextStyle}
-//         iconStyle={styles.iconStyle}
-//         data={data}
-//         labelField="label"
-//         valueField="value"
-//         placeholder="Select item"
-//         confirmUnSelectItem={true}
-//         search={false}
-//         onChange={(item : itemType) => {
-//           dispatch(add(item.value));
-//         }}
-//         renderLeftIcon={() => (
-//           <AntDesign
-//             style={styles.icon}
-//             color="black"
-//             name="Safety"
-//             size={20}
-//           />
-//         )}
-//         // renderItem={renderItem}
-//         renderSelectedItem={(item) =>
-//           resList.resList.includes(item.label) ? (
-//             <View style={styles.selectedStyle}>
-//               <Text style={styles.textSelectedStyle}>{item.label}</Text>
-//               <TouchableOpacity onPress={() => dispatch(rid(item.label))}>
-//                 <>
-//                   <AntDesign color="black" name="delete" size={17} />
-//                 </>
-//               </TouchableOpacity>
-//             </View>
-//           ) : null
-//         }
-//         maxHeight={130}
-//       />
-//     </View>
-//   );
-// };
-
-// export default MultiSelectComponent;
-
 const styles = StyleSheet.create({
   container: { padding: 16 },
   dropdown: {
@@ -195,6 +119,7 @@ const styles = StyleSheet.create({
     shadowRadius: 1.41,
 
     elevation: 2,
+    marginTop: 20,
   },
   placeholderStyle: {
     fontSize: 15,
