@@ -2,9 +2,11 @@ import React from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { MultiSelect } from "react-native-element-dropdown";
 import { RootState } from "../state/store"; // adjust the import to your actual path
 import { add, rid } from "../state/residence/resSlice"; // adjust the import to your actual path
+import Colors from "@/constants/Colors";
 // adjust the import to your actual path
 
 interface ItemType {
@@ -29,47 +31,72 @@ const MultiSelectComponent = () => {
   const renderItem = (item: ItemType) => {
     return (
       <View style={styles.item}>
+        <AntDesign style={styles.icon} color="black" name="home" size={15} />
         <Text style={styles.selectedTextStyle}>{item.label}</Text>
-        <AntDesign style={styles.icon} color="black" name="Safety" size={10} />
+        <View style={{ marginRight: -4, flex: 0.1 }}>
+          {resList.resList.includes(item.value) && (
+            <AntDesign
+              style={[styles.icon, { marginRight: -4 }]}
+              color="black"
+              name="check"
+              size={15}
+            />
+          )}
+        </View>
       </View>
     );
   };
 
   return (
-    <MultiSelect
-      style={styles.dropdown}
-      placeholderStyle={styles.placeholderStyle}
-      selectedTextStyle={styles.selectedTextStyle}
-      iconStyle={styles.iconStyle}
-      data={data}
-      labelField="label"
-      valueField="value"
-      placeholder="Select item"
-      confirmUnSelectItem={true}
-      search={false}
-      onChange={(item) => {
-        dispatch(add(item));
-      }}
-      renderLeftIcon={() => (
-        <AntDesign style={styles.icon} color="black" name="Safety" size={20} />
-      )}
-      renderItem={renderItem}
-      renderSelectedItem={(item: ItemType) =>
-        resList.resList.includes(item.value) ? (
-          <View style={styles.selectedStyle}>
-            <Text style={styles.textSelectedStyle}>{item.label}</Text>
-            <TouchableOpacity onPress={() => dispatch(rid(item.value))}>
-              <>
-                <AntDesign color="black" name="delete" size={17} />
-              </>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <Text></Text>
-        )
-      }
-      maxHeight={130}
-    />
+    <View style={{ marginHorizontal: "8%" }}>
+      <MultiSelect
+        style={styles.dropdown}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        iconStyle={styles.iconStyle}
+        data={data}
+        labelField="label"
+        valueField="value"
+        placeholder="Most visited cafeterias..."
+        search={false}
+        onChange={(item) => {
+          resList.resList.includes(item[0])
+            ? dispatch(rid(item[0]))
+            : dispatch(add(item));
+        }}
+        renderLeftIcon={() => (
+          <Ionicons
+            style={styles.icon}
+            color="black"
+            name="fast-food-outline"
+            size={20}
+          />
+        )}
+        renderItem={renderItem}
+        renderSelectedItem={(item: ItemType) =>
+          resList.resList.includes(item.value) ? (
+            <View style={styles.selectedStyle}>
+              <View style={{ flex: 0.82, paddingRight: 3 }}>
+                <Text style={styles.textSelectedStyle} numberOfLines={1}>
+                  {item.label}
+                </Text>
+              </View>
+              <TouchableOpacity
+                style={{ flex: 0.18 }}
+                onPress={() => dispatch(rid(item.value))}
+              >
+                <View>
+                  <AntDesign color="black" name="delete" size={15} />
+                </View>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <Text></Text>
+          )
+        }
+        maxHeight={130}
+      />
+    </View>
   );
 };
 
@@ -170,10 +197,12 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   placeholderStyle: {
-    fontSize: 16,
+    fontSize: 15,
   },
   selectedTextStyle: {
+    flex: 0.8,
     fontSize: 14,
+    fontFamily: "inter",
   },
   iconStyle: {
     width: 20,
@@ -184,7 +213,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   icon: {
-    marginRight: 5,
+    flex: 0.1,
+    marginRight: 10,
   },
   item: {
     padding: 17,
@@ -199,9 +229,10 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     backgroundColor: "white",
     shadowColor: "#000",
-    marginTop: 8,
-    marginRight: 12,
-    paddingHorizontal: 12,
+    marginTop: 12,
+    width: "31%",
+    marginHorizontal: 3,
+    paddingHorizontal: 5,
     paddingVertical: 8,
     shadowOffset: {
       width: 0,
@@ -213,7 +244,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   textSelectedStyle: {
-    marginRight: 5,
-    fontSize: 16,
+    marginLeft: 3,
+    fontSize: 13,
   },
 });

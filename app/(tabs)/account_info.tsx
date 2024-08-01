@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useState, createContext } from "react";
+import React, { useState, createContext, useEffect } from "react";
 import { Inter_400Regular } from "@expo-google-fonts/inter";
 import CustomButton from "@/components/CustomButton";
 import colors from "../../constants/Colors";
@@ -12,7 +12,6 @@ import CustomDropdown from "@/components/CustomDropdown";
 
 export default function AccountInfo() {
   //////////////////////////////////////////////
-
   const [checked, setChecked] = useState(false);
   const [map, setMap] = useState(
     new Map<string, boolean>([
@@ -24,6 +23,18 @@ export default function AccountInfo() {
       ["Vegetarian", false],
     ])
   );
+  useEffect(() => {
+    setMap(
+      new Map<string, boolean>([
+        ["Vegan", false],
+        ["Gluten", false],
+        ["Halal", false],
+        ["Lactose", false],
+        ["Seafood", false],
+        ["Vegetarian", false],
+      ])
+    );
+  }, [checked]);
   const allergyList = [
     "Vegan",
     "Gluten",
@@ -62,8 +73,9 @@ export default function AccountInfo() {
           <View
             style={{
               flexDirection: "row",
-              paddingHorizontal: "4%",
+              marginHorizontal: "7%",
               flexWrap: "wrap",
+              justifyContent: "center",
             }}
           >
             {allergyList.map((item) => {
@@ -81,14 +93,14 @@ export default function AccountInfo() {
                   marginHorizontal={2.8}
                   buttonColor={map.get(item) ? colors.wpurple : colors.white}
                   height={40}
-                  fontSize={item == "Vegetarian" ? 12.5 : 13}
-                  width={110}
+                  fontSize={item.length > 6 ? 12 : 13}
+                  width={105}
                   borderRadius={60}
                   textColor={map.get(item) ? colors.white : colors.wpurple}
                   borderColor={colors.wpurple}
                   fontFamily="inter"
                   fontWeight="medium"
-                  lSpacing={item == "Vegetarian" ? -0.5 : undefined}
+                  lSpacing={item.length > 6 ? -0.6 : undefined}
                 >
                   {item}
                 </CustomButton>
