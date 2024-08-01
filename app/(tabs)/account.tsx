@@ -110,7 +110,9 @@ export default function AccountInfo() {
         </View>
         <View style={{ flex: 0.12 }}>
           <CustomButton
-            onPress={() => {}}
+            onPress={() => {
+              router.push("/(tabs)");
+            }}
             borderRadius={16}
             buttonColor={colors.wpurple}
           >
