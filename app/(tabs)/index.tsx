@@ -1,14 +1,9 @@
-import {
-  ImageBackground,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { ImageBackground, StyleSheet, Text, View } from "react-native";
 import React from "react";
 
 import { router } from "expo-router";
 import CustomButton from "@/components/CustomButton";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function OnBoarding() {
   return (
@@ -16,23 +11,23 @@ export default function OnBoarding() {
       source={require("../../assets/images/splash_background.jpg")}
       style={styles.bg}
     >
-      <View style={{ flex: 0.8 }}>
-        <Text style={styles.title}>AppName</Text>
-        <Text style={styles.subtitle}>Home of Western {"\n"}Dining</Text>
-      </View>
-      <View style={{ flex: 0.2 }}>
-        <CustomButton
-          borderRadius={16}
-          onPress={() => router.push("/(tabs)/account")}
-        >
-          Login
-        </CustomButton>
-      </View>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ flex: 0.85 }}>
+          <Text style={styles.title}>AppName</Text>
+          <Text style={styles.subtitle}>Home of Western {"\n"}Dining</Text>
+        </View>
+        <View style={{ flex: 0.15 }}>
+          <CustomButton
+            borderRadius={16}
+            onPress={() => router.push("/(tabs)/account")}
+          >
+            Login
+          </CustomButton>
+        </View>
+      </SafeAreaView>
     </ImageBackground>
   );
 }
-
-// export default OnBoarding;
 
 const styles = StyleSheet.create({
   bg: {
@@ -42,7 +37,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: "white",
-    marginTop: "25%",
+    marginTop: "15%",
     marginLeft: "10%",
     fontSize: 56,
     fontWeight: "500",

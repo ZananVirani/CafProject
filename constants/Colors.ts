@@ -12,7 +12,8 @@ export default {
   black: "#000000",
   white : '#FFFFFF',
   verylightgray : "#F3F8FE",
-  gray: "#B8B8B8"
+  gray: "#B8B8B8",
+  yellow: "gold"
 };
 
 // export const Colors = {

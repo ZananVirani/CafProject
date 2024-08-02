@@ -1,13 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useState, createContext, useEffect } from "react";
-import { Inter_400Regular } from "@expo-google-fonts/inter";
 import CustomButton from "@/components/CustomButton";
 import colors from "../../constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TextField from "@/components/TextField";
 import { Checkbox } from "react-native-paper";
-import { useSelector } from "react-redux";
-import { RootState, store } from "@/state/store";
 import CustomDropdown from "@/components/CustomDropdown";
 import { router } from "expo-router";
 
@@ -111,7 +108,7 @@ export default function AccountInfo() {
         <View style={{ flex: 0.12 }}>
           <CustomButton
             onPress={() => {
-              router.push("/(tabs)");
+              router.push("/(tabs)/food_description");
             }}
             borderRadius={16}
             buttonColor={colors.wpurple}
