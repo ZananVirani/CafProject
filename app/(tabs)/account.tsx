@@ -12,34 +12,27 @@ export default function AccountInfo() {
   const [checked, setChecked] = useState(false);
   const [map, setMap] = useState(
     new Map<string, boolean>([
-      ["Vegan", false],
+      ["Meat", false],
       ["Gluten", false],
-      ["Halal", false],
-      ["Lactose", false],
+      ["Pork", false],
+      ["Dairy", false],
       ["Seafood", false],
-      ["Vegetarian", false],
+      ["Nuts", false],
     ])
   );
   useEffect(() => {
     setMap(
       new Map<string, boolean>([
-        ["Vegan", false],
+        ["Meat", false],
         ["Gluten", false],
-        ["Halal", false],
-        ["Lactose", false],
+        ["Pork", false],
+        ["Dairy", false],
         ["Seafood", false],
-        ["Vegetarian", false],
+        ["Nuts", false],
       ])
     );
   }, [checked]);
-  const allergyList = [
-    "Vegan",
-    "Gluten",
-    "Halal",
-    "Lactose",
-    "Seafood",
-    "Vegetarian",
-  ];
+  const allergyList = ["Meat", "Gluten", "Pork", "Dairy", "Seafood", "Nuts"];
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -48,7 +41,7 @@ export default function AccountInfo() {
           <Text style={styles.title}>Account Setup</Text>
         </View>
         <View style={{ flex: 0.78 }}>
-          <TextField placeText="First Name" marginTop="10%"></TextField>
+          <TextField placeText="First Name" marginTop="7%"></TextField>
           <TextField placeText="Last Name" marginTop={30}></TextField>
           <View
             style={{
@@ -66,6 +59,11 @@ export default function AccountInfo() {
               }}
             />
           </View>
+          {checked && (
+            <View style={{ marginBottom: 6 }}>
+              <Text style={styles.text}>Check the foods you can NOT eat</Text>
+            </View>
+          )}
           <View
             style={{
               flexDirection: "row",
@@ -89,14 +87,14 @@ export default function AccountInfo() {
                   marginHorizontal={2.8}
                   buttonColor={map.get(item) ? colors.wpurple : colors.white}
                   height={40}
-                  fontSize={item == "Vegetarian" ? 10.5 : 13}
+                  fontSize={13}
                   width={105}
                   borderRadius={60}
                   textColor={map.get(item) ? colors.white : colors.wpurple}
                   borderColor={colors.wpurple}
                   fontFamily="inter"
                   fontWeight="medium"
-                  lSpacing={item.length > 6 ? -0.6 : undefined}
+                  lSpacing={undefined}
                 >
                   {item}
                 </CustomButton>
@@ -138,5 +136,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginLeft: "12%",
     marginRight: 10,
+  },
+  text: {
+    color: "black",
+    fontFamily: "inter",
+    fontWeight: "regular",
+    fontSize: 16,
+    marginLeft: "12%",
+    marginRight: 10,
+    fontStyle: "italic",
   },
 });

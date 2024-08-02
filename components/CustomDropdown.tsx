@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     shadowRadius: 1.41,
 
     elevation: 2,
-    marginTop: 20,
+    marginTop: 10,
   },
   placeholderStyle: {
     fontSize: 15,

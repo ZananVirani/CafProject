@@ -5,6 +5,7 @@ import {
   Image,
   useWindowDimensions,
   ScrollView,
+  TouchableHighlight,
 } from "react-native";
 import React, { Suspense } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,10 +14,19 @@ import CafAppBar from "@/components/CafAppBar";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import colors from "@/constants/Colors";
 import { Collapsible } from "@/components/Collapsible";
+import { Link } from "@react-navigation/native";
 
 export default function food_description() {
   const dimensions = useWindowDimensions();
-  let ing = ["1 cup salt", "1 cup rice"];
+  const allergies = ["Meat", "Gluten", "Pork", "Dairy", "Seafood", "Nuts"];
+  const restrictions = new Map<string, boolean>([
+    ["Meat", false],
+    ["Gluten", false],
+    ["Pork", false],
+    ["Dairy", false],
+    ["Seafood", false],
+    ["Nuts", false],
+  ]);
 
   return (
     <View style={{ backgroundColor: "white", flex: 1 }}>
@@ -86,16 +96,49 @@ export default function food_description() {
                 onPress={() => {}}
               />
               <Text style={styles.rating}>4.5</Text>
+              <TouchableHighlight style={{ marginLeft: 7 }}>
+                <Text
+                  style={[
+                    styles.rating,
+                    {
+                      fontStyle: "italic",
+                      textDecorationLine: "underline",
+                    },
+                  ]}
+                >
+                  Leave A Review
+                </Text>
+              </TouchableHighlight>
             </View>
-            <Collapsible title="Ingredients">
-              <Text>
-                This app has two screens: <Text>app/(tabs)/index.tsx</Text> and{" "}
-                <Text>app/(tabs)/explore.tsx</Text>
-              </Text>
-              <Text>
-                The layout file in <Text>app/(tabs)/_layout.tsx</Text> sets up
-                the tab navigator.
-              </Text>
+            <Collapsible title="Food Restrictions">
+              {allergies.map((item) => {
+                return (
+                  <View
+                    style={{
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <MaterialCommunityIcons
+                      color={colors.wpurple}
+                      name={
+                        item == "Meat"
+                          ? "food-drumstick"
+                          : item == "Gluten"
+                          ? "barley"
+                          : item == "Pork"
+                          ? "pig-variant"
+                          : item == "Dairy"
+                          ? "cheese"
+                          : item == "Seafood"
+                          ? "fish"
+                          : "peanut"
+                      }
+                      size={20}
+                    />
+                  </View>
+                );
+              })}
             </Collapsible>
           </View>
         </ScrollView>
