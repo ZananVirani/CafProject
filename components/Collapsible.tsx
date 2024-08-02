@@ -1,9 +1,14 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { PropsWithChildren, useState } from "react";
-import { StyleSheet, TouchableOpacity, useColorScheme } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+  Text,
+} from "react-native";
+import { ABeeZee_400Regular } from "@expo-google-fonts/abeezee";
 
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import Colors from "@/constants/Colors";
 
 export function Collapsible({
@@ -11,35 +16,36 @@ export function Collapsible({
   title,
 }: PropsWithChildren & { title: string }) {
   const [isOpen, setIsOpen] = useState(false);
-  const theme = useColorScheme() ?? "light";
 
   return (
-    <ThemedView>
+    <View style={{ marginHorizontal: "2%", marginTop: 10 }}>
       <TouchableOpacity
         style={styles.heading}
         onPress={() => setIsOpen((value) => !value)}
         activeOpacity={0.8}
       >
+        <Text style={styles.text}>{title}</Text>
         <Ionicons
           name={isOpen ? "chevron-down" : "chevron-forward-outline"}
-          size={18}
+          size={24}
           color={"black"}
         />
-        <ThemedText type="defaultSemiBold">{title}</ThemedText>
       </TouchableOpacity>
-      {isOpen && <ThemedView style={styles.content}>{children}</ThemedView>}
-    </ThemedView>
+      {isOpen && <View style={styles.content}>{children}</View>}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  text: {
+    fontFamily: "ABeeZee_400Regular",
+    fontSize: 24,
+    fontWeight: "medium",
+  },
   heading: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
   },
-  content: {
-    marginTop: 6,
-    marginLeft: 24,
-  },
+  content: {},
 });

@@ -6,15 +6,18 @@ import {
   useWindowDimensions,
   ScrollView,
 } from "react-native";
-import React from "react";
+import React, { Suspense } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Appbar } from "react-native-paper";
 import CafAppBar from "@/components/CafAppBar";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import colors from "@/constants/Colors";
+import { Collapsible } from "@/components/Collapsible";
 
 export default function food_description() {
   const dimensions = useWindowDimensions();
+  let ing = ["1 cup salt", "1 cup rice"];
+
   return (
     <View style={{ backgroundColor: "white", flex: 1 }}>
       <SafeAreaView style={{ flex: 1 }}>
@@ -46,14 +49,14 @@ export default function food_description() {
             >
               <View
                 style={{
-                  flex: 0.78,
+                  flex: 0.79,
                   flexWrap: "wrap",
                   flexDirection: "row",
                   alignItems: "center",
                 }}
               >
                 <Text style={styles.title} numberOfLines={2}>
-                  Popcorn Chicken
+                  Mac and Cheese
                 </Text>
               </View>
               <MaterialCommunityIcons
@@ -65,7 +68,7 @@ export default function food_description() {
                   position: "absolute",
                   right: 0,
                   alignSelf: "center",
-                  flex: 0.22,
+                  flex: 0.21,
                 }}
               />
             </View>
@@ -73,7 +76,7 @@ export default function food_description() {
               style={{
                 flexDirection: "row",
                 marginHorizontal: "2%",
-                marginTop: 10,
+                marginVertical: 10,
               }}
             >
               <Ionicons
@@ -84,6 +87,16 @@ export default function food_description() {
               />
               <Text style={styles.rating}>4.5</Text>
             </View>
+            <Collapsible title="Ingredients">
+              <Text>
+                This app has two screens: <Text>app/(tabs)/index.tsx</Text> and{" "}
+                <Text>app/(tabs)/explore.tsx</Text>
+              </Text>
+              <Text>
+                The layout file in <Text>app/(tabs)/_layout.tsx</Text> sets up
+                the tab navigator.
+              </Text>
+            </Collapsible>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -96,7 +109,8 @@ const styles = StyleSheet.create({
     color: "black",
     fontFamily: "inter",
     fontWeight: "medium",
-    fontSize: 29,
+    fontSize: 31,
+    letterSpacing: -0.3,
   },
   rating: {
     color: colors.gray,
