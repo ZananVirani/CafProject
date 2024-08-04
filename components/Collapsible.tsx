@@ -47,5 +47,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
   },
-  content: { flexDirection: "row" },
+  content: { flexDirection: "row", flexWrap: "wrap" },
 });

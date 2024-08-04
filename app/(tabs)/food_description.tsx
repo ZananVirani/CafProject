@@ -5,32 +5,86 @@ import {
   Image,
   useWindowDimensions,
   ScrollView,
-  TouchableHighlight,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
 } from "react-native";
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Appbar } from "react-native-paper";
 import CafAppBar from "@/components/CafAppBar";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import colors from "@/constants/Colors";
 import { Collapsible } from "@/components/Collapsible";
-import { Link } from "@react-navigation/native";
+import { Dialog } from "react-native-simple-dialogs";
+import StarRating from "react-native-star-rating-widget";
+import CustomButton from "@/components/CustomButton";
 
 export default function food_description() {
   const dimensions = useWindowDimensions();
   const allergies = ["Meat", "Gluten", "Pork", "Dairy", "Seafood", "Nuts"];
-  const restrictions = new Map<string, boolean>([
-    ["Meat", false],
-    ["Gluten", false],
-    ["Pork", false],
-    ["Dairy", false],
-    ["Seafood", false],
-    ["Nuts", false],
-  ]);
+  const [checked, setChecked] = useState(false);
+  const [dialog, setDialog] = useState(false);
+  const [rating, setRating] = useState(0);
 
   return (
-    <View style={{ backgroundColor: "white", flex: 1 }}>
-      <SafeAreaView style={{ flex: 1 }}>
+    <View
+      style={{ backgroundColor: "white", flex: 1, justifyContent: "center" }}
+    >
+      <Dialog
+        visible={dialog}
+        title="Leave A Review!"
+        titleStyle={styles.dialog}
+        onTouchOutside={() => {
+          setDialog(false);
+        }}
+        onRequestClose={() => {}}
+        contentInsetAdjustmentBehavior={undefined}
+        animationType="fade"
+        dialogStyle={{ borderRadius: 10 }}
+      >
+        <View>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "row",
+              marginBottom: 30,
+            }}
+          >
+            <TouchableWithoutFeedback
+              onPress={() => setRating(0)}
+              style={{ flex: 0.5 }}
+            >
+              <Text style={[styles.dialog, { fontSize: 16 }]}>0</Text>
+            </TouchableWithoutFeedback>
+            <StarRating
+              starSize={40}
+              color={colors.yellow}
+              rating={rating}
+              onChange={(value) => {
+                setRating(value);
+              }}
+            />
+            <TouchableWithoutFeedback
+              onPress={() => setRating(5)}
+              style={{ flex: 0.5 }}
+            >
+              <Text style={[styles.dialog, { fontSize: 16 }]}>5</Text>
+            </TouchableWithoutFeedback>
+          </View>
+          <CustomButton
+            onPress={() => {
+              console.log(rating);
+            }}
+            borderRadius={15}
+            marginHorizontal="6%"
+            fontSize={16}
+            height={50}
+          >
+            Submit
+          </CustomButton>
+        </View>
+      </Dialog>
+      <SafeAreaView style={{ flex: 1, zIndex: 0 }}>
         <CafAppBar />
         <ScrollView>
           <Image
@@ -70,10 +124,12 @@ export default function food_description() {
                 </Text>
               </View>
               <MaterialCommunityIcons
-                color={colors.wpurple}
-                name="heart-circle" //heart-circle-outline
+                color={checked ? colors.wpurple : colors.gray}
+                name={"heart-circle"}
                 size={50}
-                onPress={() => {}}
+                onPress={() => {
+                  setChecked(!checked);
+                }}
                 style={{
                   position: "absolute",
                   right: 0,
@@ -96,7 +152,7 @@ export default function food_description() {
                 onPress={() => {}}
               />
               <Text style={styles.rating}>4.5</Text>
-              <TouchableHighlight style={{ marginLeft: 7 }}>
+              <TouchableOpacity onPress={() => setDialog(true)}>
                 <Text
                   style={[
                     styles.rating,
@@ -108,15 +164,31 @@ export default function food_description() {
                 >
                   Leave A Review
                 </Text>
-              </TouchableHighlight>
+              </TouchableOpacity>
             </View>
             <Collapsible title="Food Restrictions">
+              <View style={{ marginVertical: 3, width: "100%" }}>
+                <Text style={[styles.allergy, { textAlign: "left" }]}>
+                  This dish contains the following:
+                </Text>
+              </View>
               {allergies.map((item) => {
                 return (
                   <View
+                    key={item}
                     style={{
                       flexDirection: "column",
                       justifyContent: "center",
+                      width: dimensions.width * 0.25,
+                      height: dimensions.width * 0.25,
+                      marginRight: 12,
+                      shadowColor: colors.gray,
+                      shadowOffset: { height: 1, width: 0.6 },
+                      shadowOpacity: 0.8,
+                      shadowRadius: 0.2,
+                      backgroundColor: colors.verylightgray,
+                      marginTop: 12,
+                      borderRadius: 7,
                     }}
                   >
                     <MaterialCommunityIcons
@@ -134,8 +206,12 @@ export default function food_description() {
                           ? "fish"
                           : "peanut"
                       }
-                      size={20}
+                      size={40}
+                      style={{ alignSelf: "center" }}
                     />
+                    <Text style={[styles.allergy, { fontWeight: "semibold" }]}>
+                      {item}
+                    </Text>
                   </View>
                 );
               })}
@@ -148,6 +224,19 @@ export default function food_description() {
 }
 
 const styles = StyleSheet.create({
+  dialog: {
+    fontFamily: "inter",
+    fontSize: 24,
+    fontWeight: "500",
+    textAlign: "center",
+    marginHorizontal: 5,
+  },
+  allergy: {
+    marginTop: 6,
+    fontSize: 14,
+    fontFamily: "inter",
+    textAlign: "center",
+  },
   title: {
     color: "black",
     fontFamily: "inter",
