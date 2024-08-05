@@ -1,117 +1,101 @@
-import { ImageBackground, StyleSheet, Text, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import React from "react";
-
-import { router } from "expo-router";
-import CustomButton from "@/components/CustomButton";
+import colors from "../../constants/Colors";
+import FoodBox from "@/components/FoodBox";
 import { SafeAreaView } from "react-native-safe-area-context";
+import CafAppBar from "@/components/CafAppBar";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-export default function OnBoarding() {
+export default function index() {
+  const dimensions = useWindowDimensions();
+  const testFoods = [
+    ["Grilled Cheese Sandwich", 4.3],
+    ["Hot Dog", 1.4],
+    ["Popcorn Chicken", 3.1],
+    ["Mac And Cheese", 3.8],
+  ];
+  const categories = ["Hot Food", "Interactive", "Other"];
+
   return (
-    <ImageBackground
-      source={require("../../assets/images/splash_background.jpg")}
-      style={styles.bg}
+    <View
+      style={{
+        flex: 1,
+
+        backgroundColor: colors.white,
+      }}
     >
       <SafeAreaView style={{ flex: 1 }}>
-        <View style={{ flex: 0.85 }}>
-          <Text style={styles.title}>AppName</Text>
-          <Text style={styles.subtitle}>Home of Western {"\n"}Dining</Text>
-        </View>
-        <View style={{ flex: 0.15 }}>
-          <CustomButton
-            borderRadius={16}
-            onPress={() => router.push("/(tabs)/account")}
-          >
-            Login
-          </CustomButton>
-        </View>
+        <CafAppBar />
+        <ScrollView>
+          {categories.map((category) => {
+            return (
+              <>
+                <View
+                  style={{
+                    paddingLeft: "3.5%",
+                    width: dimensions.width,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginTop: 25,
+                    marginBottom: 5,
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name={
+                      category == "Hot Food"
+                        ? "fire" //
+                        : category == "Interactive"
+                        ? "food-turkey" //"filter"
+                        : "dots-horizontal-circle"
+                    }
+                    size={category == "Other" ? 32 : 37}
+                    color={colors.black}
+                    style={{ width: 35 }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 23,
+                      fontFamily: "inter",
+                      fontWeight: "500",
+                      marginLeft: 8,
+                    }}
+                  >
+                    {category}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    alignItems: "center",
+                    flexDirection: "row",
+                    marginLeft: "1.3%",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  {testFoods.map((item) => {
+                    return (
+                      <FoodBox
+                        name={item[0]}
+                        rating={item[1]}
+                        fontSize={12}
+                        width={dimensions.width * 0.29}
+                        minWidth={113.1}
+                      />
+                    );
+                  })}
+                </View>
+              </>
+            );
+          })}
+        </ScrollView>
       </SafeAreaView>
-    </ImageBackground>
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
-  bg: {
-    objectFit: "cover",
-    flex: 1,
-    opacity: 0.9,
-  },
-  title: {
-    color: "white",
-    marginTop: "15%",
-    marginLeft: "10%",
-    fontSize: 56,
-    fontWeight: "500",
-    fontFamily: "Inter_600SemiBold",
-  },
-  subtitle: {
-    color: "white",
-    fontSize: 32,
-    marginLeft: "10%",
-    marginTop: "2%",
-    fontWeight: "semibold",
-    fontFamily: "inter",
-    fontStyle: "italic",
-  },
-});
-
-// export default function OnBoarding() {
-//   return (
-//     <ImageBackground
-//       source={require("../../assets/images/splash_background.jpg")}
-//       style={styles.bg}
-//     >
-//       <View style={{ flex: 0.8 }}>
-//         <Text style={styles.title}>AppName</Text>
-//         <Text style={styles.subtitle}>Home of Western {"\n"}Dining</Text>
-//       </View>
-//       <View style={{ flex: 0.2 }}>
-//         <Button
-//           style={styles.button}
-//           mode="contained"
-//           buttonColor={colors.lpurple}
-//           onPress={async () => {}}
-//         >
-//           <Text style={styles.buttonText}>Login</Text>
-//         </Button>
-//       </View>
-//     </ImageBackground>
-//   );
-// }
-
-// // export default OnBoarding;
-
-// const styles = StyleSheet.create({
-//   bg: {
-//     objectFit: "cover",
-//     flex: 1,
-//     opacity: 0.9,
-//   },
-//   title: {
-//     color: "white",
-//     marginTop: "25%",
-//     marginLeft: "10%",
-//     fontSize: 56,
-//     fontWeight: "500",
-//     fontFamily: "Inter_600SemiBold",
-//   },
-//   subtitle: {
-//     color: "white",
-//     fontSize: 32,
-//     marginLeft: "10%",
-//     marginTop: "2%",
-//     fontWeight: "semibold",
-//     fontFamily: "inter",
-//     fontStyle: "italic",
-//   },
-//   button: {
-//     justifyContent: "center",
-//     height: 60,
-//     marginHorizontal: "10%",
-//   },
-//   buttonText: {
-//     color: "white",
-//     fontSize: 20,
-//     fontFamily: "ABeeZee_400Regular",
-//     fontWeight: "bold",
-//   },
-// });
+const styles = StyleSheet.create({});
