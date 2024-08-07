@@ -172,49 +172,59 @@ export default function food_description() {
                   This dish contains the following:
                 </Text>
               </View>
-              {allergies.map((item) => {
-                return (
-                  <View
-                    key={item}
-                    style={{
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      width: dimensions.width * 0.25,
-                      height: dimensions.width * 0.25,
-                      marginRight: 12,
-                      shadowColor: colors.gray,
-                      shadowOffset: { height: 1, width: 0.6 },
-                      shadowOpacity: 0.8,
-                      shadowRadius: 0.2,
-                      backgroundColor: colors.verylightgray,
-                      marginTop: 12,
-                      borderRadius: 7,
-                    }}
-                  >
-                    <MaterialCommunityIcons
-                      color={colors.wpurple}
-                      name={
-                        item == "Meat"
-                          ? "food-drumstick"
-                          : item == "Gluten"
-                          ? "barley"
-                          : item == "Pork"
-                          ? "pig-variant"
-                          : item == "Dairy"
-                          ? "cheese"
-                          : item == "Seafood"
-                          ? "fish"
-                          : "peanut"
-                      }
-                      size={40}
-                      style={{ alignSelf: "center" }}
-                    />
-                    <Text style={[styles.allergy, { fontWeight: "semibold" }]}>
-                      {item}
-                    </Text>
-                  </View>
-                );
-              })}
+              <View
+                style={{
+                  paddingBottom: 40,
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                }}
+              >
+                {allergies.map((item) => {
+                  return (
+                    <View
+                      key={item}
+                      style={{
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        width: dimensions.width * 0.25,
+                        height: dimensions.width * 0.25,
+                        marginRight: 12,
+                        shadowColor: colors.gray,
+                        shadowOffset: { height: 1, width: 0.6 },
+                        shadowOpacity: 0.8,
+                        shadowRadius: 0.2,
+                        backgroundColor: colors.verylightgray,
+                        marginTop: 12,
+                        borderRadius: 7,
+                      }}
+                    >
+                      <MaterialCommunityIcons
+                        color={colors.wpurple}
+                        name={
+                          item == "Meat"
+                            ? "food-drumstick"
+                            : item == "Gluten"
+                            ? "barley"
+                            : item == "Pork"
+                            ? "pig-variant"
+                            : item == "Dairy"
+                            ? "cheese"
+                            : item == "Seafood"
+                            ? "fish"
+                            : "peanut"
+                        }
+                        size={40}
+                        style={{ alignSelf: "center" }}
+                      />
+                      <Text
+                        style={[styles.allergy, { fontWeight: "semibold" }]}
+                      >
+                        {item}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
             </Collapsible>
           </View>
         </ScrollView>

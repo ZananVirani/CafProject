@@ -106,7 +106,7 @@ export default function AccountInfo() {
         <View style={{ flex: 0.12 }}>
           <CustomButton
             onPress={() => {
-              router.push("/(tabs)/food_description");
+              router.push("/(tabs)/cafeteria");
             }}
             borderRadius={16}
             buttonColor={colors.wpurple}
