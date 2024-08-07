@@ -110,18 +110,6 @@ export default function index() {
                     marginBottom: 5,
                   }}
                 >
-                  <MaterialCommunityIcons
-                    name={
-                      category == "Hot Food"
-                        ? "fire" //
-                        : category == "Interactive"
-                        ? "food-turkey" //"filter"
-                        : "dots-horizontal-circle"
-                    }
-                    size={category == "Other" ? 32 : 37}
-                    color={colors.black}
-                    style={{ width: 35 }}
-                  />
                   <Text
                     style={{
                       color: colors.black,
@@ -133,6 +121,21 @@ export default function index() {
                   >
                     {category}
                   </Text>
+                  <MaterialCommunityIcons
+                    name={
+                      category == "Hot Food"
+                        ? "fire" //
+                        : category == "Interactive"
+                        ? "food-turkey" //"filter"
+                        : "dots-horizontal-circle"
+                    }
+                    size={category == "Other" ? 32 : 37}
+                    color={colors.black}
+                    style={{
+                      width: 35,
+                      marginLeft: category == "Hot Food" ? 5 : 10,
+                    }}
+                  />
                 </View>
                 <View
                   style={{

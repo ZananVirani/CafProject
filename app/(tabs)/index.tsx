@@ -1,117 +1,21 @@
-import { ImageBackground, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-
+import colors from "../../constants/Colors";
 import { router } from "expo-router";
-import CustomButton from "@/components/CustomButton";
-import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function OnBoarding() {
+export default function index() {
   return (
-    <ImageBackground
-      source={require("../../assets/images/splash_background.jpg")}
-      style={styles.bg}
+    <View
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1,
+        backgroundColor: colors.white,
+      }}
     >
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={{ flex: 0.85 }}>
-          <Text style={styles.title}>AppName</Text>
-          <Text style={styles.subtitle}>Home of Western {"\n"}Dining</Text>
-        </View>
-        <View style={{ flex: 0.15 }}>
-          <CustomButton
-            borderRadius={16}
-            onPress={() => router.push("/(tabs)/account")}
-          >
-            Login
-          </CustomButton>
-        </View>
-      </SafeAreaView>
-    </ImageBackground>
+      <Text onPress={() => router.push("(tabs)/cafeteria")}>index</Text>
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
-  bg: {
-    objectFit: "cover",
-    flex: 1,
-    opacity: 0.9,
-  },
-  title: {
-    color: "white",
-    marginTop: "15%",
-    marginLeft: "10%",
-    fontSize: 56,
-    fontWeight: "500",
-    fontFamily: "Inter_600SemiBold",
-  },
-  subtitle: {
-    color: "white",
-    fontSize: 32,
-    marginLeft: "10%",
-    marginTop: "2%",
-    fontWeight: "semibold",
-    fontFamily: "inter",
-    fontStyle: "italic",
-  },
-});
-
-// export default function OnBoarding() {
-//   return (
-//     <ImageBackground
-//       source={require("../../assets/images/splash_background.jpg")}
-//       style={styles.bg}
-//     >
-//       <View style={{ flex: 0.8 }}>
-//         <Text style={styles.title}>AppName</Text>
-//         <Text style={styles.subtitle}>Home of Western {"\n"}Dining</Text>
-//       </View>
-//       <View style={{ flex: 0.2 }}>
-//         <Button
-//           style={styles.button}
-//           mode="contained"
-//           buttonColor={colors.lpurple}
-//           onPress={async () => {}}
-//         >
-//           <Text style={styles.buttonText}>Login</Text>
-//         </Button>
-//       </View>
-//     </ImageBackground>
-//   );
-// }
-
-// // export default OnBoarding;
-
-// const styles = StyleSheet.create({
-//   bg: {
-//     objectFit: "cover",
-//     flex: 1,
-//     opacity: 0.9,
-//   },
-//   title: {
-//     color: "white",
-//     marginTop: "25%",
-//     marginLeft: "10%",
-//     fontSize: 56,
-//     fontWeight: "500",
-//     fontFamily: "Inter_600SemiBold",
-//   },
-//   subtitle: {
-//     color: "white",
-//     fontSize: 32,
-//     marginLeft: "10%",
-//     marginTop: "2%",
-//     fontWeight: "semibold",
-//     fontFamily: "inter",
-//     fontStyle: "italic",
-//   },
-//   button: {
-//     justifyContent: "center",
-//     height: 60,
-//     marginHorizontal: "10%",
-//   },
-//   buttonText: {
-//     color: "white",
-//     fontSize: 20,
-//     fontFamily: "ABeeZee_400Regular",
-//     fontWeight: "bold",
-//   },
-// });
+const styles = StyleSheet.create({});
