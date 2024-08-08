@@ -11,7 +11,7 @@ export default function FoodBox(props: any) {
       onPress={props.onPress}
       style={{
         marginLeft: props.marginLeft ?? "2.2%",
-        marginTop: props.marginLeft ?? "2.2%",
+        marginTop: props.marginTop ?? "2.2%",
       }}
     >
       <View
@@ -74,10 +74,18 @@ export default function FoodBox(props: any) {
             <Ionicons
               color={colors.yellow}
               name="star"
-              size={12}
+              size={props.starSize ?? 12}
               onPress={() => {}}
             />
-            <Text style={styles.rating}>{props.rating}</Text>
+            <Text
+              style={{
+                fontSize: props.ratingFont ?? 10.5,
+                marginLeft: 1,
+                fontWeight: "medium",
+              }}
+            >
+              {props.rating.toFixed(1)}
+            </Text>
           </View>
         </View>
       </View>
@@ -85,10 +93,4 @@ export default function FoodBox(props: any) {
   );
 }
 
-const styles = StyleSheet.create({
-  rating: {
-    fontSize: 10.5,
-    marginLeft: 1,
-    fontWeight: "medium",
-  },
-});
+const styles = StyleSheet.create({});

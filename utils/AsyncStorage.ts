@@ -17,3 +17,21 @@ export async function getIntro() : Promise<boolean> {
         return false;
     }
 }
+
+export async function setFilters(value:string[]) : Promise<void>{
+    try {
+        await AsyncStorage.setItem('filters', JSON.stringify(value));
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function getFilters() : Promise<string[]> {
+    try {
+        const hello = await AsyncStorage.getItem('filters');
+        return hello ? JSON.parse(hello) : ["Favourites", "Nearby", "Rating"];
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
+}
