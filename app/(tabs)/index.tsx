@@ -1,273 +1,272 @@
 import {
+  SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
-  View,
-  Image,
-  useWindowDimensions,
-  ScrollView,
   TouchableOpacity,
-  TouchableWithoutFeedback,
+  View,
 } from "react-native";
-import React, { Suspense, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import CafAppBar from "@/components/CafAppBar";
-import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
-import colors from "@/constants/Colors";
-import { Collapsible } from "@/components/Collapsible";
-import { Dialog } from "react-native-simple-dialogs";
-import StarRating from "react-native-star-rating-widget";
-import CustomButton from "@/components/CustomButton";
+import React, { useEffect, useRef, useState } from "react";
+import colors from "../../constants/Colors";
+import { router } from "expo-router";
+import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
+import FoodBox from "@/components/FoodBox";
+import { useWindowDimensions } from "react-native";
 import axios from "axios";
+import CustomButton from "@/components/CustomButton";
+import {
+  getFilters,
+  getSelectedCaf,
+  setFilters,
+  setSelectedCaf,
+} from "@/utils/AsyncStorage";
+import MainCafBox from "@/components/MainCafBox";
 
-export default function food_description() {
-  let food = axios
-    .get("https://a5fe-199-7-157-101.ngrok-free.app/foods/Butter Chicken")
-    .then((value) => {
-      console.log(value.data);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+export default function index() {
   const dimensions = useWindowDimensions();
-  const allergies = ["Meat", "Gluten", "Pork", "Dairy", "Seafood", "Nuts"];
-  const [checked, setChecked] = useState(false);
-  const [dialog, setDialog] = useState(false);
-  const [rating, setRating] = useState(0);
+  const testFoods = [
+    ["Grilled Cheese Sandwich", 4.3],
+    ["Hot Dog", 1.4],
+    ["Popcorn Chicken", 3.1],
+    ["Mac And Cheese", 3.8],
+    ["Freak Sandwich", 4.1],
+    ["Navan Sehra Asscheeks and butt", 6.0],
+  ];
+
+  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState([""]);
+  const cafs = ["Sydenham Hall", "Ontario Hall", "Perth Hall"];
+  const [cafNum, setCafNum] = useState(0);
+  const [filterChosen, setFilterChosen] = useState(categories[0]);
+  const cafBoxes = [
+    { cafName: "Sydenham Hall", rating: 4.3, liked: true },
+    { cafName: "Perth Hall", rating: 4.0, liked: false },
+    { cafName: "Ontario Hall", rating: 5.0, liked: true },
+  ];
+
+  useEffect(() => {
+    getSelectedCaf()
+      .then((value) => {
+        value >= cafs.length ? setCafNum(0) : setCafNum(value);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    getFilters()
+      .then((value) => {
+        setCategories(value);
+        setFilterChosen(value[0]);
+        setLoading(false);
+      })
+      .catch((error) => console.log(error));
+  }, []);
 
   return (
     <View
-      style={{ backgroundColor: "white", flex: 1, justifyContent: "center" }}
+      style={{
+        flex: 1,
+        backgroundColor: colors.white,
+      }}
     >
-      <Suspense>
-        <Dialog
-          visible={dialog}
-          title="Leave A Review!"
-          titleStyle={styles.dialog}
-          onTouchOutside={() => {
-            setDialog(false);
+      <SafeAreaView style={{ flex: 1 }}>
+        {/* Header//////////////////////////// */}
+        <View
+          style={{
+            height: 80,
+            flexDirection: "row",
+            alignItems: "center",
+            marginHorizontal: "5%",
           }}
-          onRequestClose={() => {}}
-          contentInsetAdjustmentBehavior={undefined}
-          animationType="fade"
-          dialogStyle={{ borderRadius: 10 }}
         >
-          <View>
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "row",
-                marginBottom: 30,
-              }}
-            >
-              <TouchableWithoutFeedback
-                onPress={() => setRating(0)}
-                style={{ flex: 0.5 }}
-              >
-                <Text style={[styles.dialog, { fontSize: 16 }]}>0</Text>
-              </TouchableWithoutFeedback>
-              <StarRating
-                starSize={40}
-                color={colors.yellow}
-                rating={rating}
-                onChange={(value) => {
-                  setRating(value);
-                }}
-              />
-              <TouchableWithoutFeedback
-                onPress={() => setRating(5)}
-                style={{ flex: 0.5 }}
-              >
-                <Text style={[styles.dialog, { fontSize: 16 }]}>5</Text>
-              </TouchableWithoutFeedback>
-            </View>
-            <CustomButton
-              onPress={() => {
-                console.log(rating);
-              }}
-              borderRadius={15}
-              marginHorizontal="6%"
-              fontSize={16}
-              height={50}
-            >
-              Submit
-            </CustomButton>
+          <View
+            style={{
+              flex: 0.97,
+              flexDirection: "column",
+              paddingRight: 5,
+            }}
+          >
+            <Text style={styles.title} numberOfLines={1}>
+              Hi, Shriraam
+            </Text>
+            <Text style={styles.subtitle}>Check Out What's Cooking</Text>
           </View>
-        </Dialog>
-        <SafeAreaView style={{ flex: 1, zIndex: 0 }}>
-          <CafAppBar />
-          <ScrollView>
-            <Image
-              source={require("../../assets/images/grilled_cheese.png")}
-              style={{
-                //flex: 0.4,
-                alignSelf: "center",
-                borderRadius: 20,
-                width: dimensions.width * 0.9,
-                height: dimensions.width * 0.9,
+          <FontAwesome5
+            color={colors.black}
+            name="user-circle"
+            size={40}
+            onPress={() => router.push("(tabs)/onboarding")}
+          />
+          <View style={{ flex: 0.03 }}></View>
+        </View>
+        {/* Header//////////////////////////// */}
+        {/* First DIPLAY ROWWWW /////////////////////////////// */}
+        <View
+          style={{
+            width: dimensions.width,
+            flexDirection: "row",
+            marginLeft: "5%",
+            marginTop: "6%",
+            alignItems: "center",
+          }}
+        >
+          <View
+            style={{
+              width: dimensions.width * 0.64,
+              flexDirection: "row",
+            }}
+          >
+            <Ionicons
+              name="shuffle"
+              size={33}
+              color={colors.gray}
+              onPress={async () => {
+                let newNum = (cafNum + 1) % cafs.length;
+                setCafNum(newNum);
+                await setSelectedCaf(newNum);
               }}
-            ></Image>
-
-            <View
-              style={{
-                marginTop: 20,
-                marginHorizontal: "5%",
-                flex: 1,
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  marginHorizontal: "2%",
+            />
+            <Text style={styles.cafTitle}>{cafs[cafNum]}</Text>
+          </View>
+          <TouchableOpacity onPress={async () => {}} style={{ flex: 1 }}>
+            <Text style={[styles.subtitle, { fontSize: 15 }]}>
+              See Cafeteria
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <ScrollView
+          horizontal={true}
+          style={{
+            maxHeight: dimensions.width * 0.4,
+            width: dimensions.width,
+            marginTop: 15,
+            flexDirection: "row",
+            marginLeft: "3%",
+          }}
+        >
+          {testFoods.map((item) => {
+            return (
+              <FoodBox
+                onPress={() => {
+                  router.push("(tabs)/food_description");
                 }}
-              >
-                <View
-                  style={{
-                    flex: 0.79,
-                    flexWrap: "wrap",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text style={styles.title} numberOfLines={2}>
-                    Mac and Cheese
-                  </Text>
-                </View>
-                <MaterialCommunityIcons
-                  color={checked ? colors.wpurple : colors.gray}
-                  name={"heart-circle"}
-                  size={50}
-                  onPress={() => {
-                    setChecked(!checked);
-                  }}
-                  style={{
-                    position: "absolute",
-                    right: 0,
-                    alignSelf: "center",
-                    flex: 0.21,
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  marginHorizontal: "2%",
-                  marginVertical: 10,
+                key={item}
+                name={item[0]}
+                rating={item[1]}
+                fontSize={10.5}
+                ratingFont={9}
+                starSize={10}
+                width={dimensions.width * 0.26}
+                minWidth={100}
+                marginLeft="1%"
+                height={dimensions.width * 0.105}
+                marginTop="0%"
+              />
+            );
+          })}
+          <View style={{ width: dimensions.width * 0.18 }}></View>
+        </ScrollView>
+        {/* First DIPLAY ROWWWW /////////////////////////////// */}
+        <View
+          style={{
+            width: dimensions.width,
+            flexDirection: "row",
+            alignItems: "center",
+            marginHorizontal: "5%",
+            marginTop: "6%",
+          }}
+        >
+          <Text style={styles.cafTitle}>All Residences</Text>
+          <TouchableOpacity
+            style={{ marginLeft: dimensions.width * 0.13 }}
+            onPress={async () => {
+              let newFilters = Array.from(categories);
+              categories.forEach((item, index) => {
+                let newIndex = (index + 1) % categories.length;
+                newFilters[newIndex] = item;
+              });
+              setCategories(newFilters);
+              await setFilters(newFilters);
+            }}
+          >
+            <Text style={[styles.subtitle, { fontSize: 16 }]}>
+              Shuffle Titles
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            marginTop: 8,
+            marginHorizontal: "5%",
+          }}
+        >
+          {categories.map((item) => {
+            return (
+              <CustomButton
+                key={item}
+                onPress={() => {
+                  setFilterChosen(item);
                 }}
+                marginVertical={10}
+                marginHorizontal={7}
+                buttonColor={item == filterChosen ? colors.wpurple : "#B09DC7"}
+                height={40}
+                fontSize={14}
+                borderRadius={60}
+                textColor={colors.white}
+                fontFamily="inter"
+                fontWeight="medium"
+                lSpacing={undefined}
               >
-                <Ionicons
-                  color={colors.yellow}
-                  name="star"
-                  size={20}
-                  onPress={() => {}}
-                />
-                <Text style={styles.rating}>4.5</Text>
-                <TouchableOpacity onPress={() => setDialog(true)}>
-                  <Text
-                    style={[
-                      styles.rating,
-                      {
-                        fontStyle: "italic",
-                        textDecorationLine: "underline",
-                      },
-                    ]}
-                  >
-                    Leave A Review
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <Collapsible title="Food Restrictions">
-                <View style={{ marginVertical: 3, width: "100%" }}>
-                  <Text style={[styles.allergy, { textAlign: "left" }]}>
-                    This dish contains the following:
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    paddingBottom: 40,
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  {allergies.map((item) => {
-                    return (
-                      <View
-                        key={item}
-                        style={{
-                          flexDirection: "column",
-                          justifyContent: "center",
-                          width: dimensions.width * 0.25,
-                          height: dimensions.width * 0.25,
-                          marginRight: 12,
-                          shadowColor: colors.gray,
-                          shadowOffset: { height: 1, width: 0.6 },
-                          shadowOpacity: 0.8,
-                          shadowRadius: 0.2,
-                          backgroundColor: colors.verylightgray,
-                          marginTop: 12,
-                          borderRadius: 7,
-                        }}
-                      >
-                        <MaterialCommunityIcons
-                          color={colors.wpurple}
-                          name={
-                            item == "Meat"
-                              ? "food-drumstick"
-                              : item == "Gluten"
-                              ? "barley"
-                              : item == "Pork"
-                              ? "pig-variant"
-                              : item == "Dairy"
-                              ? "cheese"
-                              : item == "Seafood"
-                              ? "fish"
-                              : "peanut"
-                          }
-                          size={40}
-                          style={{ alignSelf: "center" }}
-                        />
-                        <Text
-                          style={[styles.allergy, { fontWeight: "semibold" }]}
-                        >
-                          {item}
-                        </Text>
-                      </View>
-                    );
-                  })}
-                </View>
-              </Collapsible>
-            </View>
-          </ScrollView>
-        </SafeAreaView>
-      </Suspense>
+                {item}
+              </CustomButton>
+            );
+          })}
+        </View>
+        <ScrollView
+          horizontal={true}
+          style={{ flex: 1, paddingVertical: 15, marginLeft: "5%" }}
+        >
+          {cafBoxes.map((item) => {
+            return (
+              <MainCafBox
+                key={item.cafName}
+                liked={item.liked}
+                rating={item.rating}
+                cafName={item.cafName}
+              />
+            );
+          })}
+          <View style={{ width: dimensions.width * 0.16 }}></View>
+        </ScrollView>
+      </SafeAreaView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  dialog: {
-    fontFamily: "inter",
-    fontSize: 24,
-    fontWeight: "500",
-    textAlign: "center",
-    marginHorizontal: 5,
-  },
-  allergy: {
-    marginTop: 6,
-    fontSize: 14,
-    fontFamily: "inter",
-    textAlign: "center",
-  },
   title: {
-    color: "black",
+    color: colors.black,
     fontFamily: "inter",
-    fontWeight: "medium",
-    fontSize: 31,
-    letterSpacing: -0.3,
+    fontSize: 32,
+    fontWeight: "500",
+    textAlign: "left",
+    letterSpacing: -0.2,
   },
-  rating: {
-    color: colors.gray,
-    fontSize: 18,
-    marginLeft: 6,
+  cafTitle: {
+    color: colors.black,
+    fontFamily: "inter",
+    fontSize: 26,
+    fontWeight: "500",
+    textAlign: "left",
+    marginLeft: 10,
+  },
+  subtitle: {
+    color: colors.darkgray,
+    fontFamily: "inter",
+    fontSize: 20,
+    fontWeight: "medium",
+    marginTop: 5,
+    textAlign: "left",
   },
 });
