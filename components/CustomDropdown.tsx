@@ -4,17 +4,16 @@ import { useSelector, useDispatch } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { MultiSelect } from "react-native-element-dropdown";
-import { RootState } from "../state/store"; // adjust the import to your actual path
-import { add, rid } from "../state/residence/resSlice"; // adjust the import to your actual path
+import { RootState } from "../state/store";
+import { add, rid } from "../state/residence/resSlice";
 import Colors from "@/constants/Colors";
-// adjust the import to your actual path
 
 interface ItemType {
   label: string;
-  value: string; // changed to string to match data
+  value: string;
 }
 
-const MultiSelectComponent = () => {
+const MultiSelectComponent = (props: any) => {
   const resList = useSelector((state: RootState) => state.resList);
   const dispatch = useDispatch();
 
@@ -61,6 +60,7 @@ const MultiSelectComponent = () => {
         placeholder="Most visited cafeterias..."
         search={false}
         onChange={(item) => {
+          props.setThirdError(false);
           resList.resList.includes(item[0])
             ? dispatch(rid(item[0]))
             : dispatch(add(item));

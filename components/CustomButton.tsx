@@ -8,6 +8,7 @@ type ButtonProps = {
   buttonColor?: string;
   onPress: any;
   marginHorizontal?: any;
+  marginTop?: any;
   height?: number;
   textColor?: string;
   fontSize?: number;
@@ -37,6 +38,7 @@ export default function CustomButton(props: ButtonProps) {
         borderWidth: props.borderColor ? 1 : undefined,
         borderRadius: props.borderRadius,
         marginVertical: props.marginVertical,
+        marginTop: props.marginTop,
       }}
     >
       <Text

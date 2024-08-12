@@ -1,14 +1,27 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import React, { useState, createContext, useEffect } from "react";
 import CustomButton from "@/components/CustomButton";
 import colors from "../../constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TextField from "@/components/TextField";
 import { Checkbox } from "react-native-paper";
+import { Dialog } from "react-native-simple-dialogs";
 import CustomDropdown from "@/components/CustomDropdown";
 import { router } from "expo-router";
+import { useSelector } from "react-redux";
+import { RootState } from "@/state/store";
+import { Octicons } from "@expo/vector-icons";
 
 export default function AccountInfo() {
+  const resList = useSelector((state: RootState) => state.resList);
+  const dimensions = useWindowDimensions();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [firstError, setFirstError] = useState(false);
+  const [secondError, setSecondError] = useState(false);
+  const [thirdError, setThirdError] = useState(false);
+  const [dialog, setDialog] = useState(false);
+
   const [checked, setChecked] = useState(false);
   const [map, setMap] = useState(
     new Map<string, boolean>([
@@ -36,6 +49,47 @@ export default function AccountInfo() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
+      <Dialog
+        visible={dialog}
+        title="All Set!"
+        titleStyle={styles.dialog}
+        onRequestClose={() => {}}
+        contentInsetAdjustmentBehavior={undefined}
+        animationType="fade"
+        dialogStyle={{
+          borderRadius: 20,
+          width: dimensions.width * 0.7,
+          alignSelf: "center",
+        }}
+      >
+        <View style={{ alignItems: "center" }}>
+          <Octicons name="check-circle-fill" size={70} color={"green"} />
+          <View
+            style={{
+              width: "100%",
+              marginTop: 20,
+            }}
+          >
+            <Text style={styles.subdialog} numberOfLines={2}>
+              Ready To{"\n"}Start Exploring
+            </Text>
+          </View>
+        </View>
+        <CustomButton
+          onPress={() => {
+            setDialog(false);
+            router.push("(tabs)/main_screen");
+          }}
+          borderRadius={15}
+          marginHorizontal={0}
+          fontSize={16}
+          height={50}
+          buttonColor={colors.wpurple}
+          marginTop={25}
+        >
+          Get Started
+        </CustomButton>
+      </Dialog>
       <SafeAreaView style={{ flex: 1 }}>
         <View style={{ flex: 0.1 }}>
           <Text style={styles.title}>Account Setup</Text>
@@ -44,16 +98,45 @@ export default function AccountInfo() {
           <TextField
             placeText="First Name"
             marginTop="7%"
-            onChangeText={() => {}}
-          ></TextField>
-          <TextField
-            placeText="Last Name"
-            marginTop={30}
-            onChangeText={() => {}}
+            onChangeText={(text: React.SetStateAction<string>) => {
+              setFirstName(text);
+            }}
           ></TextField>
           <View
             style={{
-              marginTop: 30,
+              height: 30,
+              width: "80%",
+              justifyContent: "center",
+              alignSelf: "center",
+              marginLeft: 30,
+            }}
+          >
+            {firstError && (
+              <Text style={styles.error}>Please Enter First Name</Text>
+            )}
+          </View>
+          <TextField
+            placeText="Last Name"
+            marginTop={0}
+            onChangeText={(text: React.SetStateAction<string>) => {
+              setLastName(text);
+            }}
+          ></TextField>
+          <View
+            style={{
+              height: 30,
+              width: "80%",
+              justifyContent: "center",
+              alignSelf: "center",
+              marginLeft: 30,
+            }}
+          >
+            {secondError && (
+              <Text style={styles.error}>Please Enter Last Name</Text>
+            )}
+          </View>
+          <View
+            style={{
               flexDirection: "row",
             }}
           >
@@ -109,12 +192,30 @@ export default function AccountInfo() {
               );
             })}
           </View>
-          <CustomDropdown></CustomDropdown>
+          <CustomDropdown setThirdError={setThirdError}></CustomDropdown>
+          <View
+            style={{
+              height: 25,
+              width: "80%",
+              alignSelf: "center",
+            }}
+          >
+            {thirdError && (
+              <Text style={styles.error}>
+                Please Select At Least One Cafeteria
+              </Text>
+            )}
+          </View>
         </View>
         <View style={{ flex: 0.12 }}>
           <CustomButton
             onPress={() => {
-              router.push("/(tabs)/cafeteria");
+              firstName ? setFirstError(false) : setFirstError(true);
+              lastName ? setSecondError(false) : setSecondError(true);
+              if (resList.resList.length == 0) setThirdError(true);
+
+              if (firstName && lastName && resList.resList.length != 0)
+                setDialog(true);
             }}
             borderRadius={16}
             buttonColor={colors.wpurple}
@@ -128,6 +229,12 @@ export default function AccountInfo() {
 }
 
 const styles = StyleSheet.create({
+  dialog: {
+    fontFamily: "inter",
+    fontSize: 30,
+    fontWeight: "500",
+    textAlign: "center",
+  },
   title: {
     color: "black",
     fontFamily: "inter",
@@ -136,6 +243,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     marginLeft: "12%",
+  },
+  subdialog: {
+    alignSelf: "center",
+    textAlign: "center",
+    fontSize: 20,
+    color: colors.darkgray,
+    fontFamily: "inter",
+    fontStyle: "italic",
   },
   subtitle: {
     color: "black",
@@ -153,5 +268,9 @@ const styles = StyleSheet.create({
     marginLeft: "12%",
     marginRight: 10,
     fontStyle: "italic",
+  },
+  error: {
+    color: "red",
+    fontSize: 13,
   },
 });
