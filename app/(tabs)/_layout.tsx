@@ -8,7 +8,7 @@ export default function TabLayout() {
 
   return (
     <Stack>
-      <Stack.Screen name="upload" options={{ headerShown: false }} />
+      <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="profile" options={{ headerShown: false }} />
       <Stack.Screen name="main_screen" options={{ headerShown: false }} />
       <Stack.Screen name="food_description" options={{ headerShown: false }} />

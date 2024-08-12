@@ -25,7 +25,11 @@ export default function FoodBox(props: any) {
         }}
       >
         <Image
-          source={require("../assets/images/grilled_cheese.png")}
+          source={
+            props.source
+              ? props.source
+              : require("../assets/images/image_not_found.png")
+          }
           style={{
             width: props.width,
             height: props.width,
