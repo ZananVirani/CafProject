@@ -9,7 +9,13 @@ import React from "react";
 import CustomButton from "@/components/CustomButton";
 import colors from "../../constants/Colors";
 import { router } from "expo-router";
-import { AntDesign } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Feather,
+  MaterialCommunityIcons,
+  Ionicons,
+} from "@expo/vector-icons";
+import ProfileButton from "@/components/ProfileButton";
 
 export default function ProfileScreen() {
   const dimensions = useWindowDimensions();
@@ -41,23 +47,45 @@ export default function ProfileScreen() {
             <Text style={styles.title}>User Settings</Text>
           </View>
         </View>
-        <View style={{ flex: 0.78 }}>
+        <View style={{ flex: 0.78, marginTop: 25 }}>
           <View
             style={{
-              marginTop: 30,
-              flexDirection: "row",
+              alignItems: "center",
+              flex: 1,
             }}
           >
-            <Text style={styles.subtitle}>Food Restrictions?</Text>
+            <ProfileButton text={"Preferences"}>
+              <MaterialCommunityIcons
+                name="star-circle"
+                size={45}
+                color={colors.wpurple}
+              />
+            </ProfileButton>
+            <ProfileButton text={"Account Information"}>
+              <Feather name="user" size={45} color={colors.wpurple} />
+            </ProfileButton>
+            <ProfileButton text={"Notifications"}>
+              <MaterialCommunityIcons
+                name="bell-ring"
+                size={45}
+                color={colors.wpurple}
+              />
+            </ProfileButton>
+            <ProfileButton text={"Location"}>
+              <Ionicons
+                name="location-sharp"
+                size={45}
+                color={colors.wpurple}
+              />
+            </ProfileButton>
+            <ProfileButton text={"Learn More"}>
+              <MaterialCommunityIcons
+                name="information"
+                size={45}
+                color={colors.wpurple}
+              />
+            </ProfileButton>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              marginHorizontal: "7%",
-              flexWrap: "wrap",
-              justifyContent: "center",
-            }}
-          ></View>
         </View>
         <View style={{ flex: 0.12 }}>
           <CustomButton
@@ -65,9 +93,11 @@ export default function ProfileScreen() {
               router.push("/(tabs)/cafeteria");
             }}
             borderRadius={16}
-            buttonColor={colors.wpurple}
+            buttonColor={"#FFF2F3"}
+            textColor="red"
+            fontWeight={"regular"}
           >
-            Get Started
+            Logout
           </CustomButton>
         </View>
       </SafeAreaView>
@@ -84,23 +114,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     flex: 1,
     marginRight: 15,
-  },
-
-  subtitle: {
-    color: "black",
-    fontFamily: "inter",
-    fontWeight: "regular",
-    fontSize: 24,
-    marginLeft: "12%",
-    marginRight: 10,
-  },
-  text: {
-    color: "black",
-    fontFamily: "inter",
-    fontWeight: "regular",
-    fontSize: 16,
-    marginLeft: "12%",
-    marginRight: 10,
-    fontStyle: "italic",
   },
 });
