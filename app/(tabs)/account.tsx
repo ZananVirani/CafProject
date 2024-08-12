@@ -41,8 +41,16 @@ export default function AccountInfo() {
           <Text style={styles.title}>Account Setup</Text>
         </View>
         <View style={{ flex: 0.78 }}>
-          <TextField placeText="First Name" marginTop="7%"></TextField>
-          <TextField placeText="Last Name" marginTop={30}></TextField>
+          <TextField
+            placeText="First Name"
+            marginTop="7%"
+            onChangeText={() => {}}
+          ></TextField>
+          <TextField
+            placeText="Last Name"
+            marginTop={30}
+            onChangeText={() => {}}
+          ></TextField>
           <View
             style={{
               marginTop: 30,

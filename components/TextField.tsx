@@ -7,6 +7,7 @@ export default function TextField(props: {
   placeText: string;
   style?: object;
   marginTop?: any;
+  onChangeText: any;
 }) {
   return (
     <View>
@@ -14,7 +15,7 @@ export default function TextField(props: {
         mode="outlined"
         placeholder={props.placeText}
         placeholderTextColor={colors.gray}
-        onChangeText={() => {}}
+        onChangeText={props.onChangeText}
         activeOutlineColor={colors.wpurple}
         outlineColor={colors.verylightgray}
         textColor="black"
