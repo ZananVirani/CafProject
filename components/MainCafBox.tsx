@@ -26,7 +26,7 @@ export default function MainCafBox(props: any) {
           borderColor: colors.wpurple,
         }}
       />
-      <MaterialCommunityIcons
+      {/* <MaterialCommunityIcons
         color={props.liked ? colors.wpurple : colors.gray}
         name={"heart-circle"}
         size={50}
@@ -36,7 +36,7 @@ export default function MainCafBox(props: any) {
           right: 20,
           top: 20,
         }}
-      />
+      /> */}
       <View
         style={{
           position: "absolute",

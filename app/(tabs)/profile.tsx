@@ -16,6 +16,8 @@ import {
   Ionicons,
 } from "@expo/vector-icons";
 import ProfileButton from "@/components/ProfileButton";
+import * as Location from "expo-location";
+import * as Linking from "expo-linking";
 
 export default function ProfileScreen() {
   const dimensions = useWindowDimensions();
@@ -42,7 +44,7 @@ export default function ProfileScreen() {
               color={colors.black}
               name="leftcircleo"
               size={30}
-              onPress={() => router.back()}
+              onPress={() => router.push("(tabs)/main_screen")}
             />
             <Text style={styles.title}>User Settings</Text>
           </View>
@@ -54,31 +56,49 @@ export default function ProfileScreen() {
               flex: 1,
             }}
           >
-            <ProfileButton text={"Preferences"}>
+            <ProfileButton text={"Account Information"}>
+              <Feather name="user" size={45} color={colors.wpurple} />
+            </ProfileButton>
+            <ProfileButton text={"Favourite Foods"}>
               <MaterialCommunityIcons
                 name="star-circle"
                 size={45}
                 color={colors.wpurple}
               />
             </ProfileButton>
-            <ProfileButton text={"Account Information"}>
-              <Feather name="user" size={45} color={colors.wpurple} />
-            </ProfileButton>
-            <ProfileButton text={"Notifications"}>
+            {/* <ProfileButton text={"Notifications"}>
               <MaterialCommunityIcons
                 name="bell-ring"
                 size={45}
                 color={colors.wpurple}
               />
-            </ProfileButton>
-            <ProfileButton text={"Location"}>
+            </ProfileButton> */}
+            <ProfileButton
+              text={"Location"}
+              onPress={async () => {
+                let { status } =
+                  await Location.requestForegroundPermissionsAsync();
+                console.log(status);
+
+                if (status == "granted") {
+                  console.log("YESSS");
+                } else {
+                  console.log("NOOOOO");
+                }
+              }}
+            >
               <Ionicons
                 name="location-sharp"
                 size={45}
                 color={colors.wpurple}
               />
             </ProfileButton>
-            <ProfileButton text={"Learn More"}>
+            <ProfileButton
+              text={"Learn More"}
+              onPress={async () => {
+                await Linking.openURL("https://housing.uwo.ca/dining");
+              }}
+            >
               <MaterialCommunityIcons
                 name="information"
                 size={45}

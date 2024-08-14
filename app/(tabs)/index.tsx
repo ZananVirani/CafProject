@@ -1,203 +1,96 @@
 import {
-  SafeAreaView,
+  Image,
   StyleSheet,
   Text,
   useWindowDimensions,
   View,
-  Image,
-  TouchableOpacity,
-  ScrollView,
 } from "react-native";
-import React, { useState } from "react";
-import colors from "@/constants/Colors";
-import { AntDesign } from "@expo/vector-icons";
-import { router } from "expo-router";
+import React, { useState, createContext, useEffect } from "react";
 import CustomButton from "@/components/CustomButton";
+import colors from "../../constants/Colors";
+import { SafeAreaView } from "react-native-safe-area-context";
 import TextField from "@/components/TextField";
-import FoodBox from "@/components/FoodBox";
+import { Checkbox } from "react-native-paper";
+import { Dialog } from "react-native-simple-dialogs";
+import CustomDropdown from "@/components/CustomDropdown";
+import { router } from "expo-router";
+import { useSelector } from "react-redux";
+import { RootState } from "@/state/store";
+import { Octicons } from "@expo/vector-icons";
 
-export default function UploadScreen() {
+export default function Login() {
   const dimensions = useWindowDimensions();
-  const [filterChosen, setFilterChosen] = useState("");
-  const categories = ["Hot Food", "Interactive"];
-  const [map, setMap] = useState(
-    new Map<string, boolean>([
-      ["Meat", false],
-      ["Gluten", false],
-      ["Pork", false],
-      ["Dairy", false],
-      ["Seafood", false],
-      ["Nuts", false],
-    ])
-  );
-  const allergyList = ["Meat", "Gluten", "Pork", "Dairy", "Seafood", "Nuts"];
-  const [foodName, setFoodName] = useState("");
+  const [ID, setID] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.white }}>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       <SafeAreaView style={{ flex: 1 }}>
-        <View
-          style={{
-            height: 80,
-            flexDirection: "row",
-            alignItems: "center",
-            marginHorizontal: "7%",
-          }}
-        >
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              alignItems: "center",
-              width: dimensions.width,
-            }}
-          >
-            <AntDesign
-              color={colors.black}
-              name="leftcircleo"
-              size={30}
-              onPress={() => router.back()}
-            />
-            <Text style={styles.title}>Upload Item</Text>
-          </View>
+        <View style={{ flex: 0.1, marginTop: 20 }}>
+          <Text style={styles.title}>Western Login</Text>
         </View>
-        {/*HEADERRRRRRRRRRRRRRRRRRRRRRR*/}
-        <View style={{ marginTop: 5, alignItems: "center" }}>
+        <View style={{ flex: 0.32, marginTop: dimensions.height * 0.05 }}>
+          <TextField
+            placeText="Western ID"
+            marginTop="7%"
+            onChangeText={(text: React.SetStateAction<string>) => {
+              setID(text);
+            }}
+          ></TextField>
           <View
             style={{
-              alignItems: "center",
+              height: 30,
+              width: "80%",
               justifyContent: "center",
+              alignSelf: "center",
+              marginLeft: 30,
             }}
-          >
-            <FoodBox
-              onPress={() => {}}
-              name={foodName}
-              rating={0}
-              fontSize={12}
-              width={dimensions.width * 0.29}
-              minWidth={113.1}
-            />
-          </View>
-        </View>
-        <TouchableOpacity style={{ marginTop: 15, alignItems: "center" }}>
-          <Text style={[styles.subtitle, { color: "blue" }]}>Change Image</Text>
-        </TouchableOpacity>
-
-        {/*NEXTTTTTTTTTTTTT*/}
-        <TextField
-          placeText="Item Name"
-          marginTop="7%"
-          onChangeText={(text: React.SetStateAction<string>) => {
-            setFoodName(text);
-          }}
-        ></TextField>
-        <View
-          style={{
-            marginTop: 30,
-          }}
-        >
+          ></View>
+          <TextField
+            placeText="Last Name"
+            marginTop={0}
+            onChangeText={(text: React.SetStateAction<string>) => {
+              setPassword(text);
+            }}
+          ></TextField>
           <View
             style={{
-              width: dimensions.width,
-              alignItems: "center",
-            }}
-          >
-            <Text style={styles.subtitle}>Hot Food or Interactive?</Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
+              height: 30,
+              width: "80%",
               justifyContent: "center",
+              alignSelf: "center",
+              marginLeft: 30,
             }}
           >
-            {categories.map((item) => {
-              return (
-                <CustomButton
-                  key={item}
-                  onPress={() => {
-                    setFilterChosen(item);
-                  }}
-                  marginVertical={10}
-                  marginHorizontal={2.8}
-                  buttonColor={
-                    item == filterChosen ? colors.wpurple : colors.white
-                  }
-                  height={40}
-                  fontSize={13}
-                  borderRadius={60}
-                  textColor={
-                    item == filterChosen ? colors.white : colors.wpurple
-                  }
-                  borderColor={colors.wpurple}
-                  fontFamily="inter"
-                  fontWeight="medium"
-                  lSpacing={undefined}
-                >
-                  {item}
-                </CustomButton>
-              );
-            })}
+            {error && (
+              <Text style={styles.error}>
+                Your ID and Password Do Not Match
+              </Text>
+            )}
           </View>
         </View>
-        {/*NEXTTTTTTTTTTTTT*/}
-
         <View
           style={{
-            width: dimensions.width,
+            flex: 0.46,
             alignItems: "center",
-            marginVertical: 10,
+            marginTop: 20,
           }}
         >
-          <Text style={styles.subtitle}>Restrictions:</Text>
+          <Image
+            source={require("../../assets/images/western-brand.png")}
+            style={{ height: "74%", objectFit: "contain" }}
+          ></Image>
         </View>
-
-        {/*NEXTTTTTTTTTTTTT*/}
-        <View
-          style={{
-            flexDirection: "row",
-            marginHorizontal: "7%",
-            flexWrap: "wrap",
-            justifyContent: "center",
+        <CustomButton
+          onPress={() => {
+            ID && password ? router.push("(tabs)/account") : setError(true);
           }}
+          borderRadius={16}
+          buttonColor={colors.wpurple}
         >
-          {allergyList.map((item) => {
-            return (
-              <CustomButton
-                key={item}
-                onPress={() => {
-                  let newValue = !map.get(item);
-                  setMap(new Map<string, boolean>([...map, [item, newValue]]));
-                }}
-                marginVertical={5}
-                marginHorizontal={2.8}
-                buttonColor={map.get(item) ? colors.wpurple : colors.white}
-                height={40}
-                fontSize={13}
-                width={105}
-                borderRadius={60}
-                textColor={map.get(item) ? colors.white : colors.wpurple}
-                borderColor={colors.wpurple}
-                fontFamily="inter"
-                fontWeight="medium"
-                lSpacing={undefined}
-              >
-                {item}
-              </CustomButton>
-            );
-          })}
-        </View>
-        <View style={{ flex: 1, justifyContent: "center" }}>
-          <CustomButton
-            onPress={() => {}}
-            borderRadius={16}
-            buttonColor={colors.wpurple}
-            fontSize={20}
-            height={60}
-          >
-            Set Food Item
-          </CustomButton>
-        </View>
+          Continue
+        </CustomButton>
       </SafeAreaView>
     </View>
   );
@@ -205,18 +98,17 @@ export default function UploadScreen() {
 
 const styles = StyleSheet.create({
   title: {
-    color: colors.black,
+    color: "black",
     fontFamily: "inter",
-    fontSize: 33,
     fontWeight: "500",
-    textAlign: "center",
-    flex: 1,
-    marginRight: 15,
+    fontSize: 36,
+    position: "absolute",
+    bottom: 0,
+    marginLeft: "12%",
   },
-  subtitle: {
-    color: colors.black,
-    fontFamily: "inter",
-    fontSize: 20,
-    fontWeight: "semibold",
+
+  error: {
+    color: "red",
+    fontSize: 13,
   },
 });

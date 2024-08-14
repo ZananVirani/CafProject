@@ -47,7 +47,7 @@ export async function setFilters(value:string[]) : Promise<void>{
 export async function getFilters() : Promise<string[]> {
     try {
         const hello = await AsyncStorage.getItem('filters');
-        return hello ? JSON.parse(hello) : ["Favourites", "Nearby", "Rating"];
+        return hello ? JSON.parse(hello) : ["Fav Foods", "Nearby", "Rating"];
     } catch (error) {
         console.log(error);
         return [];
