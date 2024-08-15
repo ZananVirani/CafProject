@@ -43,7 +43,7 @@ export default function Login() {
             }}
           ></View>
           <TextField
-            placeText="Last Name"
+            placeText="Password"
             marginTop={0}
             onChangeText={(text: React.SetStateAction<string>) => {
               setPassword(text);
