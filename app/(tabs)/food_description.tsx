@@ -19,7 +19,7 @@ import StarRating from "react-native-star-rating-widget";
 import CustomButton from "@/components/CustomButton";
 import axios from "axios";
 
-export default function food_description() {
+export default function FoodDescription() {
   const [apiInfo, setApiInfo] = useState({
     name: "",
   });
@@ -140,7 +140,7 @@ export default function food_description() {
                   }}
                 >
                   <Text style={styles.title} numberOfLines={2}>
-                    {apiInfo.name}
+                    {/*apiInfo.name*/}Butter Chicken
                   </Text>
                 </View>
                 <MaterialCommunityIcons

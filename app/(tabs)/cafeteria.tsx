@@ -14,7 +14,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Toggle from "@imcarlosguerrero/react-native-switch-toggle";
 import { router } from "expo-router";
 
-export default function index() {
+export default function Cafeteria() {
   const dimensions = useWindowDimensions();
   const testFoods = [
     ["Grilled Cheese Sandwich", 4.3],

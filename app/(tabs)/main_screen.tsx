@@ -22,7 +22,7 @@ import {
 } from "@/utils/AsyncStorage";
 import MainCafBox from "@/components/MainCafBox";
 
-export default function index() {
+export default function MainScreen() {
   const dimensions = useWindowDimensions();
   const testFoods = [
     ["Grilled Cheese Sandwich", 4.3],
