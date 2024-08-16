@@ -1,344 +1,342 @@
 import {
+  SafeAreaView,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
   Image,
-  useWindowDimensions,
-  ScrollView,
   TouchableOpacity,
-  TouchableWithoutFeedback,
+  ScrollView,
 } from "react-native";
-import React, { Suspense, useEffect, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import CafAppBar from "@/components/CafAppBar";
-import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import React, { useState } from "react";
 import colors from "@/constants/Colors";
-import { Collapsible } from "@/components/Collapsible";
-import { Dialog } from "react-native-simple-dialogs";
-import StarRating from "react-native-star-rating-widget";
+import { AntDesign, EvilIcons, Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
 import CustomButton from "@/components/CustomButton";
+import TextField from "@/components/TextField";
+import FoodBox from "@/components/FoodBox";
+import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
+import { Dialog } from "react-native-simple-dialogs";
+import * as FileSystem from "expo-file-system";
 
-export default function FoodDescription() {
-  const [apiInfo, setApiInfo] = useState({
-    name: "",
-  });
-
-  const [loading, setLoading] = useState(false);
-  // useEffect(() => {
-  //   axios
-  //     .get("https://a5fe-199-7-157-101.ngrok-free.app/foods/Zanan Bread")
-  //     .then((value) => {
-  //       setApiInfo(value.data);
-  //       setLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, []);
-
+export default function UploadScreen() {
   const dimensions = useWindowDimensions();
-  const allergies = ["Meat", "Gluten", "Pork", "Dairy", "Seafood", "Nuts"];
-  const [checked, setChecked] = useState(false);
+  const [filterChosen, setFilterChosen] = useState("");
+  const categories = ["Hot Food", "Interactive"];
+  const [map, setMap] = useState(
+    new Map<string, boolean>([
+      ["Meat", false],
+      ["Gluten", false],
+      ["Pork", false],
+      ["Dairy", false],
+      ["Seafood", false],
+      ["Nuts", false],
+    ])
+  );
+  const [image, setImage] = useState("");
   const [dialog, setDialog] = useState(false);
-  const [rating, setRating] = useState(0);
+  const allergyList = ["Meat", "Gluten", "Pork", "Dairy", "Seafood", "Nuts"];
+  const [foodName, setFoodName] = useState("");
+
+  const uploadImage = async () => {
+    try {
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        setImage(result.assets![0].uri);
+        setDialog(false);
+      }
+    } catch (error) {
+      setDialog(false);
+      alert("Error Uploading Image");
+    }
+  };
+
+  const takeImage = async () => {
+    try {
+      await ImagePicker.requestCameraPermissionsAsync();
+      let result = await ImagePicker.launchCameraAsync({
+        cameraType: ImagePicker.CameraType.back,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        console.log(result);
+        setImage(result.assets![0].uri);
+        setDialog(false);
+      }
+    } catch (error) {
+      setDialog(false);
+      alert("Error Uploading Image");
+    }
+  };
 
   return (
-    <View
-      style={{ backgroundColor: "white", flex: 1, justifyContent: "center" }}
-    >
-      <Dialog
-        visible={dialog}
-        title="Leave A Review!"
-        titleStyle={styles.dialog}
-        onTouchOutside={() => {
-          setDialog(false);
-        }}
-        onRequestClose={() => {}}
-        contentInsetAdjustmentBehavior={undefined}
-        animationType="fade"
-        dialogStyle={{ borderRadius: 10 }}
-      >
-        <View>
+    <View style={{ flex: 1, backgroundColor: colors.white }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <Dialog
+          visible={dialog}
+          title="Choose Photo Upload Method"
+          titleStyle={styles.dialog}
+          onTouchOutside={() => {
+            setDialog(false);
+          }}
+          onRequestClose={() => {}}
+          contentInsetAdjustmentBehavior={undefined}
+          animationType="fade"
+          dialogStyle={{ borderRadius: 10 }}
+        >
           <View
             style={{
-              justifyContent: "center",
               alignItems: "center",
+              justifyContent: "center",
               flexDirection: "row",
               marginBottom: 30,
             }}
           >
-            <TouchableWithoutFeedback
-              onPress={() => setRating(0)}
-              style={{ flex: 0.5 }}
+            <TouchableOpacity
+              onPress={() => uploadImage()}
+              style={{ alignItems: "center" }}
             >
-              <Text style={[styles.dialog, { fontSize: 16 }]}>0</Text>
-            </TouchableWithoutFeedback>
-            <StarRating
-              starSize={40}
-              color={colors.yellow}
-              rating={rating}
-              onChange={(value) => {
-                setRating(value);
+              <EvilIcons name="image" size={70} color={colors.black} />
+              <Text style={{ fontSize: 30 }}>Media</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => takeImage()}
+              style={{
+                alignItems: "center",
+                marginLeft: "20%",
               }}
-            />
-            <TouchableWithoutFeedback
-              onPress={() => setRating(5)}
-              style={{ flex: 0.5 }}
             >
-              <Text style={[styles.dialog, { fontSize: 16 }]}>5</Text>
-            </TouchableWithoutFeedback>
+              <Feather name="camera" size={50} color={colors.black} />
+              <Text style={{ fontSize: 30, marginTop: 3 }}>Camera</Text>
+            </TouchableOpacity>
           </View>
-          <CustomButton
-            onPress={() => {
-              console.log(rating);
+        </Dialog>
+        <View
+          style={{
+            height: 80,
+            flexDirection: "row",
+            alignItems: "center",
+            marginHorizontal: "7%",
+          }}
+        >
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              width: dimensions.width,
             }}
-            borderRadius={15}
-            marginHorizontal="6%"
-            fontSize={16}
-            height={50}
           >
-            Submit
+            <AntDesign
+              color={colors.black}
+              name="leftcircleo"
+              size={30}
+              onPress={() => router.back()}
+            />
+            <Text style={styles.title}>Upload Item</Text>
+          </View>
+        </View>
+        {/*HEADERRRRRRRRRRRRRRRRRRRRRRR*/}
+        <View style={{ marginTop: 5, alignItems: "center" }}>
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <FoodBox
+              source={image}
+              onPress={() => {}}
+              name={foodName}
+              rating={0}
+              fontSize={12}
+              width={dimensions.width * 0.29}
+              minWidth={113.1}
+            />
+          </View>
+        </View>
+        <TouchableOpacity
+          style={{ marginTop: 15, alignItems: "center" }}
+          onPress={() => setDialog(true)}
+        >
+          <Text style={[styles.subtitle, { color: "blue" }]}>Change Image</Text>
+        </TouchableOpacity>
+
+        {/*NEXTTTTTTTTTTTTT*/}
+        <TextField
+          placeText="Item Name"
+          marginTop="7%"
+          onChangeText={(text: React.SetStateAction<string>) => {
+            setFoodName(text);
+          }}
+        ></TextField>
+        <View
+          style={{
+            marginTop: 30,
+          }}
+        >
+          <View
+            style={{
+              width: dimensions.width,
+              alignItems: "center",
+            }}
+          >
+            <Text style={styles.subtitle}>Hot Food or Interactive?</Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {categories.map((item) => {
+              return (
+                <CustomButton
+                  key={item}
+                  onPress={() => {
+                    setFilterChosen(item);
+                  }}
+                  marginVertical={10}
+                  marginHorizontal={2.8}
+                  buttonColor={
+                    item == filterChosen ? colors.wpurple : colors.white
+                  }
+                  height={40}
+                  fontSize={13}
+                  borderRadius={60}
+                  textColor={
+                    item == filterChosen ? colors.white : colors.wpurple
+                  }
+                  borderColor={colors.wpurple}
+                  fontFamily="inter"
+                  fontWeight="medium"
+                  lSpacing={undefined}
+                >
+                  {item}
+                </CustomButton>
+              );
+            })}
+          </View>
+        </View>
+        {/*NEXTTTTTTTTTTTTT*/}
+
+        <View
+          style={{
+            width: dimensions.width,
+            alignItems: "center",
+            marginVertical: 10,
+          }}
+        >
+          <Text style={styles.subtitle}>Restrictions:</Text>
+        </View>
+
+        {/*NEXTTTTTTTTTTTTT*/}
+        <View
+          style={{
+            flexDirection: "row",
+            marginHorizontal: "7%",
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        >
+          {allergyList.map((item) => {
+            return (
+              <CustomButton
+                key={item}
+                onPress={() => {
+                  let newValue = !map.get(item);
+                  setMap(new Map<string, boolean>([...map, [item, newValue]]));
+                }}
+                marginVertical={5}
+                marginHorizontal={2.8}
+                buttonColor={map.get(item) ? colors.wpurple : colors.white}
+                height={40}
+                fontSize={13}
+                width={105}
+                borderRadius={60}
+                textColor={map.get(item) ? colors.white : colors.wpurple}
+                borderColor={colors.wpurple}
+                fontFamily="inter"
+                fontWeight="medium"
+                lSpacing={undefined}
+              >
+                {item}
+              </CustomButton>
+            );
+          })}
+        </View>
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <CustomButton
+            onPress={async () => {
+              try {
+                // const base64 = await FileSystem.readAsStringAsync(image, {
+                //   encoding: FileSystem.EncodingType.Base64,
+                // });
+                // //data:image/jpeg;base64,
+                // let another = await axios.post(
+                //   "https://0933-2607-fea8-335e-e800-456d-8f3b-fca2-b5a8.ngrok-free.app/foods/",
+                //   {
+                //     name: "ArshamFam",
+                //     image: "data:image/jpeg;base64," + base64,
+                //     ingredients: [],
+                //     allergies: ["Shriraam"],
+                //     type: "Hot Food",
+                //   }
+                // );
+                let response = await axios.get(
+                  "https://0933-2607-fea8-335e-e800-456d-8f3b-fca2-b5a8.ngrok-free.app/foods/ArshamFam"
+                );
+                console.log(response.data.name);
+                setImage(response.data.image);
+              } catch (error) {
+                console.log(error);
+              }
+            }}
+            borderRadius={16}
+            buttonColor={colors.wpurple}
+            fontSize={20}
+            height={60}
+          >
+            Set Food Item
           </CustomButton>
         </View>
-      </Dialog>
-      <SafeAreaView style={{ flex: 1, zIndex: 0 }}>
-        <CafAppBar />
-
-        {!loading && (
-          <ScrollView>
-            <Image
-              source={require("../../assets/images/grilled_cheese.png")}
-              style={{
-                //flex: 0.4,
-                alignSelf: "center",
-                borderRadius: 20,
-                width: dimensions.width * 0.9,
-                height: dimensions.width * 0.9,
-              }}
-            ></Image>
-
-            <View
-              style={{
-                marginTop: 20,
-                marginHorizontal: "5%",
-                flex: 1,
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  marginHorizontal: "2%",
-                }}
-              >
-                <View
-                  style={{
-                    flex: 0.79,
-                    flexWrap: "wrap",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text style={styles.title} numberOfLines={2}>
-                    {/*apiInfo.name*/}Butter Chicken
-                  </Text>
-                </View>
-                <MaterialCommunityIcons
-                  color={checked ? colors.wpurple : colors.gray}
-                  name={"heart-circle"}
-                  size={50}
-                  onPress={() => {
-                    setChecked(!checked);
-                  }}
-                  style={{
-                    position: "absolute",
-                    right: 0,
-                    alignSelf: "center",
-                    flex: 0.21,
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  marginHorizontal: "2%",
-                  marginVertical: 10,
-                }}
-              >
-                <Ionicons
-                  color={colors.yellow}
-                  name="star"
-                  size={20}
-                  onPress={() => {}}
-                />
-                <Text style={styles.rating}>4.5</Text>
-                <TouchableOpacity onPress={() => setDialog(true)}>
-                  <Text
-                    style={[
-                      styles.rating,
-                      {
-                        fontStyle: "italic",
-                        textDecorationLine: "underline",
-                      },
-                    ]}
-                  >
-                    Leave A Review
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <Collapsible title="Also Served At     ">
-                <View style={{ marginVertical: 3, width: "100%" }}>
-                  <Text style={[styles.allergy, { textAlign: "left" }]}>
-                    Served at the following cafeterias:
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    paddingBottom: 20,
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  {allergies.map((item) => {
-                    return (
-                      <View
-                        key={item}
-                        style={{
-                          flexDirection: "column",
-                          justifyContent: "center",
-                          width: dimensions.width * 0.25,
-                          height: dimensions.width * 0.25,
-                          marginRight: 12,
-                          shadowColor: colors.gray,
-                          shadowOffset: { height: 1, width: 0.6 },
-                          shadowOpacity: 0.8,
-                          shadowRadius: 0.2,
-                          backgroundColor: colors.verylightgray,
-                          marginTop: 12,
-                          borderRadius: 7,
-                        }}
-                      >
-                        <MaterialCommunityIcons
-                          color={colors.wpurple}
-                          name={
-                            item == "Meat"
-                              ? "food-drumstick"
-                              : item == "Gluten"
-                              ? "barley"
-                              : item == "Pork"
-                              ? "pig-variant"
-                              : item == "Dairy"
-                              ? "cheese"
-                              : item == "Seafood"
-                              ? "fish"
-                              : "peanut"
-                          }
-                          size={40}
-                          style={{ alignSelf: "center" }}
-                        />
-                        <Text
-                          style={[styles.allergy, { fontWeight: "semibold" }]}
-                        >
-                          {item}
-                        </Text>
-                      </View>
-                    );
-                  })}
-                </View>
-              </Collapsible>
-              <View style={{ width: "100%", height: 10 }}></View>
-              <Collapsible title="Food Restrictions">
-                <View style={{ marginVertical: 3, width: "100%" }}>
-                  <Text style={[styles.allergy, { textAlign: "left" }]}>
-                    This dish contains the following:
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    paddingBottom: 40,
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  {allergies.map((item) => {
-                    return (
-                      <View
-                        key={item}
-                        style={{
-                          flexDirection: "column",
-                          justifyContent: "center",
-                          width: dimensions.width * 0.25,
-                          height: dimensions.width * 0.25,
-                          marginRight: 12,
-                          shadowColor: colors.gray,
-                          shadowOffset: { height: 1, width: 0.6 },
-                          shadowOpacity: 0.8,
-                          shadowRadius: 0.2,
-                          backgroundColor: colors.verylightgray,
-                          marginTop: 12,
-                          borderRadius: 7,
-                        }}
-                      >
-                        <MaterialCommunityIcons
-                          color={colors.wpurple}
-                          name={
-                            item == "Meat"
-                              ? "food-drumstick"
-                              : item == "Gluten"
-                              ? "barley"
-                              : item == "Pork"
-                              ? "pig-variant"
-                              : item == "Dairy"
-                              ? "cheese"
-                              : item == "Seafood"
-                              ? "fish"
-                              : "peanut"
-                          }
-                          size={40}
-                          style={{ alignSelf: "center" }}
-                        />
-                        <Text
-                          style={[styles.allergy, { fontWeight: "semibold" }]}
-                        >
-                          {item}
-                        </Text>
-                      </View>
-                    );
-                  })}
-                </View>
-              </Collapsible>
-            </View>
-          </ScrollView>
-        )}
       </SafeAreaView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  title: {
+    color: colors.black,
+    fontFamily: "inter",
+    fontSize: 33,
+    fontWeight: "500",
+    textAlign: "center",
+    flex: 1,
+    marginRight: 15,
+  },
+  subtitle: {
+    color: colors.black,
+    fontFamily: "inter",
+    fontSize: 20,
+    fontWeight: "semibold",
+  },
   dialog: {
     fontFamily: "inter",
     fontSize: 24,
     fontWeight: "500",
     textAlign: "center",
     marginHorizontal: 5,
-  },
-  allergy: {
-    marginTop: 6,
-    fontSize: 14,
-    fontFamily: "inter",
-    textAlign: "center",
-  },
-  title: {
-    color: "black",
-    fontFamily: "inter",
-    fontWeight: "medium",
-    fontSize: 31,
-    letterSpacing: -0.3,
-  },
-  rating: {
-    color: colors.gray,
-    fontSize: 18,
-    marginLeft: 6,
   },
 });

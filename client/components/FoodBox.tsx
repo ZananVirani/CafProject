@@ -26,11 +26,12 @@ export default function FoodBox(props: any) {
       >
         <Image
           source={
-            props.source
-              ? props.source
-              : require("../assets/images/image_not_found.png")
+            props.source == ""
+              ? require("../assets/images/image_not_found.png")
+              : { uri: props.source }
           }
           style={{
+            backgroundColor: colors.gray,
             width: props.width,
             height: props.width,
             minHeight: props.minWidth,
