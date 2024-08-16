@@ -13,10 +13,21 @@ router.post("/", async (req, res) => {
     //Uses destructuring assignment syntax to assign values in body of request to the variables with the same name
     const {name, image, ingredients, allergies, type, cafeterias} = req.body;
 
-    const imageName = name + ".jpg"
+    const imageName = `${name}.jpg`;
+
+    //Converts Base64 to buffer
+    let imageBuffer;
+    if (image.startsWith('data:')) {
+      // Remove the base64 prefix (e.g., 'data:image/jpeg;base64,')
+      const base64Data = image.split(',')[1];
+      imageBuffer = Buffer.from(base64Data, 'base64');
+    } else {
+      return res.status(400).send('Invalid image format');
+    }
+
 
     const imageId = await new Promise((resolve, reject) => {
-      uploadImage(image, imageName, (err, id) => {
+      uploadImage(imageBuffer, imageName, (err, id) => {
         if (err) {
           console.error('Failed to upload image:', err);
           reject(err);  // Reject the promise with the error
@@ -54,7 +65,7 @@ router.get('/:foodName', async (req, res) => {
     
     //Returns image along with food data
     //May not need .populate('image') since It's already returned in food
-    const food = await Food.findOne({name: foodName}).populate('image');
+    const food = await Food.findOne({name: foodName});
 
     if (!food) {
       return res.status(404).json({ message: 'Food item not found' });
@@ -77,11 +88,11 @@ router.get('/:foodName', async (req, res) => {
       const mimeType = 'image/jpeg'; // Adjust MIME type if necessary
 
 
-      console.log(food)
+      //console.log(food)
       // Respond with the food data and image as a Base64-encoded string
       res.json({
         ...food.toObject(),
-        image: `data:${mimeType};base64,${base64Image}`
+         image: `data:${mimeType};charset=utf-8;base64,${base64Image}`
       });
     });
 
