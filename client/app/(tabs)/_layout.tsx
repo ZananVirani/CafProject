@@ -9,6 +9,7 @@ import MainScreen from "./main_screen";
 import Cafeteria from "./cafeteria";
 import FoodDescription from "./food_description";
 import ProfileScreen from "./profile";
+import Favourites from "./favourites";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -21,7 +22,7 @@ export default function TabLayout() {
       <Stack.Screen name="main_screen" options={{ headerShown: false }} />
       <Stack.Screen name="login" options={{ headerShown: false }} />
       <Stack.Screen name="cafeteria" options={{ headerShown: false }} />
-      <Stack.Screen name="presets" options={{ headerShown: false }} />
+      <Stack.Screen name="upload" options={{ headerShown: false }} />
       <Stack.Screen name="onboarding" options={{ headerShown: false }} />
 
       <Stack.Screen name="profile" options={{ headerShown: false }} />

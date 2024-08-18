@@ -1,126 +1,55 @@
 import {
+  Keyboard,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
+  TouchableNativeFeedback,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
   useWindowDimensions,
   View,
-  Image,
-  TouchableOpacity,
-  ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import colors from "@/constants/Colors";
-import { AntDesign, EvilIcons, Feather } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";
 import CustomButton from "@/components/CustomButton";
+import { format } from "date-fns";
 import TextField from "@/components/TextField";
-import FoodBox from "@/components/FoodBox";
-import * as ImagePicker from "expo-image-picker";
-import axios from "axios";
-import { Dialog } from "react-native-simple-dialogs";
-import * as FileSystem from "expo-file-system";
+import PresetButton from "@/components/PresetButton";
 
-export default function UploadScreen() {
+export default function Presets() {
   const dimensions = useWindowDimensions();
-  const [filterChosen, setFilterChosen] = useState("");
-  const categories = ["Hot Food", "Interactive"];
-  const [map, setMap] = useState(
-    new Map<string, boolean>([
-      ["Meat", false],
-      ["Gluten", false],
-      ["Pork", false],
-      ["Dairy", false],
-      ["Seafood", false],
-      ["Nuts", false],
-    ])
-  );
-  const [image, setImage] = useState("");
-  const [dialog, setDialog] = useState(false);
-  const allergyList = ["Meat", "Gluten", "Pork", "Dairy", "Seafood", "Nuts"];
-  const [foodName, setFoodName] = useState("");
+  const [selectMode, setSelectMode] = useState(false);
+  const smth = format(new Date(), "yyyy/MM/dd");
+  const allPresets = [
+    "Hello",
+    "ThanksGiving",
+    "Easter/Hannukah",
+    "Easter/Hannukahuffr",
+    "Christmas",
+    "Monday",
+    "Hello",
+    "ThanksGiving",
+    "Easter/Hannukah",
+    "Easter/Hannukahuffr",
+    "Christmas",
+    "Monday",
+  ];
+  const [presets, setPresets] = useState(allPresets);
+  const [searchText, setSearchText] = useState("");
 
-  const uploadImage = async () => {
-    try {
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1,
-      });
-
-      if (!result.canceled) {
-        setImage(result.assets![0].uri);
-        setDialog(false);
-      }
-    } catch (error) {
-      setDialog(false);
-      alert("Error Uploading Image");
-    }
-  };
-
-  const takeImage = async () => {
-    try {
-      await ImagePicker.requestCameraPermissionsAsync();
-      let result = await ImagePicker.launchCameraAsync({
-        cameraType: ImagePicker.CameraType.back,
-        aspect: [1, 1],
-        quality: 1,
-      });
-
-      if (!result.canceled) {
-        console.log(result);
-        setImage(result.assets![0].uri);
-        setDialog(false);
-      }
-    } catch (error) {
-      setDialog(false);
-      alert("Error Uploading Image");
-    }
-  };
-
+  useEffect(() => {
+    setPresets(
+      allPresets.filter((item) => {
+        return item.toLowerCase().includes(searchText.toLowerCase());
+      })
+    );
+  }, [searchText]);
   return (
-    <View style={{ flex: 1, backgroundColor: colors.white }}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <Dialog
-          visible={dialog}
-          title="Choose Photo Upload Method"
-          titleStyle={styles.dialog}
-          onTouchOutside={() => {
-            setDialog(false);
-          }}
-          onRequestClose={() => {}}
-          contentInsetAdjustmentBehavior={undefined}
-          animationType="fade"
-          dialogStyle={{ borderRadius: 10 }}
-        >
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "row",
-              marginBottom: 30,
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => uploadImage()}
-              style={{ alignItems: "center" }}
-            >
-              <EvilIcons name="image" size={70} color={colors.black} />
-              <Text style={{ fontSize: 30 }}>Media</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => takeImage()}
-              style={{
-                alignItems: "center",
-                marginLeft: "20%",
-              }}
-            >
-              <Feather name="camera" size={50} color={colors.black} />
-              <Text style={{ fontSize: 30, marginTop: 3 }}>Camera</Text>
-            </TouchableOpacity>
-          </View>
-        </Dialog>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <SafeAreaView style={{ backgroundColor: colors.white, flex: 1 }}>
         <View
           style={{
             height: 80,
@@ -143,176 +72,178 @@ export default function UploadScreen() {
               size={30}
               onPress={() => router.back()}
             />
-            <Text style={styles.title}>Upload Item</Text>
+            <Text style={styles.title}>Menu Upload</Text>
           </View>
         </View>
-        {/*HEADERRRRRRRRRRRRRRRRRRRRRRR*/}
-        <View style={{ marginTop: 5, alignItems: "center" }}>
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <FoodBox
-              source={image}
-              onPress={() => {}}
-              name={foodName}
-              rating={0}
-              fontSize={12}
-              width={dimensions.width * 0.29}
-              minWidth={113.1}
-            />
-          </View>
-        </View>
-        <TouchableOpacity
-          style={{ marginTop: 15, alignItems: "center" }}
-          onPress={() => setDialog(true)}
-        >
-          <Text style={[styles.subtitle, { color: "blue" }]}>Change Image</Text>
-        </TouchableOpacity>
+        {/*NEXTTTTTTTTTTTTTTTT*/}
+        {/*NEXTTTTTTTTTTTTTTTT*/}
+        {/*NEXTTTTTTTTTTTTTTTT*/}
 
-        {/*NEXTTTTTTTTTTTTT*/}
-        <TextField
-          placeText="Item Name"
-          marginTop="7%"
-          onChangeText={(text: React.SetStateAction<string>) => {
-            setFoodName(text);
-          }}
-        ></TextField>
-        <View
-          style={{
-            marginTop: 30,
-          }}
-        >
-          <View
-            style={{
-              width: dimensions.width,
-              alignItems: "center",
-            }}
-          >
-            <Text style={styles.subtitle}>Hot Food or Interactive?</Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {categories.map((item) => {
-              return (
-                <CustomButton
-                  key={item}
-                  onPress={() => {
-                    setFilterChosen(item);
-                  }}
-                  marginVertical={10}
-                  marginHorizontal={2.8}
-                  buttonColor={
-                    item == filterChosen ? colors.wpurple : colors.white
-                  }
-                  height={40}
-                  fontSize={13}
-                  borderRadius={60}
-                  textColor={
-                    item == filterChosen ? colors.white : colors.wpurple
-                  }
-                  borderColor={colors.wpurple}
-                  fontFamily="inter"
-                  fontWeight="medium"
-                  lSpacing={undefined}
-                >
-                  {item}
-                </CustomButton>
-              );
-            })}
-          </View>
-        </View>
-        {/*NEXTTTTTTTTTTTTT*/}
-
-        <View
-          style={{
-            width: dimensions.width,
-            alignItems: "center",
-            marginVertical: 10,
-          }}
-        >
-          <Text style={styles.subtitle}>Restrictions:</Text>
-        </View>
-
-        {/*NEXTTTTTTTTTTTTT*/}
         <View
           style={{
             flexDirection: "row",
-            marginHorizontal: "7%",
-            flexWrap: "wrap",
-            justifyContent: "center",
+            marginHorizontal: "10%",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginVertical: 5,
           }}
         >
-          {allergyList.map((item) => {
-            return (
-              <CustomButton
-                key={item}
-                onPress={() => {
-                  let newValue = !map.get(item);
-                  setMap(new Map<string, boolean>([...map, [item, newValue]]));
-                }}
-                marginVertical={5}
-                marginHorizontal={2.8}
-                buttonColor={map.get(item) ? colors.wpurple : colors.white}
-                height={40}
-                fontSize={13}
-                width={105}
-                borderRadius={60}
-                textColor={map.get(item) ? colors.white : colors.wpurple}
-                borderColor={colors.wpurple}
-                fontFamily="inter"
-                fontWeight="medium"
-                lSpacing={undefined}
-              >
-                {item}
-              </CustomButton>
-            );
-          })}
+          <View style={{ width: "50%", flexDirection: "row" }}>
+            <CustomButton
+              onPress={() => {
+                setSelectMode(!selectMode);
+              }}
+              marginVertical={0}
+              marginHorizontal={3}
+              buttonColor={selectMode ? colors.wpurple : colors.white}
+              height={40}
+              fontSize={15}
+              borderRadius={60}
+              textColor={selectMode ? colors.white : colors.wpurple}
+              borderColor={colors.wpurple}
+              fontFamily="inter"
+              fontWeight="medium"
+              lSpacing={undefined}
+            >
+              {selectMode ? "Unselect" : "Select"}
+            </CustomButton>
+
+            {selectMode && (
+              <>
+                <TouchableOpacity
+                  onPress={() => {}}
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderColor: colors.black,
+                    borderWidth: 1,
+                    borderRadius: 50,
+                    height: 40,
+                    width: 40,
+                    marginLeft: 5,
+                  }}
+                >
+                  <AntDesign color="black" name="delete" size={22} style={{}} />
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
+          <View style={{ width: "40%" }}>
+            <Text
+              style={{
+                textAlign: "right",
+                fontSize: 16,
+                fontFamily: "inter",
+              }}
+              adjustsFontSizeToFit={true}
+            >
+              {smth}
+              {"\n"}Sydenham Hall
+            </Text>
+          </View>
         </View>
-        <View style={{ flex: 1, justifyContent: "center" }}>
-          <CustomButton
-            onPress={async () => {
-              try {
-                // const base64 = await FileSystem.readAsStringAsync(image, {
-                //   encoding: FileSystem.EncodingType.Base64,
-                // });
-                // //data:image/jpeg;base64,
-                // let another = await axios.post(
-                //   "https://0933-2607-fea8-335e-e800-456d-8f3b-fca2-b5a8.ngrok-free.app/foods/",
-                //   {
-                //     name: "ArshamFam",
-                //     image: "data:image/jpeg;base64," + base64,
-                //     ingredients: [],
-                //     allergies: ["Shriraam"],
-                //     type: "Hot Food",
-                //   }
-                // );
-                let response = await axios.get(
-                  "https://0933-2607-fea8-335e-e800-456d-8f3b-fca2-b5a8.ngrok-free.app/foods/ArshamFam"
-                );
-                console.log(response.data.name);
-                setImage(response.data.image);
-              } catch (error) {
-                console.log(error);
-              }
+        {/*NEXTTTTTTTTTTTTTTTT*/}
+        {/*NEXTTTTTTTTTTTTTTTT*/}
+        {/*NEXTTTTTTTTTTTTTTTT*/}
+        {/*NEXTTTTTTTTTTTTTTTT*/}
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 14,
+            marginTop: "5%",
+          }}
+        >
+          <TouchableOpacity>
+            <View
+              style={{
+                width: dimensions.width * 0.4,
+                height: dimensions.width * 0.3,
+                backgroundColor: colors.wpurple,
+                borderTopRightRadius: 14,
+                borderTopLeftRadius: 14,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <AntDesign
+                name="plus"
+                color={colors.verylightgray}
+                size={60}
+              ></AntDesign>
+            </View>
+            <View
+              style={{
+                width: dimensions.width * 0.4,
+                height: dimensions.width * 0.1,
+                borderBottomRightRadius: 14,
+                borderBottomLeftRadius: 14,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: colors.verylightgray,
+                borderWidth: 1,
+                borderColor: colors.gray,
+              }}
+            >
+              <Text style={{ fontStyle: "italic", fontFamily: "inter" }}>
+                Create New Preset
+              </Text>
+            </View>
+          </TouchableOpacity>
+          {/*NEXTTTTTTTTTTTTTTTT*/}
+          {/*NEXTTTTTTTTTTTTTTTT*/}
+          {/*NEXTTTTTTTTTTTTTTTT*/}
+          {/*NEXTTTTTTTTTTTTTTTT*/}
+
+          <View
+            style={{
+              width: "100%",
+              marginVertical: "5%",
+              justifyContent: "center",
             }}
-            borderRadius={16}
-            buttonColor={colors.wpurple}
-            fontSize={20}
-            height={60}
           >
-            Set Food Item
-          </CustomButton>
+            <TextField
+              placeText={"Search From Presets..."}
+              onChangeText={(text: any) => {
+                setSearchText(text);
+              }}
+              style={{ paddingRight: 40 }}
+            ></TextField>
+            <AntDesign
+              name="search1"
+              color={colors.gray}
+              size={25}
+              style={{
+                position: "absolute",
+                right: 0,
+                marginRight: dimensions.width * 0.1 + 25,
+              }}
+            />
+          </View>
+          <ScrollView>
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                width: dimensions.width * 0.8,
+              }}
+            >
+              {presets.map((item, index) => {
+                return (
+                  <PresetButton
+                    key={index}
+                    text={item}
+                    index={index}
+                    onPress={() => {}}
+                  />
+                );
+              })}
+            </View>
+            <View style={{ height: 270 }}></View>
+          </ScrollView>
         </View>
       </SafeAreaView>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -325,18 +256,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     flex: 1,
     marginRight: 15,
-  },
-  subtitle: {
-    color: colors.black,
-    fontFamily: "inter",
-    fontSize: 20,
-    fontWeight: "semibold",
-  },
-  dialog: {
-    fontFamily: "inter",
-    fontSize: 24,
-    fontWeight: "500",
-    textAlign: "center",
-    marginHorizontal: 5,
   },
 });

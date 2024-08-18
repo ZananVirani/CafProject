@@ -22,7 +22,7 @@ export default function Cafeteria() {
     ["Popcorn Chicken", 3.1],
     ["Mac And Cheese", 3.8],
   ];
-  const categories = ["Hot Food", "Interactive", "Other"];
+  const categories = ["Favourites", "Hot Food", "Interactive"];
   const [toggle, setToggle] = useState(false);
 
   return (
@@ -127,7 +127,7 @@ export default function Cafeteria() {
                         ? "fire" //
                         : category == "Interactive"
                         ? "food-turkey" //"filter"
-                        : "dots-horizontal-circle"
+                        : "star-circle"
                     }
                     size={category == "Other" ? 32 : 37}
                     color={colors.black}
