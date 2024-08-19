@@ -2,6 +2,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableWithoutFeedback,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -14,6 +15,9 @@ import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import Toggle from "@imcarlosguerrero/react-native-switch-toggle";
 import { router } from "expo-router";
 import CustomButton from "@/components/CustomButton";
+import { Dialog } from "react-native-simple-dialogs";
+import TextField from "@/components/TextField";
+import { TextInput } from "react-native-paper";
 
 export default function Preview() {
   const dimensions = useWindowDimensions();
@@ -23,11 +27,63 @@ export default function Preview() {
     ["Popcorn Chicken", 3.1],
     ["Mac And Cheese", 3.8],
   ];
+  const [dialog, setDialog] = useState(false);
   const categories = ["Hot Food", "Interactive"];
   const [toggle, setToggle] = useState(false);
+  const [nameText, setNameText] = useState("");
+  console.log(nameText);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }}>
+      <Dialog
+        visible={dialog}
+        title="Name of New Preset"
+        titleStyle={styles.dialog}
+        onTouchOutside={() => {
+          setDialog(false);
+          setNameText("");
+        }}
+        onRequestClose={() => {}}
+        contentInsetAdjustmentBehavior={undefined}
+        animationType="fade"
+        dialogStyle={{ borderRadius: 10 }}
+      >
+        <View>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "row",
+              marginBottom: 30,
+            }}
+          >
+            <TextInput
+              mode="flat"
+              placeholder={"Type Here..."}
+              placeholderTextColor={colors.gray}
+              onChangeText={(text: string) => {
+                setNameText(text);
+              }}
+              activeOutlineColor={colors.wpurple}
+              outlineColor={colors.verylightgray}
+              textColor="black"
+              style={{
+                backgroundColor: colors.verylightgray,
+                width: "90%",
+              }}
+            ></TextInput>
+          </View>
+          <CustomButton
+            onPress={() => {}}
+            borderRadius={15}
+            marginHorizontal="6%"
+            fontSize={16}
+            height={50}
+          >
+            Submit
+          </CustomButton>
+        </View>
+      </Dialog>
       <View
         style={{
           height: 80,
@@ -123,7 +179,9 @@ export default function Preview() {
         })}
         <View style={{ marginVertical: 30 }}>
           <CustomButton
-            onPress={() => {}}
+            onPress={() => {
+              setDialog(true);
+            }}
             borderRadius={14}
             marginVertical={0}
             buttonColor={colors.darkgray}
@@ -175,6 +233,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
     flex: 1,
     marginRight: 15,
+  },
+  dialog: {
+    fontFamily: "inter",
+    fontSize: 24,
+    fontWeight: "500",
+    textAlign: "center",
+    marginHorizontal: 5,
   },
 });
 

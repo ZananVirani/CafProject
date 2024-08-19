@@ -168,14 +168,27 @@ export default function UploadScreen() {
               />
             </View>
           </View>
-          <TouchableOpacity
-            style={{ marginTop: 15, alignItems: "center" }}
-            onPress={() => setDialog(true)}
+          <View
+            style={{
+              width: dimensions.width,
+
+              alignItems: "center",
+            }}
           >
-            <Text style={[styles.subtitle, { color: "blue" }]}>
-              Change Image
-            </Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                marginTop: 15,
+                alignItems: "center",
+
+                width: dimensions.width * 0.5,
+              }}
+              onPress={() => setDialog(true)}
+            >
+              <Text style={[styles.subtitle, { color: "blue" }]}>
+                Change Image
+              </Text>
+            </TouchableOpacity>
+          </View>
 
           {/*NEXTTTTTTTTTTTTT*/}
           <TextField
