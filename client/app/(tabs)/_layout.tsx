@@ -14,12 +14,13 @@ import UploadScreen from "./upload";
 import Menu from "./menu";
 import Preset from "./preset";
 import Preview from "./preview";
+import ItemSelect from "./item_select";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <Preview></Preview>
+    <ItemSelect></ItemSelect>
     // <Stack>
     //   <Stack.Screen name="preview" options={{ headerShown: false }} />
     //   <Stack.Screen name="favourites" options={{ headerShown: false }} />
@@ -34,6 +35,7 @@ export default function TabLayout() {
 
     //   <Stack.Screen name="profile" options={{ headerShown: false }} />
     //   <Stack.Screen name="account" options={{ headerShown: false }} />
+    //   <Stack.Screen name="item_select" options={{ headerShown: false }} />
     // </Stack>
   );
 }

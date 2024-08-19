@@ -20,6 +20,7 @@ type ButtonProps = {
   fontWeight?: any;
   lSpacing?: number;
   disabled?: boolean;
+  style?: object;
 };
 
 export default function CustomButton(props: ButtonProps) {
@@ -30,6 +31,7 @@ export default function CustomButton(props: ButtonProps) {
       buttonColor={props.buttonColor ?? colors.lpurple}
       disabled={props.disabled}
       style={{
+        ...props.style,
         width: props.width,
         height: props.height ?? 60,
         marginHorizontal: props.marginHorizontal ?? "10%",

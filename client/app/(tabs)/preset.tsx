@@ -15,6 +15,7 @@ import { router } from "expo-router";
 import CustomButton from "@/components/CustomButton";
 import { TextInput } from "react-native-paper";
 import FoodBox from "@/components/FoodBox";
+import ItemAdd from "@/components/ItemAdd";
 
 export default function Preset() {
   const dimensions = useWindowDimensions();
@@ -65,45 +66,22 @@ export default function Preset() {
             style={{
               width: dimensions.width,
               alignItems: "center",
+              justifyContent: "center",
               marginVertical: 10,
+              flexDirection: "row",
             }}
           >
-            <TouchableOpacity>
-              <View
-                style={{
-                  width: dimensions.width * 0.4,
-                  height: dimensions.width * 0.3,
-                  backgroundColor: colors.wpurple,
-                  borderTopRightRadius: 14,
-                  borderTopLeftRadius: 14,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <AntDesign
-                  name="plus"
-                  color={colors.verylightgray}
-                  size={60}
-                ></AntDesign>
-              </View>
-              <View
-                style={{
-                  width: dimensions.width * 0.4,
-                  height: dimensions.width * 0.1,
-                  borderBottomRightRadius: 14,
-                  borderBottomLeftRadius: 14,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: colors.verylightgray,
-                  borderWidth: 1,
-                  borderColor: colors.gray,
-                }}
-              >
-                <Text style={{ fontStyle: "italic", fontFamily: "inter" }}>
-                  New Item
-                </Text>
-              </View>
-            </TouchableOpacity>
+            <ItemAdd
+              onPress={() => {}}
+              text="Create New Item"
+              marginRight={30}
+              iconName="plus"
+            />
+            <ItemAdd
+              onPress={() => {}}
+              text="Choose Item"
+              iconName="mouse-pointer"
+            />
           </View>
 
           {categories.map((category) => {
@@ -158,7 +136,7 @@ export default function Preset() {
                     return (
                       <FoodBox
                         onPress={() => {
-                          router.push("(tabs)/food_description");
+                          //router.push("(tabs)/food_description");
                         }}
                         key={index}
                         name={item.name}
