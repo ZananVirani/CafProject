@@ -39,6 +39,7 @@ export default function Presets() {
   ];
   const [presets, setPresets] = useState(allPresets);
   const [searchText, setSearchText] = useState("");
+  const [deletedPresets, setDeletedPresets] = useState(new Set());
 
   useEffect(() => {
     setPresets(
@@ -47,6 +48,7 @@ export default function Presets() {
       })
     );
   }, [searchText]);
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <SafeAreaView style={{ backgroundColor: colors.white, flex: 1 }}>
@@ -186,7 +188,7 @@ export default function Presets() {
               }}
             >
               <Text style={{ fontStyle: "italic", fontFamily: "inter" }}>
-                Create New Preset
+                Create New Menu
               </Text>
             </View>
           </TouchableOpacity>
@@ -234,7 +236,12 @@ export default function Presets() {
                     key={index}
                     text={item}
                     index={index}
-                    onPress={() => {}}
+                    selected={
+                      selectMode && deletedPresets.has(item) ? true : false
+                    }
+                    onPress={() => {
+                      selectMode ? toggleSelect(item) : visitPreset(item);
+                    }}
                   />
                 );
               })}
@@ -245,6 +252,15 @@ export default function Presets() {
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
+
+  function toggleSelect(item: string) {
+    let tempPresets = new Set(deletedPresets);
+    tempPresets.has(item) ? tempPresets.delete(item) : tempPresets.add(item);
+
+    setDeletedPresets(tempPresets);
+  }
+
+  function visitPreset(item: string) {}
 }
 
 const styles = StyleSheet.create({

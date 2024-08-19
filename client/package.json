@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@expo-google-fonts/abeezee": "^0.2.3",
+    "@expo-google-fonts/bodoni-moda": "^0.2.3",
     "@expo-google-fonts/inter": "^0.2.3",
     "@expo/vector-icons": "^14.0.2",
     "@imcarlosguerrero/react-native-switch-toggle": "^2.2.3",
