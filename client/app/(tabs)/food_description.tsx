@@ -11,7 +11,11 @@ import {
 import React, { Suspense, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CafAppBar from "@/components/CafAppBar";
-import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import {
+  MaterialCommunityIcons,
+  Ionicons,
+  FontAwesome6,
+} from "@expo/vector-icons";
 import colors from "@/constants/Colors";
 import { Collapsible } from "@/components/Collapsible";
 import { Dialog } from "react-native-simple-dialogs";
@@ -36,7 +40,8 @@ export default function FoodDescription() {
   //       console.log(error);
   //     });
   // }, []);
-
+  const otherCafs = ["Perth Hall", "Ontario Hall", "Sydenham Hall"];
+  const [isAllergic, setIsAllergic] = useState(false);
   const dimensions = useWindowDimensions();
   const allergies = ["Meat", "Gluten", "Pork", "Dairy", "Seafood", "Nuts"];
   const [checked, setChecked] = useState(false);
@@ -186,6 +191,13 @@ export default function FoodDescription() {
                   </Text>
                 </TouchableOpacity>
               </View>
+              {isAllergic && (
+                <View style={{ marginHorizontal: "2%", marginVertical: 8 }}>
+                  <Text style={styles.error}>
+                    WARNING : Restrictions Within Food Item
+                  </Text>
+                </View>
+              )}
               <Collapsible title="Also Served At     ">
                 <View style={{ marginVertical: 3, width: "100%" }}>
                   <Text style={[styles.allergy, { textAlign: "left" }]}>
@@ -199,7 +211,7 @@ export default function FoodDescription() {
                     flexWrap: "wrap",
                   }}
                 >
-                  {allergies.map((item) => {
+                  {otherCafs.map((item) => {
                     return (
                       <View
                         key={item}
@@ -218,28 +230,24 @@ export default function FoodDescription() {
                           borderRadius: 7,
                         }}
                       >
-                        <MaterialCommunityIcons
+                        <FontAwesome6
                           color={colors.wpurple}
-                          name={
-                            item == "Meat"
-                              ? "food-drumstick"
-                              : item == "Gluten"
-                              ? "barley"
-                              : item == "Pork"
-                              ? "pig-variant"
-                              : item == "Dairy"
-                              ? "cheese"
-                              : item == "Seafood"
-                              ? "fish"
-                              : "peanut"
-                          }
-                          size={40}
+                          name={"house"}
+                          size={25}
                           style={{ alignSelf: "center" }}
                         />
                         <Text
-                          style={[styles.allergy, { fontWeight: "semibold" }]}
+                          style={[
+                            styles.allergy,
+                            {
+                              fontWeight: "semibold",
+                              marginTop: 10,
+                              lineHeight: 17,
+                            },
+                          ]}
+                          adjustsFontSizeToFit={true}
                         >
-                          {item}
+                          {item.split(" ")[0]}
                         </Text>
                       </View>
                     );
@@ -316,6 +324,10 @@ export default function FoodDescription() {
 }
 
 const styles = StyleSheet.create({
+  error: {
+    color: "red",
+    fontSize: 16,
+  },
   dialog: {
     fontFamily: "inter",
     fontSize: 24,
