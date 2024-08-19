@@ -113,7 +113,7 @@ export default function ProfileScreen() {
               router.push("/(tabs)/cafeteria");
             }}
             borderRadius={16}
-            buttonColor={"#FFF2F3"}
+            buttonColor={colors.beige}
             textColor="red"
             fontWeight={"regular"}
           >

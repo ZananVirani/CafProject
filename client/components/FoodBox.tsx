@@ -94,6 +94,15 @@ export default function FoodBox(props: any) {
           </View>
         </View>
       </View>
+      {props.onDelete && (
+        <Ionicons
+          name="close-circle"
+          size={40}
+          color={colors.wpurple}
+          onPress={props.onDelete}
+          style={{ position: "absolute", right: 5, top: 5 }}
+        />
+      )}
     </TouchableOpacity>
   );
 }

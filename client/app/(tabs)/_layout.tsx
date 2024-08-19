@@ -16,10 +16,10 @@ export default function TabLayout() {
 
   return (
     <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="preview" options={{ headerShown: false }} />
       <Stack.Screen name="favourites" options={{ headerShown: false }} />
       <Stack.Screen name="menu" options={{ headerShown: false }} />
-      {/* <Stack.Screen name="preset" options={{ headerShown: false }} /> */}
+      <Stack.Screen name="preset" options={{ headerShown: false }} />
       <Stack.Screen name="food_description" options={{ headerShown: false }} />
       <Stack.Screen name="main_screen" options={{ headerShown: false }} />
       <Stack.Screen name="login" options={{ headerShown: false }} />

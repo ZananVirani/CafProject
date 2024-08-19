@@ -1,4 +1,5 @@
 import {
+  Alert,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -15,7 +16,7 @@ import CustomButton from "@/components/CustomButton";
 import { TextInput } from "react-native-paper";
 import FoodBox from "@/components/FoodBox";
 
-export default function Favourites() {
+export default function Preset() {
   const dimensions = useWindowDimensions();
 
   const categories = ["Hot Food", "Interactive"];
@@ -165,6 +166,7 @@ export default function Favourites() {
                         fontSize={12}
                         width={dimensions.width * 0.29}
                         minWidth={113.1}
+                        onDelete={() => {}}
                       />
                     );
                   })}
