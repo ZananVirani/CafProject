@@ -148,9 +148,7 @@ export default function Cafeteria() {
                   {testFoods.map((item) => {
                     return (
                       <FoodBox
-                        onPress={() => {
-                          router.push("(tabs)/food_description");
-                        }}
+                        onPress={() => {}}
                         key={item}
                         name={item[0]}
                         rating={item[1]}
@@ -185,3 +183,5 @@ const styles = StyleSheet.create({
     letterSpacing: -0.5,
   },
 });
+
+// TODO: Caf Closed Screen

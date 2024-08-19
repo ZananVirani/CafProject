@@ -19,7 +19,7 @@ import { format } from "date-fns";
 import TextField from "@/components/TextField";
 import PresetButton from "@/components/PresetButton";
 
-export default function Presets() {
+export default function Menu() {
   const dimensions = useWindowDimensions();
   const [selectMode, setSelectMode] = useState(false);
   const smth = format(new Date(), "yyyy/MM/dd");

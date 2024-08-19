@@ -94,7 +94,9 @@ export default function MainScreen() {
             color={colors.black}
             name="user-circle"
             size={40}
-            onPress={() => router.push("(tabs)/onboarding")}
+            onPress={() => {
+              //router.push("(tabs)/onboarding")
+            }}
           />
           <View style={{ flex: 0.03 }}></View>
         </View>
@@ -147,7 +149,7 @@ export default function MainScreen() {
             return (
               <FoodBox
                 onPress={() => {
-                  router.push("(tabs)/food_description");
+                  //router.push("(tabs)/food_description");
                 }}
                 key={item}
                 name={item[0]}

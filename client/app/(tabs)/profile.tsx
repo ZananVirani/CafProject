@@ -44,7 +44,9 @@ export default function ProfileScreen() {
               color={colors.black}
               name="leftcircleo"
               size={30}
-              onPress={() => router.push("(tabs)/main_screen")}
+              onPress={() => {
+                // router.push("(tabs)/main_screen")
+              }}
             />
             <Text style={styles.title}>User Settings</Text>
           </View>
@@ -110,7 +112,7 @@ export default function ProfileScreen() {
         <View style={{ flex: 0.12 }}>
           <CustomButton
             onPress={() => {
-              router.push("/(tabs)/cafeteria");
+              //router.push("/(tabs)/cafeteria");
             }}
             borderRadius={16}
             buttonColor={colors.beige}

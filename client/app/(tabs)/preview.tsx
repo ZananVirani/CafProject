@@ -107,9 +107,7 @@ export default function Preview() {
                 {testFoods.map((item) => {
                   return (
                     <FoodBox
-                      onPress={() => {
-                        router.push("(tabs)/food_description");
-                      }}
+                      onPress={() => {}}
                       key={item}
                       name={item[0]}
                       rating={item[1]}
@@ -179,3 +177,5 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
 });
+
+// TODO: Add Name Dialog For New Name Preset

@@ -1,7 +1,9 @@
 import {
   Image,
+  Keyboard,
   StyleSheet,
   Text,
+  TouchableWithoutFeedback,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -20,74 +22,76 @@ export default function Login() {
   const [error, setError] = useState(false);
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={{ flex: 0.1, marginTop: 20 }}>
-          <Text style={styles.title}>Western Login</Text>
-        </View>
-        <View style={{ flex: 0.32, marginTop: dimensions.height * 0.05 }}>
-          <TextField
-            placeText="Western ID"
-            marginTop="7%"
-            onChangeText={(text: React.SetStateAction<string>) => {
-              setID(text);
-            }}
-          ></TextField>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={{ flex: 1, backgroundColor: "white" }}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <View style={{ flex: 0.1, marginTop: 20 }}>
+            <Text style={styles.title}>Western Login</Text>
+          </View>
+          <View style={{ flex: 0.32, marginTop: dimensions.height * 0.05 }}>
+            <TextField
+              placeText="Western ID"
+              marginTop="7%"
+              onChangeText={(text: React.SetStateAction<string>) => {
+                setID(text);
+              }}
+            ></TextField>
+            <View
+              style={{
+                height: 30,
+                width: "80%",
+                justifyContent: "center",
+                alignSelf: "center",
+                marginLeft: 30,
+              }}
+            ></View>
+            <TextField
+              placeText="Password"
+              marginTop={0}
+              onChangeText={(text: React.SetStateAction<string>) => {
+                setPassword(text);
+              }}
+            ></TextField>
+            <View
+              style={{
+                height: 30,
+                width: "80%",
+                justifyContent: "center",
+                alignSelf: "center",
+                marginLeft: 30,
+              }}
+            >
+              {error && (
+                <Text style={styles.error}>
+                  Your ID and Password Do Not Match
+                </Text>
+              )}
+            </View>
+          </View>
           <View
             style={{
-              height: 30,
-              width: "80%",
-              justifyContent: "center",
-              alignSelf: "center",
-              marginLeft: 30,
-            }}
-          ></View>
-          <TextField
-            placeText="Password"
-            marginTop={0}
-            onChangeText={(text: React.SetStateAction<string>) => {
-              setPassword(text);
-            }}
-          ></TextField>
-          <View
-            style={{
-              height: 30,
-              width: "80%",
-              justifyContent: "center",
-              alignSelf: "center",
-              marginLeft: 30,
+              flex: 0.46,
+              alignItems: "center",
+              marginTop: 20,
             }}
           >
-            {error && (
-              <Text style={styles.error}>
-                Your ID and Password Do Not Match
-              </Text>
-            )}
+            <Image
+              source={require("../../assets/images/western-brand.png")}
+              style={{ height: "74%", objectFit: "contain" }}
+            ></Image>
           </View>
-        </View>
-        <View
-          style={{
-            flex: 0.46,
-            alignItems: "center",
-            marginTop: 20,
-          }}
-        >
-          <Image
-            source={require("../../assets/images/western-brand.png")}
-            style={{ height: "74%", objectFit: "contain" }}
-          ></Image>
-        </View>
-        <CustomButton
-          onPress={() => {
-            ID && password ? router.push("(tabs)/account") : setError(true);
-          }}
-          borderRadius={16}
-          buttonColor={colors.wpurple}
-        >
-          Continue
-        </CustomButton>
-      </SafeAreaView>
-    </View>
+          <CustomButton
+            onPress={() => {
+              //ID && password ? router.push("(tabs)/account") : setError(true);
+            }}
+            borderRadius={16}
+            buttonColor={colors.wpurple}
+          >
+            Continue
+          </CustomButton>
+        </SafeAreaView>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
