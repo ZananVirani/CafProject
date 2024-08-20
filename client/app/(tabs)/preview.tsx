@@ -1,4 +1,5 @@
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -31,6 +32,7 @@ export default function Preview() {
   const categories = ["Hot Food", "Interactive"];
   const [toggle, setToggle] = useState(false);
   const [nameText, setNameText] = useState("");
+  const [error, setError] = useState(false);
   console.log(nameText);
 
   return (
@@ -46,15 +48,19 @@ export default function Preview() {
         onRequestClose={() => {}}
         contentInsetAdjustmentBehavior={undefined}
         animationType="fade"
-        dialogStyle={{ borderRadius: 10 }}
+        dialogStyle={{ borderRadius: 20 }}
       >
-        <View>
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <View
             style={{
               justifyContent: "center",
               alignItems: "center",
               flexDirection: "row",
-              marginBottom: 30,
             }}
           >
             <TextInput
@@ -73,12 +79,48 @@ export default function Preview() {
               }}
             ></TextInput>
           </View>
+          <View
+            style={{
+              width: "90%",
+              height: 30,
+
+              alignItems: "center",
+              flexDirection: "row",
+            }}
+          >
+            {error && (
+              <Text style={{ fontSize: 13, color: "red" }}>
+                Please Enter A Name.
+              </Text>
+            )}
+          </View>
           <CustomButton
-            onPress={() => {}}
+            onPress={() => {
+              nameText.length == 0
+                ? setError(true)
+                : Alert.alert(
+                    `Are You Sure You Want To Create New Preset?`,
+                    `Preset Name Will Be:\n${nameText}`,
+                    [
+                      {
+                        text: "Cancel",
+                        onPress: () => {},
+                        style: "cancel",
+                      },
+                      {
+                        text: "OK",
+                        onPress: () => {
+                          setDialog(false);
+                        },
+                      },
+                    ]
+                  );
+            }}
             borderRadius={15}
             marginHorizontal="6%"
             fontSize={16}
             height={50}
+            width="90%"
           >
             Submit
           </CustomButton>
@@ -177,36 +219,57 @@ export default function Preview() {
             </View>
           );
         })}
-        <View style={{ marginVertical: 30 }}>
-          <CustomButton
-            onPress={() => {
-              setDialog(true);
-            }}
-            borderRadius={14}
-            marginVertical={0}
-            buttonColor={colors.darkgray}
-          >
-            Save As New & Upload
-          </CustomButton>
 
-          <CustomButton
-            onPress={() => {}}
-            borderRadius={14}
-            marginVertical={20}
-          >
-            Save & Upload
-          </CustomButton>
-
-          <CustomButton
-            onPress={() => {}}
-            borderRadius={14}
-            marginVertical={0}
-            buttonColor={colors.wpurple}
-          >
-            Temporary Upload
-          </CustomButton>
-        </View>
+        <View style={{ width: dimensions.width, height: 230 }}></View>
       </ScrollView>
+      <View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          width: dimensions.width,
+          marginBottom: 170,
+        }}
+      >
+        <CustomButton
+          onPress={() => {
+            setDialog(true);
+          }}
+          borderRadius={14}
+          marginVertical={0}
+          buttonColor={colors.darkgray}
+        >
+          Save As New & Upload
+        </CustomButton>
+      </View>
+      <View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          width: dimensions.width,
+          marginBottom: 85,
+        }}
+      >
+        <CustomButton onPress={() => {}} borderRadius={14} marginVertical={20}>
+          Save & Upload
+        </CustomButton>
+      </View>
+      <View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          width: dimensions.width,
+          marginBottom: 40,
+        }}
+      >
+        <CustomButton
+          onPress={() => {}}
+          borderRadius={14}
+          marginVertical={0}
+          buttonColor={colors.wpurple}
+        >
+          Temporary Upload
+        </CustomButton>
+      </View>
     </SafeAreaView>
   );
 }

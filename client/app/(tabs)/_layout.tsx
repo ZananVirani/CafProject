@@ -20,7 +20,7 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <ItemSelect></ItemSelect>
+    <Preview></Preview>
     // <Stack>
     //   <Stack.Screen name="preview" options={{ headerShown: false }} />
     //   <Stack.Screen name="favourites" options={{ headerShown: false }} />

@@ -16,7 +16,7 @@ type ButtonProps = {
   borderColor?: string;
   borderRadius?: number;
   children: any;
-  width?: number;
+  width?: number | `${number}%`;
   fontWeight?: any;
   lSpacing?: number;
   disabled?: boolean;

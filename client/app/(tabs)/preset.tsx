@@ -144,7 +144,23 @@ export default function Preset() {
                         fontSize={12}
                         width={dimensions.width * 0.29}
                         minWidth={113.1}
-                        onDelete={() => {}}
+                        onDelete={() => {
+                          Alert.alert(
+                            `Are You Sure You Want To Delete ${item.name} From The Menu?`,
+                            undefined,
+                            [
+                              {
+                                text: "Cancel",
+                                onPress: () => {},
+                                style: "cancel",
+                              },
+                              {
+                                text: "OK",
+                                onPress: () => {},
+                              },
+                            ]
+                          );
+                        }}
                       />
                     );
                   })}
@@ -153,6 +169,22 @@ export default function Preset() {
             );
           })}
         </ScrollView>
+        <View
+          style={{
+            position: "absolute",
+            bottom: 0,
+            width: dimensions.width,
+            marginBottom: 40,
+          }}
+        >
+          <CustomButton
+            onPress={undefined}
+            borderRadius={20}
+            buttonColor={colors.wpurple}
+          >
+            Preview Menu
+          </CustomButton>
+        </View>
       </SafeAreaView>
     </View>
   );
