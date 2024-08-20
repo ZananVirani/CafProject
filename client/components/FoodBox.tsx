@@ -27,8 +27,8 @@ export default function FoodBox(props: any) {
         <View style={{ justifyContent: "center", alignItems: "center" }}>
           <Image
             source={
-              props.source == ""
-                ? require("../assets/images/image_not_found.png")
+              props.source == "" || !props.source
+                ? require("@/assets/images/image_not_found.png")
                 : { uri: props.source }
             }
             style={{
