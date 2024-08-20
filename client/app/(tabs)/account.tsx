@@ -94,7 +94,7 @@ export default function AccountInfo() {
             buttonColor={colors.wpurple}
             marginTop={25}
           >
-            Get Started
+            Let's Go!
           </CustomButton>
         </Dialog>
         <SafeAreaView style={{ flex: 1 }}>

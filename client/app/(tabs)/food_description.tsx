@@ -47,6 +47,7 @@ export default function FoodDescription() {
   const [checked, setChecked] = useState(false);
   const [dialog, setDialog] = useState(false);
   const [rating, setRating] = useState(0);
+  const [bottomPop, setBottomPop] = useState(false);
 
   return (
     <View
@@ -153,6 +154,10 @@ export default function FoodDescription() {
                   name={"heart-circle"}
                   size={50}
                   onPress={() => {
+                    if (!checked) {
+                      setBottomPop(true);
+                      setTimeout(() => setBottomPop(false), 2000);
+                    }
                     setChecked(!checked);
                   }}
                   style={{
@@ -317,6 +322,29 @@ export default function FoodDescription() {
               </Collapsible>
             </View>
           </ScrollView>
+        )}
+        {bottomPop && (
+          <View
+            style={{
+              width: dimensions.width,
+              alignItems: "center",
+              position: "absolute",
+              bottom: 40,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: colors.darkgray,
+                justifyContent: "center",
+                alignItems: "center",
+                width: dimensions.width * 0.65,
+                height: 40,
+                borderRadius: 10,
+              }}
+            >
+              <Text style={{ color: colors.white }}>Added To Favourites</Text>
+            </View>
+          </View>
         )}
       </SafeAreaView>
     </View>
