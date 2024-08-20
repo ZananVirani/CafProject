@@ -1,4 +1,5 @@
 import {
+  Alert,
   Keyboard,
   SafeAreaView,
   ScrollView,
@@ -113,7 +114,23 @@ export default function Menu() {
             {selectMode && (
               <>
                 <TouchableOpacity
-                  onPress={() => {}}
+                  onPress={() => {
+                    Alert.alert(
+                      `Are You Sure You Want To Delete The Selected Presets?`,
+                      undefined,
+                      [
+                        {
+                          text: "Cancel",
+                          onPress: () => {},
+                          style: "cancel",
+                        },
+                        {
+                          text: "Yes",
+                          onPress: () => {},
+                        },
+                      ]
+                    );
+                  }}
                   style={{
                     justifyContent: "center",
                     alignItems: "center",

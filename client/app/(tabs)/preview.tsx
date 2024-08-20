@@ -33,7 +33,6 @@ export default function Preview() {
   const [toggle, setToggle] = useState(false);
   const [nameText, setNameText] = useState("");
   const [error, setError] = useState(false);
-  console.log(nameText);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }}>
@@ -163,7 +162,7 @@ export default function Preview() {
                   width: dimensions.width,
                   flexDirection: "row",
                   alignItems: "center",
-                  marginTop: 23,
+                  marginTop: index == 0 ? 8 : 23,
                   marginBottom: 5,
                 }}
               >

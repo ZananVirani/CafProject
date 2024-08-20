@@ -1,4 +1,5 @@
 import {
+  Alert,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -83,9 +84,23 @@ export default function ProfileScreen() {
                 console.log(status);
 
                 if (status == "granted") {
-                  console.log("YESSS");
+                  Alert.alert(`Location Access Granted`, undefined, [
+                    {
+                      text: "OK",
+                      onPress: () => {},
+                    },
+                  ]);
                 } else {
-                  console.log("NOOOOO");
+                  Alert.alert(
+                    `Location Access Denied`,
+                    "Allow Location Services In Phone Settings To Access Location Features",
+                    [
+                      {
+                        text: "OK",
+                        onPress: () => {},
+                      },
+                    ]
+                  );
                 }
               }}
             >
@@ -112,7 +127,17 @@ export default function ProfileScreen() {
         <View style={{ flex: 0.12 }}>
           <CustomButton
             onPress={() => {
-              //router.push("/(tabs)/cafeteria");
+              Alert.alert(`Are You Sure You Want To Logout?`, undefined, [
+                {
+                  text: "Cancel",
+                  onPress: () => {},
+                  style: "cancel",
+                },
+                {
+                  text: "Logout",
+                  onPress: () => {},
+                },
+              ]);
             }}
             borderRadius={16}
             buttonColor={colors.beige}

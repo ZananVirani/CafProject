@@ -168,6 +168,7 @@ export default function Preset() {
               </View>
             );
           })}
+          <View style={{ width: dimensions.width, height: 100 }}></View>
         </ScrollView>
         <View
           style={{
@@ -178,7 +179,7 @@ export default function Preset() {
           }}
         >
           <CustomButton
-            onPress={undefined}
+            onPress={() => {}}
             borderRadius={20}
             buttonColor={colors.wpurple}
           >

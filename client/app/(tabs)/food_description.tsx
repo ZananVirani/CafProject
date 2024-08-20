@@ -337,12 +337,20 @@ export default function FoodDescription() {
                 backgroundColor: colors.darkgray,
                 justifyContent: "center",
                 alignItems: "center",
-                width: dimensions.width * 0.65,
-                height: 40,
+                width: dimensions.width * 0.7,
+                height: 50,
                 borderRadius: 10,
               }}
             >
-              <Text style={{ color: colors.white }}>Added To Favourites</Text>
+              <Text
+                style={{
+                  color: colors.white,
+                  fontFamily: "inter",
+                  fontSize: 18,
+                }}
+              >
+                Added To Favourites
+              </Text>
             </View>
           </View>
         )}
