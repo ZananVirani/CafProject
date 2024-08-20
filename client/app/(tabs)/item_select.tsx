@@ -168,6 +168,7 @@ export default function ItemSelect() {
                           ? toggleSelect(item.name)
                           : visitPreset(item.name);
                       }}
+                      selected={selectMode && selectedPresets.has(item.name)}
                       name={item.name}
                       rating={item.rating}
                       fontSize={12}

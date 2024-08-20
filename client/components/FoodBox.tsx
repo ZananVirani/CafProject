@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { useWindowDimensions } from "react-native";
 import React from "react";
 import colors from "@/constants/Colors";
-import { Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 
 export default function FoodBox(props: any) {
   const dimensions = useWindowDimensions();
@@ -24,22 +24,47 @@ export default function FoodBox(props: any) {
           borderRadius: 12,
         }}
       >
-        <Image
-          source={
-            props.source == ""
-              ? require("../assets/images/image_not_found.png")
-              : { uri: props.source }
-          }
-          style={{
-            backgroundColor: colors.gray,
-            width: props.width,
-            height: props.width,
-            minHeight: props.minWidth,
-            minWidth: props.minWidth,
-            borderTopRightRadius: 12,
-            borderTopLeftRadius: 12,
-          }}
-        ></Image>
+        <View style={{ justifyContent: "center", alignItems: "center" }}>
+          <Image
+            source={
+              props.source == ""
+                ? require("../assets/images/image_not_found.png")
+                : { uri: props.source }
+            }
+            style={{
+              backgroundColor: colors.gray,
+              width: props.width,
+              height: props.width,
+              minHeight: props.minWidth,
+              minWidth: props.minWidth,
+              borderTopRightRadius: 12,
+              borderTopLeftRadius: 12,
+            }}
+          ></Image>
+          {props.selected && (
+            <>
+              <View
+                style={{
+                  width: props.width,
+                  height: props.width,
+                  minHeight: props.minWidth,
+                  minWidth: props.minWidth,
+                  position: "absolute",
+                  backgroundColor: colors.black,
+                  opacity: 0.3,
+                  borderTopRightRadius: 12,
+                  borderTopLeftRadius: 12,
+                }}
+              ></View>
+              <Feather
+                name="check"
+                size={45}
+                style={{ position: "absolute" }}
+                color={colors.black}
+              ></Feather>
+            </>
+          )}
+        </View>
         <View
           style={{
             borderBottomRightRadius: 12,

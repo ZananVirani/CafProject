@@ -236,9 +236,7 @@ export default function Menu() {
                     key={index}
                     text={item}
                     index={index}
-                    selected={
-                      selectMode && deletedPresets.has(item) ? true : false
-                    }
+                    selected={selectMode && deletedPresets.has(item)}
                     onPress={() => {
                       selectMode ? toggleSelect(item) : visitPreset(item);
                     }}
