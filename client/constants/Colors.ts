@@ -14,7 +14,8 @@ export default {
   verylightgray : "#F3F8FE",
   gray: "#B8B8B8",
   darkgray: "#818284",
-  yellow: "gold"
+  yellow: "gold",
+  beige: "#FFF2F3"
 };
 
 // export const Colors = {

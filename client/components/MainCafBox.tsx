@@ -2,6 +2,7 @@ import {
   Image,
   StyleSheet,
   Text,
+  TouchableOpacity,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -14,14 +15,17 @@ export default function MainCafBox(props: any) {
   const dimensions = useWindowDimensions();
 
   return (
-    <View style={{ borderRadius: 12, marginRight: "2%" }}>
+    <TouchableOpacity
+      style={{ borderRadius: 12, marginRight: 20 }}
+      onPress={props.onPress}
+    >
       <Image
-        source={require("../assets/images/grilled_cheese.png")}
+        source={props.source}
         style={{
           flex: 1,
           width: dimensions.width * 0.55,
           borderRadius: 12,
-          opacity: 0.7,
+          opacity: 1,
           borderWidth: 0.7,
           borderColor: colors.wpurple,
         }}
@@ -76,7 +80,7 @@ export default function MainCafBox(props: any) {
         </View>
         <View></View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 

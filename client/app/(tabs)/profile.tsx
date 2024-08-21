@@ -1,4 +1,5 @@
 import {
+  Alert,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -44,7 +45,9 @@ export default function ProfileScreen() {
               color={colors.black}
               name="leftcircleo"
               size={30}
-              onPress={() => router.push("(tabs)/main_screen")}
+              onPress={() => {
+                router.back();
+              }}
             />
             <Text style={styles.title}>User Settings</Text>
           </View>
@@ -56,10 +59,16 @@ export default function ProfileScreen() {
               flex: 1,
             }}
           >
-            <ProfileButton text={"Account Information"}>
+            <ProfileButton
+              text={"Account Information"}
+              onPress={() => router.push("/(tabs)/account")}
+            >
               <Feather name="user" size={45} color={colors.wpurple} />
             </ProfileButton>
-            <ProfileButton text={"Favourite Foods"}>
+            <ProfileButton
+              text={"Favourite Foods"}
+              onPress={() => router.push("/(tabs)/favourites")}
+            >
               <MaterialCommunityIcons
                 name="star-circle"
                 size={45}
@@ -81,9 +90,23 @@ export default function ProfileScreen() {
                 console.log(status);
 
                 if (status == "granted") {
-                  console.log("YESSS");
+                  Alert.alert(`Location Access Granted`, undefined, [
+                    {
+                      text: "OK",
+                      onPress: () => {},
+                    },
+                  ]);
                 } else {
-                  console.log("NOOOOO");
+                  Alert.alert(
+                    `Location Access Denied`,
+                    "Allow Location Services In Phone Settings To Access Location Features",
+                    [
+                      {
+                        text: "OK",
+                        onPress: () => {},
+                      },
+                    ]
+                  );
                 }
               }}
             >
@@ -110,10 +133,23 @@ export default function ProfileScreen() {
         <View style={{ flex: 0.12 }}>
           <CustomButton
             onPress={() => {
-              router.push("/(tabs)/cafeteria");
+              Alert.alert(`Are You Sure You Want To Logout?`, undefined, [
+                {
+                  text: "Cancel",
+                  onPress: () => {},
+                  style: "cancel",
+                },
+                {
+                  text: "Logout",
+                  onPress: () => {
+                    router.dismissAll();
+                    router.replace("/(tabs)/");
+                  },
+                },
+              ]);
             }}
             borderRadius={16}
-            buttonColor={"#FFF2F3"}
+            buttonColor={colors.beige}
             textColor="red"
             fontWeight={"regular"}
           >

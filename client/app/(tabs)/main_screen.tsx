@@ -39,9 +39,42 @@ export default function MainScreen() {
   const [cafNum, setCafNum] = useState(0);
   const [filterChosen, setFilterChosen] = useState(categories[0]);
   const cafBoxes = [
-    { cafName: "Sydenham Hall", rating: 4.3, liked: true },
-    { cafName: "Perth Hall", rating: 4.0, liked: false },
-    { cafName: "Ontario Hall", rating: 5.0, liked: true },
+    {
+      cafName: "Ontario Hall",
+      rating: 5.0,
+      source: require("../../assets/images/ontario_caf.jpg"),
+    },
+    {
+      cafName: "Sydenham Hall",
+      rating: 4.3,
+      source: require("../../assets/images/sydenham_caf.png"),
+    },
+    {
+      cafName: "Perth Hall",
+      rating: 4.0,
+      source: require("../../assets/images/perth_caf.jpg"),
+    },
+
+    {
+      cafName: "Delaware Hall",
+      rating: 5.0,
+      source: require("../../assets/images/delaware_caf.png"),
+    },
+    {
+      cafName: "Elgin Hall",
+      rating: 5.0,
+      source: require("../../assets/images/elgin_caf.png"),
+    },
+    {
+      cafName: "Essex Hall",
+      rating: 5.0,
+      source: require("../../assets/images/essex_caf.png"),
+    },
+    {
+      cafName: "Saugeen Hall",
+      rating: 5.0,
+      source: require("../../assets/images/saugeen_caf.jpg"),
+    },
   ];
 
   useEffect(() => {
@@ -94,7 +127,9 @@ export default function MainScreen() {
             color={colors.black}
             name="user-circle"
             size={40}
-            onPress={() => router.push("(tabs)/onboarding")}
+            onPress={() => {
+              router.push("/(tabs)/profile");
+            }}
           />
           <View style={{ flex: 0.03 }}></View>
         </View>
@@ -127,7 +162,13 @@ export default function MainScreen() {
             />
             <Text style={styles.cafTitle}>{cafs[cafNum]}</Text>
           </View>
-          <TouchableOpacity onPress={async () => {}} style={{ flex: 1 }}>
+          <TouchableOpacity
+            onPress={async () => {
+              router.push("/(tabs)/cafeteria");
+              router.setParams({ cafName: cafs[cafNum] });
+            }}
+            style={{ flex: 1 }}
+          >
             <Text style={[styles.subtitle, { fontSize: 15 }]}>
               See Cafeteria
             </Text>
@@ -147,7 +188,13 @@ export default function MainScreen() {
             return (
               <FoodBox
                 onPress={() => {
-                  router.push("(tabs)/food_description");
+                  router.push("/(tabs)/food_description");
+                  router.setParams({ cafName: cafs[cafNum] });
+                  // router.setParams({
+                  //   cafName: cafs[cafNum],
+                  //   itemName: item[0],
+                  //   itemRating: item[1],
+                  // });
                 }}
                 key={item}
                 name={item[0]}
@@ -230,14 +277,18 @@ export default function MainScreen() {
           {cafBoxes.map((item) => {
             return (
               <MainCafBox
+                onPress={() => {
+                  router.push("/(tabs)/cafeteria");
+                  router.setParams({ cafName: item.cafName });
+                }}
                 key={item.cafName}
-                liked={item.liked}
                 rating={item.rating}
                 cafName={item.cafName}
+                source={item.source}
+                //liked={item.liked}
               />
             );
           })}
-          <View style={{ width: dimensions.width * 0.16 }}></View>
         </ScrollView>
       </SafeAreaView>
     </View>
