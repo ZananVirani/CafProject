@@ -163,7 +163,7 @@ export default function Cafeteria() {
                   lineHeight: 40,
                 }}
               >
-                Show Restrictions:
+                Hide Restrictions:
               </Text>
               <Toggle
                 circleColorOff={colors.white}
@@ -185,6 +185,21 @@ export default function Cafeteria() {
               />
             </View>
           </View>
+          {true && (
+            <View style={{ width: dimensions.width }}>
+              <CustomButton
+                onPress={() => {
+                  router.push("/(tabs)/menu");
+                  router.setParams({ cafName: cafName });
+                }}
+                marginTop={20}
+                borderRadius={20}
+                buttonColor={colors.wpurple}
+              >
+                Change Menu
+              </CustomButton>
+            </View>
+          )}
           {
             categories.map((category, index) => {
               return (

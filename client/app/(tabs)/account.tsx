@@ -36,7 +36,6 @@ export default function AccountInfo() {
   const getUser = async () => {
     let id = await getUserID();
     id && setUserID(id);
-    setUserID("Hello");
   };
 
   useEffect(() => {

@@ -14,7 +14,7 @@ import {
 import React, { useEffect, useState } from "react";
 import colors from "@/constants/Colors";
 import { AntDesign } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
 import CustomButton from "@/components/CustomButton";
 import { format } from "date-fns";
 import TextField from "@/components/TextField";
@@ -22,6 +22,7 @@ import PresetButton from "@/components/PresetButton";
 
 export default function Menu() {
   const dimensions = useWindowDimensions();
+  const { cafName } = useGlobalSearchParams();
   const [selectMode, setSelectMode] = useState(false);
   const smth = format(new Date(), "yyyy/MM/dd");
   const allPresets = [
@@ -157,7 +158,8 @@ export default function Menu() {
               adjustsFontSizeToFit={true}
             >
               {smth}
-              {"\n"}Sydenham Hall
+              {"\n"}
+              {cafName}
             </Text>
           </View>
         </View>
@@ -173,7 +175,12 @@ export default function Menu() {
             marginTop: "5%",
           }}
         >
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              router.push("/(tabs)/preset");
+              router.setParams({});
+            }}
+          >
             <View
               style={{
                 width: dimensions.width * 0.4,
@@ -275,7 +282,10 @@ export default function Menu() {
     setDeletedPresets(tempPresets);
   }
 
-  function visitPreset(item: string) {}
+  function visitPreset(item: string) {
+    router.push("/(tabs)/preset");
+    router.setParams({ presetName: item });
+  }
 }
 
 const styles = StyleSheet.create({

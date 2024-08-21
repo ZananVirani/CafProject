@@ -1,4 +1,5 @@
 import {
+  Alert,
   Keyboard,
   SafeAreaView,
   ScrollView,
@@ -189,7 +190,25 @@ export default function ItemSelect() {
             }}
           >
             <CustomButton
-              onPress={undefined}
+              onPress={() =>
+                Alert.alert(
+                  `Are You Sure You Want Add Selected Items?`,
+                  undefined,
+                  [
+                    {
+                      text: "Cancel",
+                      onPress: () => {},
+                      style: "cancel",
+                    },
+                    {
+                      text: "OK",
+                      onPress: () => {
+                        router.back();
+                      },
+                    },
+                  ]
+                )
+              }
               borderRadius={20}
               buttonColor={colors.wpurple}
             >
@@ -209,7 +228,9 @@ export default function ItemSelect() {
     setSelectedPresets(tempPresets);
   }
 
-  function visitPreset(item: string) {}
+  function visitPreset(item: string) {
+    router.push("/(tabs)/food_description");
+  }
 }
 
 const styles = StyleSheet.create({

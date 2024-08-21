@@ -11,7 +11,7 @@ import {
 import React, { useEffect, useState } from "react";
 import colors from "@/constants/Colors";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
 import CustomButton from "@/components/CustomButton";
 import { TextInput } from "react-native-paper";
 import FoodBox from "@/components/FoodBox";
@@ -19,6 +19,7 @@ import ItemAdd from "@/components/ItemAdd";
 
 export default function Preset() {
   const dimensions = useWindowDimensions();
+  const { presetName } = useGlobalSearchParams();
 
   const categories = ["Hot Food", "Interactive"];
   const testFoods = [
@@ -56,8 +57,8 @@ export default function Preset() {
               size={30}
               onPress={() => router.back()}
             />
-            <Text style={styles.title} numberOfLines={1}>
-              New Menu
+            <Text style={styles.title} numberOfLines={2}>
+              {presetName ? presetName : "New Menu"}
             </Text>
           </View>
         </View>
@@ -72,13 +73,17 @@ export default function Preset() {
             }}
           >
             <ItemAdd
-              onPress={() => {}}
+              onPress={() => {
+                router.push("/(tabs)/upload");
+              }}
               text="Create New Item"
               marginRight={30}
               iconName="plus"
             />
             <ItemAdd
-              onPress={() => {}}
+              onPress={() => {
+                router.push("/(tabs)/item_select");
+              }}
               text="Choose Item"
               iconName="mouse-pointer"
             />
@@ -136,7 +141,7 @@ export default function Preset() {
                     return (
                       <FoodBox
                         onPress={() => {
-                          //router.push("(tabs)/food_description");
+                          router.push("/(tabs)/food_description");
                         }}
                         key={index}
                         name={item.name}
@@ -179,7 +184,10 @@ export default function Preset() {
           }}
         >
           <CustomButton
-            onPress={() => {}}
+            onPress={() => {
+              router.push("/(tabs)/preview");
+              router.setParams({ presetName: presetName });
+            }}
             borderRadius={20}
             buttonColor={colors.wpurple}
           >

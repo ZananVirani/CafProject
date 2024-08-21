@@ -13,13 +13,14 @@ import FoodBox from "@/components/FoodBox";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import Toggle from "@imcarlosguerrero/react-native-switch-toggle";
-import { router } from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
 import CustomButton from "@/components/CustomButton";
 import { Dialog } from "react-native-simple-dialogs";
 import TextField from "@/components/TextField";
 import { TextInput } from "react-native-paper";
 
 export default function Preview() {
+  const { presetName } = useGlobalSearchParams();
   const dimensions = useWindowDimensions();
   const testFoods = [
     ["Grilled Cheese Sandwich", 4.3],
@@ -41,6 +42,7 @@ export default function Preview() {
         titleStyle={styles.dialog}
         onTouchOutside={() => {
           setDialog(false);
+          setError(false);
           setNameText("");
         }}
         onRequestClose={() => {}}
@@ -97,7 +99,7 @@ export default function Preview() {
               nameText.length == 0
                 ? setError(true)
                 : Alert.alert(
-                    `Are You Sure You Want To Create New Preset?`,
+                    `Are You Sure You Want To Create New Preset And Upload Menu?`,
                     `Preset Name Will Be:\n${nameText}`,
                     [
                       {
@@ -147,7 +149,7 @@ export default function Preview() {
             onPress={() => router.back()}
           />
           <Text style={styles.title} numberOfLines={1}>
-            Preview
+            {presetName}
           </Text>
         </View>
       </View>
@@ -203,7 +205,9 @@ export default function Preview() {
                 {testFoods.map((item) => {
                   return (
                     <FoodBox
-                      onPress={() => {}}
+                      onPress={() => {
+                        router.push("/(tabs)/food_description");
+                      }}
                       key={item}
                       name={item[0]}
                       rating={item[1]}
@@ -247,8 +251,28 @@ export default function Preview() {
           marginBottom: 85,
         }}
       >
-        <CustomButton onPress={() => {}} borderRadius={14} marginVertical={20}>
-          Save & Upload
+        <CustomButton
+          onPress={() => {
+            Alert.alert(
+              `Are You Sure You Want To Edit Current Preset And Upload Menu?`,
+              undefined,
+              [
+                {
+                  text: "Cancel",
+                  onPress: () => {},
+                  style: "cancel",
+                },
+                {
+                  text: "OK",
+                  onPress: () => {},
+                },
+              ]
+            );
+          }}
+          borderRadius={14}
+          marginVertical={20}
+        >
+          Edit Preset & Upload
         </CustomButton>
       </View>
       <View
@@ -260,7 +284,19 @@ export default function Preview() {
         }}
       >
         <CustomButton
-          onPress={() => {}}
+          onPress={() => {
+            Alert.alert(`Are You Sure You Want To Upload Menu?`, undefined, [
+              {
+                text: "Cancel",
+                onPress: () => {},
+                style: "cancel",
+              },
+              {
+                text: "OK",
+                onPress: () => {},
+              },
+            ]);
+          }}
           borderRadius={14}
           marginVertical={0}
           buttonColor={colors.wpurple}
