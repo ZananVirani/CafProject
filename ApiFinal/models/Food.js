@@ -28,6 +28,10 @@ const foodSchema = new schema({
     type: String,
     required: true
   },
+  averageRating: {
+    type: Number,
+    default: 0
+  },
   cafeterias: [{ 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Cafeteria' 

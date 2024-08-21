@@ -11,6 +11,7 @@ router.post("/", async (req, res) => {
     console.log("req.body: ", req.body);
     
     //Uses destructuring assignment syntax to assign values in body of request to the variables with the same name
+    //Consider discluding ingredients
     const {name, image, ingredients, allergies, type, cafeterias} = req.body;
 
     const imageName = `${name}.jpg`;
@@ -59,7 +60,7 @@ router.post("/", async (req, res) => {
 
 })
 
-router.get('/:foodName', async (req, res) => {
+router.get('/food/:foodName', async (req, res) => {
   try {
     const {foodName} = req.params;
     
@@ -104,5 +105,21 @@ router.get('/:foodName', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 })
+router.get('/allFoods', async (req, res) =>{
+  try{
+    const foods = Food.find({});
+    res.json({foods});
+  } catch (err){
+    res.status(500).json({message: 'Error retrieving users', error: err.message })
+  }
+})
+
+
+router.get('/getCafs/:foodName', async(req, res) =>{
+  const food = req.params;
+
+  const cafs = Food.findOne({foodName}, cafeterias)
+})
+  
 
 module.exports = router;

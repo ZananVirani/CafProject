@@ -2,6 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const User = require('../models/User');
 const getCafs = require('../middleware/getCaf')
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+require('dotenv').config();
+
 
 const router = express.Router();
 
@@ -43,10 +47,13 @@ router.post("/register", async (req, res) => {
         studentId: studentId,
         firstName,
         lastName,
+        password,
+        role,
         allergies,
         favouriteCafeterias
       });
   
+      console.log(newUser)
       await User.create(newUser);
     }
 
@@ -57,6 +64,28 @@ router.post("/register", async (req, res) => {
     console.log("error: ", err)
   }
 
+})
+
+router.post('/login', async (req, res) => {
+  try{
+    const {studentId, password} = req.body;
+    const user = await User.findOne({studentId})
+    if(!user){
+      return res.status(400).json({message: 'User Not Found'})
+    }
+
+    const passMatch = await bcrypt.compare(password, user.password);
+    if(!passMatch){
+      return res.status(400).json({message: "Password Invalid"})
+    }
+    // console.log("Secret Key: ", process.env.JWT_SECRET)
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    res.json({token});
+
+  } catch (err){
+      return res.status(500).json({message: 'Error logging in', error: err.message})
+  }
 })
 
 module.exports = router;

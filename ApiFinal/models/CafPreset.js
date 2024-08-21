@@ -2,20 +2,16 @@ const mongoose = require('mongoose');
 
 const schema = mongoose.Schema;
 
-const cafSchema = new schema({
+const cafPresetsSchema = new schema({
   //consider changing 
   name: {
     type: String,
     required: true,
     unique: true
   },
-  longitude: {
-    type: String,
-    required: true
-  },
-  latitude: {
-    type: String,
-    required: true
+  caf: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Cafeteria'
   },
   menu: [{
     type: mongoose.Schema.Types.ObjectId,
@@ -23,6 +19,6 @@ const cafSchema = new schema({
   }]
 });
 
-const Cafeteria = mongoose.model("cafeteria", cafSchema)
+const CafPresets = mongoose.model("cafPresets", cafPresetsSchema)
 
-module.exports = Cafeteria;
+module.exports = CafPresets;

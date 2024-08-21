@@ -1,6 +1,9 @@
+//To Change Review add patch request
+
 const express = require('express');
 const mongoose = require('mongoose');
 const Review = require('../models/Review');
+const updateAverageReview = require('../middleware/updateAverageRating')
 const getReviewData = require('../middleware/getReviewData');
 
 const router = express.Router();
@@ -24,6 +27,8 @@ router.post("/:userName/:foodName", async (req,res) =>{
     });
     
     await Review.create(newReview);
+
+    await updateAverageReview(foodName);
 
     res.send("Review Added")  
     

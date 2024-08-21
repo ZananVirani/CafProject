@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Cafeteria = require('../models/Cafeteria');
-// const getFood = require('../middleware/getFood')
 const addFoodItemToCafeteria = require('../middleware/addFood');
 const getFoodFromCaf = require('../middleware/getFood');
 
@@ -33,6 +32,8 @@ router.post("/", async (req, res) => {
 
 })
 
+
+//Consider converting to patch request - may make program much cleaner
 router.post('/addFood', async (req, res) => {
   console.log('req.body: ', req.body)
   const {cafeteriaName} = req.body;
@@ -67,24 +68,5 @@ router.get('/getFood/:cafeteriaName', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 })
-
-//Create array to add food to
-// router.get('/getFood/:cafeteriaName', async (req, res) =>{
-//   try {
-//     var foods = []
-
-//     const {cafeteriaName} = req.params;
-//     const caf = await Cafeteria.findOne({name: cafeteriaName});
-
-//     const foodIds = caf.menu
-//     foodIds.forEach(foodId => {
-//       foods = getFood(foodId, foods);      
-//     });
-//     console.log(foods)
-//   }
-//   catch (err){
-//     console.log("error: ", err)
-//   }
-// })
 
 module.exports = router;
