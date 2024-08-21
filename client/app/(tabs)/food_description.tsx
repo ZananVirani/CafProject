@@ -10,11 +10,12 @@ import {
 } from "react-native";
 import React, { Suspense, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import CafAppBar from "@/components/CafAppBar";
 import {
   MaterialCommunityIcons,
   Ionicons,
   FontAwesome6,
+  AntDesign,
+  FontAwesome5,
 } from "@expo/vector-icons";
 import colors from "@/constants/Colors";
 import { Collapsible } from "@/components/Collapsible";
@@ -22,11 +23,13 @@ import { Dialog } from "react-native-simple-dialogs";
 import StarRating from "react-native-star-rating-widget";
 import CustomButton from "@/components/CustomButton";
 import axios from "axios";
+import { router, useGlobalSearchParams } from "expo-router";
 
 export default function FoodDescription() {
   const [apiInfo, setApiInfo] = useState({
     name: "",
   });
+  const { cafName } = useGlobalSearchParams();
 
   const [loading, setLoading] = useState(false);
   // useEffect(() => {
@@ -109,7 +112,33 @@ export default function FoodDescription() {
         </View>
       </Dialog>
       <SafeAreaView style={{ flex: 1, zIndex: 0 }}>
-        <CafAppBar />
+        <View
+          style={{
+            height: 80,
+            flexDirection: "row",
+            alignItems: "center",
+            marginHorizontal: "5%",
+          }}
+        >
+          <View
+            style={{ flex: 0.97, flexDirection: "row", alignItems: "center" }}
+          >
+            <AntDesign
+              color={colors.black}
+              name="leftcircleo"
+              size={30}
+              onPress={() => router.back()}
+            />
+            <Text style={styles.title}>{cafName}</Text>
+          </View>
+          <FontAwesome5
+            color={colors.black}
+            name="user-circle"
+            size={33}
+            onPress={() => router.push("/(tabs)/profile")}
+          />
+          <View style={{ flex: 0.03 }}></View>
+        </View>
 
         {!loading && (
           <ScrollView>
@@ -145,7 +174,7 @@ export default function FoodDescription() {
                     alignItems: "center",
                   }}
                 >
-                  <Text style={styles.title} numberOfLines={2}>
+                  <Text style={styles.itemTitle} numberOfLines={2}>
                     {/*apiInfo.name*/}Butter Chicken
                   </Text>
                 </View>
@@ -360,6 +389,13 @@ export default function FoodDescription() {
 }
 
 const styles = StyleSheet.create({
+  title: {
+    color: colors.black,
+    fontFamily: "inter",
+    fontSize: 30,
+    fontWeight: "500",
+    marginLeft: 15,
+  },
   error: {
     color: "red",
     fontSize: 16,
@@ -377,7 +413,7 @@ const styles = StyleSheet.create({
     fontFamily: "inter",
     textAlign: "center",
   },
-  title: {
+  itemTitle: {
     color: "black",
     fontFamily: "inter",
     fontWeight: "medium",

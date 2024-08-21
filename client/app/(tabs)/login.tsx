@@ -83,6 +83,7 @@ export default function Login() {
           <CustomButton
             onPress={() => {
               if (!ID || !password) setError(true);
+              else router.replace("/(tabs)/account");
             }}
             borderRadius={16}
             buttonColor={colors.wpurple}

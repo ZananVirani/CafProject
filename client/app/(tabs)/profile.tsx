@@ -46,7 +46,7 @@ export default function ProfileScreen() {
               name="leftcircleo"
               size={30}
               onPress={() => {
-                // router.push("(tabs)/main_screen")
+                router.back();
               }}
             />
             <Text style={styles.title}>User Settings</Text>
@@ -59,10 +59,16 @@ export default function ProfileScreen() {
               flex: 1,
             }}
           >
-            <ProfileButton text={"Account Information"}>
+            <ProfileButton
+              text={"Account Information"}
+              onPress={() => router.push("/(tabs)/account")}
+            >
               <Feather name="user" size={45} color={colors.wpurple} />
             </ProfileButton>
-            <ProfileButton text={"Favourite Foods"}>
+            <ProfileButton
+              text={"Favourite Foods"}
+              onPress={() => router.push("/(tabs)/favourites")}
+            >
               <MaterialCommunityIcons
                 name="star-circle"
                 size={45}
@@ -135,7 +141,10 @@ export default function ProfileScreen() {
                 },
                 {
                   text: "Logout",
-                  onPress: () => {},
+                  onPress: () => {
+                    router.dismissAll();
+                    router.replace("/(tabs)/");
+                  },
                 },
               ]);
             }}

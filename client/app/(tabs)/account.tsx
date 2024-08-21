@@ -6,7 +6,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import React, { useState, createContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import CustomButton from "@/components/CustomButton";
 import colors from "../../constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -15,12 +15,15 @@ import { Checkbox } from "react-native-paper";
 import { Dialog } from "react-native-simple-dialogs";
 import CustomDropdown from "@/components/CustomDropdown";
 import { router } from "expo-router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/state/store";
-import { Octicons } from "@expo/vector-icons";
+import { AntDesign, Octicons } from "@expo/vector-icons";
+import { clear } from "@/state/residence/resSlice";
+import { getUserID } from "@/utils/AsyncStorage";
 
 export default function AccountInfo() {
   const resList = useSelector((state: RootState) => state.resList);
+  const dispatch = useDispatch();
   const dimensions = useWindowDimensions();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -28,6 +31,17 @@ export default function AccountInfo() {
   const [secondError, setSecondError] = useState(false);
   const [thirdError, setThirdError] = useState(false);
   const [dialog, setDialog] = useState(false);
+  const [userID, setUserID] = useState<string | undefined>(undefined);
+
+  const getUser = async () => {
+    let id = await getUserID();
+    id && setUserID(id);
+    setUserID("Hello");
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   const [checked, setChecked] = useState(false);
   const [map, setMap] = useState(
@@ -59,7 +73,7 @@ export default function AccountInfo() {
       <View style={{ flex: 1, backgroundColor: "white" }}>
         <Dialog
           visible={dialog}
-          title="All Set!"
+          title={userID ? "Information Updated!" : "All Set!"}
           titleStyle={styles.dialog}
           onRequestClose={() => {}}
           contentInsetAdjustmentBehavior={undefined}
@@ -72,20 +86,26 @@ export default function AccountInfo() {
         >
           <View style={{ alignItems: "center" }}>
             <Octicons name="check-circle-fill" size={70} color={"green"} />
-            <View
-              style={{
-                width: "100%",
-                marginTop: 20,
-              }}
-            >
-              <Text style={styles.subdialog} numberOfLines={2}>
-                Ready To{"\n"}Start Exploring
-              </Text>
-            </View>
+            {!userID && (
+              <View
+                style={{
+                  width: "100%",
+                  marginTop: 20,
+                }}
+              >
+                <Text style={styles.subdialog} numberOfLines={2}>
+                  Ready To{"\n"}Start Exploring
+                </Text>
+              </View>
+            )}
           </View>
           <CustomButton
-            onPress={() => {
+            onPress={async () => {
               setDialog(false);
+              dispatch(clear([]));
+              await setTimeout(() => {
+                !userID ? router.replace("/(tabs)/main_screen") : router.back();
+              }, 500);
             }}
             borderRadius={15}
             marginHorizontal={0}
@@ -98,9 +118,39 @@ export default function AccountInfo() {
           </CustomButton>
         </Dialog>
         <SafeAreaView style={{ flex: 1 }}>
-          <View style={{ flex: 0.1 }}>
-            <Text style={styles.title}>Account Setup</Text>
-          </View>
+          {!userID ? (
+            <View style={{ flex: 0.1 }}>
+              <Text style={styles.title}>Account Setup</Text>
+            </View>
+          ) : (
+            <View
+              style={{
+                height: 80,
+                flexDirection: "row",
+                alignItems: "center",
+                marginHorizontal: "7%",
+              }}
+            >
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  width: dimensions.width,
+                }}
+              >
+                <AntDesign
+                  color={colors.black}
+                  name="leftcircleo"
+                  size={30}
+                  onPress={() => {
+                    router.back();
+                  }}
+                />
+                <Text style={styles.secondTitle}>Account Setup</Text>
+              </View>
+            </View>
+          )}
           <View style={{ flex: 0.78 }}>
             <TextField
               placeText="First Name"
@@ -227,7 +277,7 @@ export default function AccountInfo() {
               borderRadius={16}
               buttonColor={colors.wpurple}
             >
-              Get Started
+              {!userID ? "Get Started" : "Update Info"}
             </CustomButton>
           </View>
         </SafeAreaView>
@@ -237,6 +287,15 @@ export default function AccountInfo() {
 }
 
 const styles = StyleSheet.create({
+  secondTitle: {
+    color: colors.black,
+    fontFamily: "inter",
+    fontSize: 33,
+    fontWeight: "500",
+    textAlign: "center",
+    flex: 1,
+    marginRight: 15,
+  },
   dialog: {
     fontFamily: "inter",
     fontSize: 30,

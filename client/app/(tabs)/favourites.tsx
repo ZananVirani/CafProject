@@ -150,7 +150,7 @@ export default function Favourites() {
                   <FoodBox
                     key={index}
                     onPress={() => {
-                      //router.push("(tabs)/food_description");
+                      router.push("/(tabs)/food_description");
                     }}
                     name={item.name}
                     rating={item.rating}

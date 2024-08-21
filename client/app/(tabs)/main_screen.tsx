@@ -95,7 +95,7 @@ export default function MainScreen() {
             name="user-circle"
             size={40}
             onPress={() => {
-              //router.push("(tabs)/onboarding")
+              router.push("/(tabs)/profile");
             }}
           />
           <View style={{ flex: 0.03 }}></View>
@@ -129,7 +129,13 @@ export default function MainScreen() {
             />
             <Text style={styles.cafTitle}>{cafs[cafNum]}</Text>
           </View>
-          <TouchableOpacity onPress={async () => {}} style={{ flex: 1 }}>
+          <TouchableOpacity
+            onPress={async () => {
+              router.push("/(tabs)/cafeteria");
+              router.setParams({ cafName: cafs[cafNum] });
+            }}
+            style={{ flex: 1 }}
+          >
             <Text style={[styles.subtitle, { fontSize: 15 }]}>
               See Cafeteria
             </Text>
@@ -149,7 +155,13 @@ export default function MainScreen() {
             return (
               <FoodBox
                 onPress={() => {
-                  //router.push("(tabs)/food_description");
+                  router.push("/(tabs)/food_description");
+                  router.setParams({ cafName: cafs[cafNum] });
+                  // router.setParams({
+                  //   cafName: cafs[cafNum],
+                  //   itemName: item[0],
+                  //   itemRating: item[1],
+                  // });
                 }}
                 key={item}
                 name={item[0]}
@@ -232,6 +244,10 @@ export default function MainScreen() {
           {cafBoxes.map((item) => {
             return (
               <MainCafBox
+                onPress={() => {
+                  router.push("/(tabs)/cafeteria");
+                  router.setParams({ cafName: item.cafName });
+                }}
                 key={item.cafName}
                 liked={item.liked}
                 rating={item.rating}

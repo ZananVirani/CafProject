@@ -1,11 +1,12 @@
 import { ImageBackground, StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-import { router } from "expo-router";
 import CustomButton from "@/components/CustomButton";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 
 export default function OnBoarding() {
+  const router = useRouter();
   return (
     <ImageBackground
       source={require("../../assets/images/splash_background.jpg")}
@@ -19,7 +20,9 @@ export default function OnBoarding() {
         <View style={{ flex: 0.15 }}>
           <CustomButton
             borderRadius={16}
-            onPress={() => router.push("/(tabs)/account")}
+            onPress={() => {
+              router.replace("/(tabs)/login");
+            }}
           >
             Login
           </CustomButton>

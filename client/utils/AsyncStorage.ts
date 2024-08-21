@@ -1,20 +1,22 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export async function setIntro(value:boolean) : Promise<void>{
+
+export async function setUserID(value:string | undefined ) : Promise<void>{
     try {
-        await AsyncStorage.setItem('intro', JSON.stringify(value));
+        value ? await AsyncStorage.setItem('userID', JSON.stringify(value)) : await AsyncStorage.removeItem('userID');
+        
     } catch (error) {
         console.log(error);
     }
 }
 
-export async function getIntro() : Promise<boolean> {
+export async function getUserID() : Promise<string|undefined> {
     try {
-        const hello = await AsyncStorage.getItem('intro');
-        return hello ? JSON.parse(hello) : true;
+        const hello = await AsyncStorage.getItem('userID');
+        return hello ? JSON.parse(hello) : undefined;
     } catch (error) {
         console.log(error);
-        return false;
+        return undefined;
     }
 }
 

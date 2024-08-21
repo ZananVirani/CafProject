@@ -9,14 +9,19 @@ import React, { useEffect, useState } from "react";
 import colors from "../../constants/Colors";
 import FoodBox from "@/components/FoodBox";
 import { SafeAreaView } from "react-native-safe-area-context";
-import CafAppBar from "@/components/CafAppBar";
-import { FontAwesome6, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  FontAwesome5,
+  FontAwesome6,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import Toggle from "@imcarlosguerrero/react-native-switch-toggle";
-import { router } from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
 import { Dialog } from "react-native-simple-dialogs";
 import CustomButton from "@/components/CustomButton";
 
 export default function Cafeteria() {
+  const { cafName } = useGlobalSearchParams();
   const dimensions = useWindowDimensions();
   const testFoods = [
     ["Grilled Cheese Sandwich", 4.3],
@@ -91,7 +96,33 @@ export default function Cafeteria() {
             Back To Home Screen
           </CustomButton>
         </Dialog>
-        <CafAppBar />
+        <View
+          style={{
+            height: 80,
+            flexDirection: "row",
+            alignItems: "center",
+            marginHorizontal: "5%",
+          }}
+        >
+          <View
+            style={{ flex: 0.97, flexDirection: "row", alignItems: "center" }}
+          >
+            <AntDesign
+              color={colors.black}
+              name="leftcircleo"
+              size={30}
+              onPress={() => router.back()}
+            />
+            <Text style={styles.title}>{cafName}</Text>
+          </View>
+          <FontAwesome5
+            color={colors.black}
+            name="user-circle"
+            size={33}
+            onPress={() => router.push("/(tabs)/profile")}
+          />
+          <View style={{ flex: 0.03 }}></View>
+        </View>
         <ScrollView>
           <View
             style={{
@@ -206,7 +237,10 @@ export default function Cafeteria() {
                     {testFoods.map((item) => {
                       return (
                         <FoodBox
-                          onPress={() => {}}
+                          onPress={() => {
+                            router.push("/(tabs)/food_description");
+                            router.setParams({ cafName });
+                          }}
                           key={item}
                           name={item[0]}
                           rating={item[1]}
@@ -291,6 +325,13 @@ export default function Cafeteria() {
 }
 
 const styles = StyleSheet.create({
+  title: {
+    color: colors.black,
+    fontFamily: "inter",
+    fontSize: 30,
+    fontWeight: "500",
+    marginLeft: 15,
+  },
   text: {
     color: colors.wpurple,
     fontSize: 20,

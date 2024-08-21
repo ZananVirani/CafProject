@@ -11,7 +11,6 @@ import React, { useState } from "react";
 import colors from "../../constants/Colors";
 import FoodBox from "@/components/FoodBox";
 import { SafeAreaView } from "react-native-safe-area-context";
-import CafAppBar from "@/components/CafAppBar";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import Toggle from "@imcarlosguerrero/react-native-switch-toggle";
 import { router } from "expo-router";
