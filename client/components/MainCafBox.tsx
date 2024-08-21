@@ -16,16 +16,16 @@ export default function MainCafBox(props: any) {
 
   return (
     <TouchableOpacity
-      style={{ borderRadius: 12, marginRight: "2%" }}
+      style={{ borderRadius: 12, marginRight: 20 }}
       onPress={props.onPress}
     >
       <Image
-        source={require("../assets/images/grilled_cheese.png")}
+        source={props.source}
         style={{
           flex: 1,
           width: dimensions.width * 0.55,
           borderRadius: 12,
-          opacity: 0.7,
+          opacity: 1,
           borderWidth: 0.7,
           borderColor: colors.wpurple,
         }}

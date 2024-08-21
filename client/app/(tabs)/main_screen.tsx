@@ -39,9 +39,42 @@ export default function MainScreen() {
   const [cafNum, setCafNum] = useState(0);
   const [filterChosen, setFilterChosen] = useState(categories[0]);
   const cafBoxes = [
-    { cafName: "Sydenham Hall", rating: 4.3, liked: true },
-    { cafName: "Perth Hall", rating: 4.0, liked: false },
-    { cafName: "Ontario Hall", rating: 5.0, liked: true },
+    {
+      cafName: "Ontario Hall",
+      rating: 5.0,
+      source: require("../../assets/images/ontario_caf.jpg"),
+    },
+    {
+      cafName: "Sydenham Hall",
+      rating: 4.3,
+      source: require("../../assets/images/sydenham_caf.png"),
+    },
+    {
+      cafName: "Perth Hall",
+      rating: 4.0,
+      source: require("../../assets/images/perth_caf.jpg"),
+    },
+
+    {
+      cafName: "Delaware Hall",
+      rating: 5.0,
+      source: require("../../assets/images/delaware_caf.png"),
+    },
+    {
+      cafName: "Elgin Hall",
+      rating: 5.0,
+      source: require("../../assets/images/elgin_caf.png"),
+    },
+    {
+      cafName: "Essex Hall",
+      rating: 5.0,
+      source: require("../../assets/images/essex_caf.png"),
+    },
+    {
+      cafName: "Saugeen Hall",
+      rating: 5.0,
+      source: require("../../assets/images/saugeen_caf.jpg"),
+    },
   ];
 
   useEffect(() => {
@@ -249,13 +282,13 @@ export default function MainScreen() {
                   router.setParams({ cafName: item.cafName });
                 }}
                 key={item.cafName}
-                liked={item.liked}
                 rating={item.rating}
                 cafName={item.cafName}
+                source={item.source}
+                //liked={item.liked}
               />
             );
           })}
-          <View style={{ width: dimensions.width * 0.16 }}></View>
         </ScrollView>
       </SafeAreaView>
     </View>
