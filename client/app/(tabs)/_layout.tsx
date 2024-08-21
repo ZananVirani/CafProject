@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useColorScheme } from "@/hooks/useColorScheme";
+import { useColorScheme } from "react-native";
 import { Stack } from "expo-router";
 import Login from "./login";
 import OnBoarding from ".";
