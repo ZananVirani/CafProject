@@ -149,7 +149,7 @@ export default function Preview() {
             onPress={() => router.back()}
           />
           <Text style={styles.title} numberOfLines={1}>
-            {presetName}
+            {presetName ?? "New Menu"}
           </Text>
         </View>
       </View>
