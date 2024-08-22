@@ -114,7 +114,9 @@ export default function FoodBox(props: any) {
                 fontWeight: "medium",
               }}
             >
-              {props.rating.toFixed(1)}
+              {props.rating > 5 || props.rating < 0
+                ? "NA"
+                : props.rating.toFixed(1)}
             </Text>
           </View>
         </View>

@@ -311,61 +311,79 @@ export default function UploadScreen() {
           </View>
           <View style={{ flex: 1, justifyContent: "center" }}>
             <CustomButton
-              onPress={
-                async () => {
-                  if (!foodName || !filterChosen || !image) {
-                    Alert.alert(
-                      `Please Make Sure Image, Item Name, And Item Category Are Filled In`,
-                      undefined,
-                      [
-                        {
-                          text: "Ok",
-                          onPress: () => {},
+              onPress={async () => {
+                if (!foodName || !filterChosen || !image) {
+                  Alert.alert(
+                    `Please Make Sure Image, Item Name, And Item Category Are Filled In`,
+                    undefined,
+                    [
+                      {
+                        text: "Ok",
+                        onPress: () => {},
+                      },
+                    ]
+                  );
+                } else {
+                  Alert.alert(
+                    `Are You Sure You Want To Upload This Item?`,
+                    undefined,
+                    [
+                      {
+                        text: "Cancel",
+                        onPress: () => {},
+                        style: "cancel",
+                      },
+                      {
+                        text: "Upload",
+                        onPress: async () => {
+                          let restrictions: string[] = [];
+                          map.forEach((value, key) => {
+                            if (value) restrictions.push(key);
+                          });
+                          try {
+                            const base64 = await FileSystem.readAsStringAsync(
+                              image,
+                              {
+                                encoding: FileSystem.EncodingType.Base64,
+                              }
+                            );
+                            //data:image/jpeg;base64,
+                            let another = await axios.post(
+                              "http://10.0.0.136:3000/foods/",
+                              {
+                                name: foodName,
+                                image: "data:image/jpeg;base64," + base64,
+                                allergies: restrictions,
+                                type: filterChosen,
+                              }
+                            );
+
+                            Alert.alert("Item Created", undefined, [
+                              {
+                                text: "Ok",
+                                onPress: () => {
+                                  router.back();
+                                },
+                              },
+                            ]);
+                          } catch (error) {
+                            Alert.alert(
+                              "Item Created Unsuccessfully",
+                              undefined,
+                              [
+                                {
+                                  text: "Ok",
+                                  onPress: () => {},
+                                },
+                              ]
+                            );
+                          }
                         },
-                      ]
-                    );
-                  } else {
-                    Alert.alert(
-                      `Are You Sure You Want To Upload This Item?`,
-                      undefined,
-                      [
-                        {
-                          text: "Cancel",
-                          onPress: () => {},
-                          style: "cancel",
-                        },
-                        {
-                          text: "Upload",
-                          onPress: () => {},
-                        },
-                      ]
-                    );
-                  }
+                      },
+                    ]
+                  );
                 }
-                // try {
-                //   const base64 = await FileSystem.readAsStringAsync(image, {
-                //     encoding: FileSystem.EncodingType.Base64,
-                //   });
-                //   //data:image/jpeg;base64,
-                //   let another = await axios.post(
-                //     "https://0933-2607-fea8-335e-e800-456d-8f3b-fca2-b5a8.ngrok-free.app/foods/",
-                //     {
-                //       name: "ArshamFam",
-                //       image: "data:image/jpeg;base64," + base64,
-                //       ingredients: [],
-                //       allergies: ["Shriraam"],
-                //       type: "Hot Food",
-                //     }
-                //   );
-                //   let response = await axios.get(
-                //     "https://0933-2607-fea8-335e-e800-456d-8f3b-fca2-b5a8.ngrok-free.app/foods/ArshamFam"
-                //   );
-                //   console.log(response.data.name);
-                //   setImage(response.data.image);
-                // } catch (error) {
-                //   console.log(error);
-                // }
-              }
+              }}
               borderRadius={16}
               buttonColor={colors.wpurple}
               fontSize={20}

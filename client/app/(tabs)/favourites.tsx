@@ -19,7 +19,7 @@ export default function Favourites() {
   const dimensions = useWindowDimensions();
   const [searchText, setSearchText] = useState("");
   const [filterChosen, setFilterChosen] = useState("Favs");
-  const categories = ["Favs", "All "];
+  const categories: string[] = [];
   const [finalFoods, setFinalFoods] = useState([{ name: "", rating: 0 }]);
 
   const allItems = [
@@ -28,13 +28,15 @@ export default function Favourites() {
     { name: "Other Item", rating: 3.8 },
     { name: "Hot Dog", rating: 3.8 },
   ];
-  const favItems = [
-    { name: "Pina Colada", rating: 3.8 },
-    { name: "Something Else", rating: 3.8 },
-  ];
+  // const favItems = [
+  //   { name: "Pina Colada", rating: 3.8 },
+  //   { name: "Something Else", rating: 3.8 },
+  // ];
+
+  useEffect(() => {}, []);
 
   useEffect(() => {
-    let tempFoods = filterChosen == categories[0] ? favItems : allItems;
+    let tempFoods = allItems;
 
     setFinalFoods(
       tempFoods.filter((item) => {
@@ -83,6 +85,7 @@ export default function Favourites() {
                 flexDirection: "row",
                 marginTop: 10,
                 paddingLeft: 15,
+                width: dimensions.width,
               }}
             >
               {categories.map((item) => {
@@ -124,7 +127,7 @@ export default function Favourites() {
                 theme={{ roundness: 50 }}
                 style={{
                   backgroundColor: colors.verylightgray,
-                  width: "51%",
+                  width: "90%",
                   marginHorizontal: "2%",
                   alignSelf: "center",
                 }}

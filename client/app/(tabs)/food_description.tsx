@@ -24,25 +24,36 @@ import StarRating from "react-native-star-rating-widget";
 import CustomButton from "@/components/CustomButton";
 import axios from "axios";
 import { router, useGlobalSearchParams } from "expo-router";
-
+import { fetch, NetInfoStateType } from "@react-native-community/netinfo";
 export default function FoodDescription() {
   const [apiInfo, setApiInfo] = useState({
     name: "",
+    image: "",
+    type: "",
+    allergies: [],
+    ingredients: [],
+    averageRating: 0,
+    cafeterias: [],
   });
-  const { cafName } = useGlobalSearchParams();
+  const { cafName, itemName } = useGlobalSearchParams();
 
-  const [loading, setLoading] = useState(false);
-  // useEffect(() => {
-  //   axios
-  //     .get("https://a5fe-199-7-157-101.ngrok-free.app/foods/Zanan Bread")
-  //     .then((value) => {
-  //       setApiInfo(value.data);
-  //       setLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, []);
+  const [loading, setLoading] = useState(true);
+
+  const getItem = async () => {
+    await axios
+      .get(`http://10.0.0.136:3000/foods/food/${itemName ?? "Curry"}`)
+      .then((value) => {
+        setApiInfo(value.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    getItem();
+  }, []);
+
   const otherCafs = ["Perth Hall", "Ontario Hall", "Sydenham Hall"];
   const [isAllergic, setIsAllergic] = useState(false);
   const dimensions = useWindowDimensions();
@@ -143,7 +154,7 @@ export default function FoodDescription() {
         {!loading && (
           <ScrollView>
             <Image
-              source={require("../../assets/images/grilled_cheese.png")}
+              source={{ uri: apiInfo.image }}
               style={{
                 //flex: 0.4,
                 alignSelf: "center",
@@ -175,7 +186,7 @@ export default function FoodDescription() {
                   }}
                 >
                   <Text style={styles.itemTitle} numberOfLines={2}>
-                    {/*apiInfo.name*/}Butter Chicken
+                    {apiInfo.name}
                   </Text>
                 </View>
                 <MaterialCommunityIcons
@@ -210,7 +221,7 @@ export default function FoodDescription() {
                   size={20}
                   onPress={() => {}}
                 />
-                <Text style={styles.rating}>4.5</Text>
+                <Text style={styles.rating}>{apiInfo.averageRating}</Text>
                 <TouchableOpacity onPress={() => setDialog(true)}>
                   <Text
                     style={[
@@ -302,7 +313,7 @@ export default function FoodDescription() {
                     flexWrap: "wrap",
                   }}
                 >
-                  {allergies.map((item) => {
+                  {apiInfo.allergies.map((item) => {
                     return (
                       <View
                         key={item}
@@ -386,6 +397,11 @@ export default function FoodDescription() {
       </SafeAreaView>
     </View>
   );
+
+  // async function checkInternet() {
+  //   const isConnected = await fetch();
+  //   console.log(isConnected);
+  // }
 }
 
 const styles = StyleSheet.create({
