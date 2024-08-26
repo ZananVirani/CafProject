@@ -33,8 +33,12 @@ const userSchema = new schema({
   },
   favouriteCafeterias: [{ 
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'cafeteria'
-  }]
+    ref: 'Cafeteria'
+  }],
+  favouriteFoods: [{ 
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Food'
+  }],
 });
 
 userSchema.pre('save', async function (next) {

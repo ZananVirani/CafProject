@@ -341,22 +341,44 @@ export default function UploadScreen() {
                             if (value) restrictions.push(key);
                           });
                           try {
-                            const base64 = await FileSystem.readAsStringAsync(
-                              image,
-                              {
-                                encoding: FileSystem.EncodingType.Base64,
-                              }
-                            );
+                            // const base64 = await FileSystem.readAsStringAsync(
+                            //   image,
+                            //   {
+                            //     encoding: FileSystem.EncodingType.Base64,
+                            //   }
+                            // );
                             //data:image/jpeg;base64,
-                            let another = await axios.post(
-                              "http://10.0.0.136:3000/foods/",
-                              {
-                                name: foodName,
-                                image: "data:image/jpeg;base64," + base64,
-                                allergies: restrictions,
-                                type: filterChosen,
-                              }
-                            );
+                            
+                            const blob = await fetch(image).then(response => response.blob());
+                           
+                            const formData = new FormData();
+
+                            formData.append('name', foodName);
+                            formData.append('profile-file', blob, 'image.jpg');
+
+                            restrictions.forEach((restriction, index) =>
+                            {
+                              formData.append(`restrcitions[]`, restriction);
+                            });
+
+                            formData.append('type', filterChosen);
+
+                            await axios.post("http://10.0.0.136:3000/foods/", formData, {
+                              headers: {
+                                'Content-Type': 'multipart/form-data',
+                              },
+                            });
+                           
+                            // let another = await axios.post(
+                            //   "http://10.0.0.136:3000/foods/",
+                            //   {
+                            //     name: foodName,
+                            //     image: "data:image/jpeg;base64," + base64,
+                            //     //image: blob
+                            //     allergies: restrictions,
+                            //     type: filterChosen,
+                            //   }
+                            // );
 
                             Alert.alert("Item Created", undefined, [
                               {

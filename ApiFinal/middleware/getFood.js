@@ -1,13 +1,6 @@
 const Cafeteria = require('../models/Cafeteria');
 const Food = require('../models/Food');
 
-// async function getFood(foodId, foods){
-//   const food = await Food.findById(foodId) 
-//   foods.push(food)
-//   return foods       
-// }
-
-// module.exports = getFood;
 
 async function getFoodFromCaf(menuIds){
   try{

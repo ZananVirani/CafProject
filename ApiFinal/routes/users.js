@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const User = require('../models/User');
+const Food = require('../models/Food');
 const getCafs = require('../middleware/getCaf')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
@@ -15,7 +16,7 @@ router.post("/register", async (req, res) => {
     console.log("req.body: ", req.body);
     
     //Uses destructuring assignment syntax to assign values in body of request to the variables with the same name
-    const {studentId, firstName, lastName, password, role, allergies, favouriteCafeterias} = req.body;
+    const {studentId, firstName, lastName, password, role, allergies, favouriteCafeterias, favouriteFoods} = req.body;
 
     //returns true if user exists in user collection
     const existingUser = await User.findOne({studentId});
@@ -28,6 +29,9 @@ router.post("/register", async (req, res) => {
     if(favouriteCafeterias != null){
       cafIds = await getCafs(favouriteCafeterias);
       console.log(cafIds)
+      //Does this work
+      //favouriteCafeterias = cafIds;
+   
 
       //Test to see if assignment works
       const newUser = new User({
@@ -37,7 +41,8 @@ router.post("/register", async (req, res) => {
       password,
       role,
       allergies,
-      favouriteCafeterias: cafIds
+      favouriteCafeterias: cafIds,
+      favouriteFoods
     });
 
     await User.create(newUser);
@@ -50,7 +55,8 @@ router.post("/register", async (req, res) => {
         password,
         role,
         allergies,
-        favouriteCafeterias
+        favouriteCafeterias,
+        favouriteFoods
       });
   
       console.log(newUser)
@@ -87,5 +93,47 @@ router.post('/login', async (req, res) => {
       return res.status(500).json({message: 'Error logging in', error: err.message})
   }
 })
+
+
+//Adds more Favourite Foods; add studentId to parameters and array of favourite foods in body
+router.patch("/addFavouriteFoods/:id", async(req, res) => {
+  try{
+    const {id} = req.params;
+    const {newFavourites} = req.body;
+    const newUser = await User.findOneAndUpdate({studentId: id},  { $addToSet: { favouriteFoods: { $each: newFavourites }}}, {new: true})
+    res.status(200).send("New favourites added: ", newUser)
+  } catch(err){
+    res.status(400).send("error: ", err)
+  }
+})
+
+//Removes some Favourite Foods; add studentId to parameters and array of favourite foods in body
+router.patch("/removeFavouriteFoods/:id", async(req, res) => {
+  try{
+    const {id} = req.params;
+    const {favourites} = req.body;
+    const newUser = await User.findOneAndUpdate({studentId: id},  { $pull: { favouriteFoods: { $in: favourites }}}, {new: true})
+    res.status(200).send("Favourites removed: ", newUser)
+  } catch(err){
+    res.status(400).send("error: ", err)
+  }
+})
+
+//Return list of food 
+router.get("/favouriteFoods/:id", async(req,res) =>{
+  try{
+    const {id} = req.params;
+    const foodIds = await User.findOne({studentId: id}, {favouriteFoods: 1})
+
+    const favouriteFoods = []
+
+    foodIds.forEach((foodId) => {
+      favouriteFoods.push(Food.findById({foodId}, {name: 1, image: 1}));    
+    })
+  } catch(err){
+    res.status(400).send("error: ", err);
+  }  
+})
+
 
 module.exports = router;

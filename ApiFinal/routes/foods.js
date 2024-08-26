@@ -1,20 +1,22 @@
+//Link to set up multer: https://medium.com/swlh/how-to-upload-image-using-multer-in-node-js-f3aeffb90657
+//Secondary resource: https://www.sammeechward.com/uploading-images-express-and-react 
 const express = require('express');
 const mongoose = require('mongoose');
 const Food = require('../models/Food');
-const uploadImage = require('../middleware/uploadImage')
-const upload = require('../config/multer')
+const upload = require('./config/multer')
+// const uploadImage = require('../middleware/uploadImage')
 
 const router = express.Router();
 
-router.post("/", upload.single('image'), async (req,res) => {
+router.post("/", upload.single('profile-file'), async (req,res) => {
   try{
     const {name, ingredients, allergies, type, cafeterias} = req.body;
 
     if (!req.file) {
       return res.status(400).send('No image uploaded');
     }
-
-    const imagePath = `/uploads/${req.file.filename}`;
+    
+    console.log(JSON.stringify(req.file))
 
     const newFood = new Food({
       name: name,
