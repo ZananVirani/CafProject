@@ -12,13 +12,12 @@ const foodSchema = new schema({
     unique: true
   },
   image: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'fs.files', 
+    type: String, 
     required: true 
   },
   ingredients: { 
     type: [String],
-    required: true
+    required: false
   },
   allergies: { 
     type: [String],
@@ -30,7 +29,7 @@ const foodSchema = new schema({
   },
   averageRating: {
     type: Number,
-    default: 0
+    default: 7
   },
   cafeterias: [{ 
     type: mongoose.Schema.Types.ObjectId, 

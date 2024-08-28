@@ -2,25 +2,21 @@
 //Secondary resource: https://www.sammeechward.com/uploading-images-express-and-react 
 const express = require('express');
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require("path")
 const Food = require('../models/Food');
-const upload = require('./config/multer')
 // const uploadImage = require('../middleware/uploadImage')
 
 const router = express.Router();
 
-router.post("/", upload.single('profile-file'), async (req,res) => {
+router.post("/", async (req,res) => {
   try{
-    const {name, ingredients, allergies, type, cafeterias} = req.body;
+    const {name, image, ingredients, allergies, type, cafeterias} = req.body
 
-    if (!req.file) {
-      return res.status(400).send('No image uploaded');
-    }
-    
-    console.log(JSON.stringify(req.file))
 
     const newFood = new Food({
       name: name,
-      image: imagePath,  
+      image: image,  
       ingredients: ingredients,
       allergies: allergies,
       type: type,
@@ -39,6 +35,19 @@ router.post("/", upload.single('profile-file'), async (req,res) => {
 })
 
 
+router.patch('/tempRoute', async (req, res) =>{
+  try{
+    const name = Date.now() + '.png'
+    const smth = path.join(__dirname, "../uploads/")
+    req.pipe(fs.createWriteStream(smth + name))
+    return res.status(200).send(name);
+  }
+  catch (error){
+
+    console.log(error)
+    return res.status(500).send(null);
+  }
+})
 // router.post("/", async (req, res) => {
 //   try {
 //     //Prints body of http request
@@ -139,6 +148,7 @@ router.post("/", upload.single('profile-file'), async (req,res) => {
 //     res.status(500).json({ message: 'Server error' });
 //   }
 // })
+
 
 router.get('/allFoods', async (req, res) =>{
   try{

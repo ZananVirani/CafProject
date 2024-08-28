@@ -1,6 +1,5 @@
 const express = require('express');
 const connectDB = require('./config/db');
-const upload = require('./config/multer');
 const userRoutes = require('./routes/users');
 const cafeteriaRoutes = require('./routes/cafeterias');
 const foodRoutes = require('./routes/foods');
@@ -12,7 +11,7 @@ const app = express();
 
 app.use(express.json({ limit: '10mb' })); // Adjust the limit as needed
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
-app.use('/uploads', express.static('uploads'));
+//app.use('/uploads', express.static('uploads'));
 
 //Connects to Database
 connectDB();
