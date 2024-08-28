@@ -172,6 +172,7 @@ export default function UploadScreen() {
             >
               <FoodBox
                 source={image}
+                upload={true}
                 onPress={undefined}
                 name={foodName}
                 rating={0}
