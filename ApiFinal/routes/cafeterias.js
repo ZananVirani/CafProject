@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Cafeteria = require('../models/Cafeteria');
 const addFoodItemToCafeteria = require('../middleware/addFood');
 const getFoodFromCaf = require('../middleware/getFood');
+const Food = require('../models/Food');
 
 const router = express.Router();
 
@@ -62,11 +63,30 @@ router.get('/getFood/:cafeteriaName', async (req, res) => {
     console.log("Found Cafeteria", caf)
     //Array of Food Ids
     const menuIds = caf.menu
-    foods = await getFoodFromCaf(menuIds)
-    res.json(foods);
+    const foods = await Food.find({cafeterias : caf.name})
+
+    //getFoodFromCaf(menuIds)
+
+    return res.json(foods);
   } catch(error){
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 })
+
+
+// try{
+//   foods = []
+
+//   for(foodId of menuIds){
+//     const food = await Food.findById(foodId)
+//     if (food) {
+//       foods.push(food);
+//     } 
+//   }  
+//   return foods
+// } catch (error){
+//   console.error('Error getting food from the cafeteria:', error);
+//   throw error;
+// }
 
 module.exports = router;

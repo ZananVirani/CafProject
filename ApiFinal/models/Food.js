@@ -35,6 +35,10 @@ const foodSchema = new schema({
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Cafeteria' 
   }]
+  // cafeterias: { 
+  //   type: [String], 
+  //   required: true
+  // }
 })
 
 const Food = mongoose.model("food", foodSchema)

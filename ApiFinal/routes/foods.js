@@ -37,10 +37,11 @@ router.post("/", async (req,res) => {
 
 router.patch('/tempRoute', async (req, res) =>{
   try{
-    const name = Date.now() + '.png'
-    const smth = path.join(__dirname, "../uploads/")
+    const temp = req.headers.mimetype
+    const name = Date.now() + '.' + temp.split('/')[1]
+    const smth = path.join(__dirname, '../uploads/')
     req.pipe(fs.createWriteStream(smth + name))
-    return res.status(200).send(name);
+    return res.status(200).send(name)
   }
   catch (error){
 
@@ -152,9 +153,11 @@ router.patch('/tempRoute', async (req, res) =>{
 
 router.get('/allFoods', async (req, res) =>{
   try{
-    const foods = Food.find({});
-    res.json({foods});
+    const foods = await Food.find({});
+    console.log(foods)
+    res.json(foods);
   } catch (err){
+    console.log(err)
     res.status(500).json({message: 'Error retrieving users', error: err.message })
   }
 })

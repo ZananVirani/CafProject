@@ -10,8 +10,8 @@ const cafPresetsSchema = new schema({
     unique: true
   },
   caf: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Cafeteria'
+    type : String,
+    required : true
   },
   menu: [{
     type: mongoose.Schema.Types.ObjectId,

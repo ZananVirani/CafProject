@@ -20,7 +20,11 @@ const cafSchema = new schema({
   menu: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Food'
-  }]
+  }],
+  presets : {
+    type : [String],
+    required : true
+  }
 });
 
 const Cafeteria = mongoose.model("cafeteria", cafSchema)
