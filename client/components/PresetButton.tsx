@@ -11,7 +11,7 @@ import colors from "@/constants/Colors";
 import { Feather } from "@expo/vector-icons";
 
 export default function PresetButton(props: {
-  text: string;
+  text: String;
   index: number;
   onPress: any;
   selected: boolean;

@@ -10,6 +10,7 @@ import React from "react";
 import colors from "@/constants/Colors";
 import MaterialCommunityIcons from "@expo/vector-icons/build/MaterialCommunityIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { ABeeZee_400Regular_Italic } from "@expo-google-fonts/abeezee";
 
 export default function MainCafBox(props: any) {
   const dimensions = useWindowDimensions();
@@ -46,7 +47,7 @@ export default function MainCafBox(props: any) {
           position: "absolute",
           bottom: 25,
           backgroundColor: colors.wpurple,
-          height: dimensions.height * 0.078,
+          height: dimensions.height * 0.06,
           right: 20,
           left: 20,
           borderRadius: 12,
@@ -57,26 +58,16 @@ export default function MainCafBox(props: any) {
         <View
           style={{
             flex: 1,
-            alignContent: "space-between",
-            alignItems: "stretch",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <Text
-            style={[
-              styles.text,
-              { fontSize: 17, position: "absolute", top: 0 },
-            ]}
+            style={[styles.text, { fontSize: 19 }]}
+            adjustsFontSizeToFit={true}
           >
             {props.cafName}
           </Text>
-          <View
-            style={{ flexDirection: "row", position: "absolute", bottom: 0 }}
-          >
-            <Ionicons color={colors.white} name="star" size={15} />
-            <Text style={[styles.text, { marginLeft: 5 }]}>
-              {props.rating.toFixed(1)}
-            </Text>
-          </View>
         </View>
         <View></View>
       </View>
@@ -88,5 +79,6 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "inter",
     color: colors.white,
+    fontStyle: "italic",
   },
 });

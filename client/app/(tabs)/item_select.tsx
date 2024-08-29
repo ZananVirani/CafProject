@@ -16,41 +16,62 @@ import { router } from "expo-router";
 import CustomButton from "@/components/CustomButton";
 import { TextInput } from "react-native-paper";
 import FoodBox from "@/components/FoodBox";
+import axios from "axios";
 
 export default function ItemSelect() {
   const dimensions = useWindowDimensions();
   const [searchText, setSearchText] = useState("");
+  const [allItems, setAllItems] = useState<
+    {
+      name: string;
+      image: string;
+      ingredients: string[];
+      allergies: string[];
+      type: string;
+      averageRating: Number;
+      cafeterias: string[];
+    }[]
+  >([]);
   const [selectMode, setSelectMode] = useState(false);
-  const [finalFoods, setFinalFoods] = useState([{ name: "", rating: 0 }]);
+  const [finalFoods, setFinalFoods] = useState<
+    {
+      name: string;
+      image: string;
+      ingredients: string[];
+      allergies: string[];
+      type: string;
+      averageRating: Number;
+      cafeterias: string[];
+    }[]
+  >([]);
   const [selectedPresets, setSelectedPresets] = useState(new Set());
 
-  const allItems = [
-    { name: "Pina Colada", rating: 3.8 },
-    { name: "Grilled Cheese", rating: 3.8 },
-    { name: "Other Item", rating: 3.8 },
-    { name: "Hot Dog", rating: 3.8 },
-    { name: "Pina Colada", rating: 3.8 },
-    { name: "Grilled Cheese", rating: 3.8 },
-    { name: "Other Item", rating: 3.8 },
-    { name: "Hot Dog", rating: 3.8 },
-    { name: "Pina Colada", rating: 3.8 },
-    { name: "Grilled Cheese", rating: 3.8 },
-    { name: "Other Item", rating: 3.8 },
-    { name: "Hot Dog", rating: 3.8 },
-    { name: "Pina Colada", rating: 3.8 },
-    { name: "Grilled Cheese", rating: 3.8 },
-    { name: "Other Item", rating: 3.8 },
-    { name: "Hot Dog", rating: 3.8 },
-  ];
+  const getItems = async () => {
+    axios
+      .get("http://10.0.0.136:3000/foods/allFoods")
+      .then((result) => {
+        setAllItems(result.data);
+        setFinalFoods(result.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   useEffect(() => {
-    let tempFoods = allItems;
+    getItems();
+  }, []);
 
-    setFinalFoods(
-      tempFoods.filter((item) => {
-        return item.name.toLowerCase().includes(searchText.toLowerCase());
-      })
-    );
+  useEffect(() => {
+    if (allItems) {
+      let tempFoods = allItems;
+
+      setFinalFoods(
+        tempFoods.filter((item) => {
+          return item.name.toLowerCase().includes(searchText.toLowerCase());
+        })
+      );
+    }
   }, [searchText]);
 
   return (
@@ -169,9 +190,10 @@ export default function ItemSelect() {
                           ? toggleSelect(item.name)
                           : visitPreset(item.name);
                       }}
+                      source={`http://10.0.0.136:3000/images/${item.image}`}
                       selected={selectMode && selectedPresets.has(item.name)}
                       name={item.name}
-                      rating={item.rating}
+                      rating={item.averageRating}
                       fontSize={12}
                       width={dimensions.width * 0.29}
                       minWidth={113.1}
@@ -220,7 +242,7 @@ export default function ItemSelect() {
     </TouchableWithoutFeedback>
   );
 
-  function toggleSelect(item: string) {
+  function toggleSelect(item: String) {
     let tempPresets = new Set(selectedPresets);
     tempPresets.has(item) ? tempPresets.delete(item) : tempPresets.add(item);
     console.log(tempPresets);
@@ -228,7 +250,7 @@ export default function ItemSelect() {
     setSelectedPresets(tempPresets);
   }
 
-  function visitPreset(item: string) {
+  function visitPreset(item: String) {
     router.push("/(tabs)/food_description");
   }
 }

@@ -29,9 +29,7 @@ export default function FoodBox(props: any) {
             source={
               props.source == "" || !props.source
                 ? require("@/assets/images/image_not_found.png")
-                : props.upload
-                ? { uri: props.source }
-                : props.source
+                : { uri: props.source }
             }
             style={{
               backgroundColor: colors.gray,

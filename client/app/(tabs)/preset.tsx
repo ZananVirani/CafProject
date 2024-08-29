@@ -8,10 +8,10 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import colors from "@/constants/Colors";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
-import { router, useGlobalSearchParams } from "expo-router";
+import { router, useFocusEffect, useGlobalSearchParams } from "expo-router";
 import CustomButton from "@/components/CustomButton";
 import { TextInput } from "react-native-paper";
 import FoodBox from "@/components/FoodBox";
@@ -22,14 +22,26 @@ export default function Preset() {
   const { presetName } = useGlobalSearchParams();
 
   const categories = ["Hot Food", "Interactive"];
-  const testFoods = [
-    { name: "Pina Colada", rating: 3.8 },
-    { name: "Grilled Cheese", rating: 3.8 },
-    { name: "Other Item", rating: 1.4 },
-    { name: "Hot Dog", rating: 3.8 },
-    { name: "Somethign else", rating: 5.0 },
-    { name: "Wordd", rating: 4.2 },
-  ];
+  const [title, setTitle] = useState("");
+  const [foods, setFoods] = useState<
+    {
+      name: String;
+      image: String;
+      ingredients: String[];
+      allergies: String[];
+      type: String;
+      averageRating: Number;
+      cafeterias: String[];
+    }[]
+  >([]);
+
+  useEffect(() => {
+    if (presetName && typeof presetName == "string") {
+      setTitle(presetName);
+    }
+  }, []);
+
+  useFocusEffect(useCallback(() => {}, []));
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.white }}>
@@ -58,7 +70,7 @@ export default function Preset() {
               onPress={() => router.back()}
             />
             <Text style={styles.title} numberOfLines={2}>
-              {presetName ? presetName : "New Menu"}
+              {title ? title : "New Menu"}
             </Text>
           </View>
         </View>
@@ -137,7 +149,7 @@ export default function Preset() {
                     flexWrap: "wrap",
                   }}
                 >
-                  {testFoods.map((item, index) => {
+                  {foods.map((item, index) => {
                     return (
                       <FoodBox
                         onPress={() => {
@@ -145,7 +157,7 @@ export default function Preset() {
                         }}
                         key={index}
                         name={item.name}
-                        rating={item.rating}
+                        rating={item.averageRating}
                         fontSize={12}
                         width={dimensions.width * 0.29}
                         minWidth={113.1}

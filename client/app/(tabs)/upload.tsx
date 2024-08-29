@@ -37,7 +37,9 @@ export default function UploadScreen() {
       ["Nuts", false],
     ])
   );
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState<ImagePicker.ImagePickerAsset | undefined>(
+    undefined
+  );
   const [dialog, setDialog] = useState(false);
   const allergyList = ["Meat", "Gluten", "Pork", "Dairy", "Seafood", "Nuts"];
   const [foodName, setFoodName] = useState("");
@@ -47,13 +49,10 @@ export default function UploadScreen() {
       await ImagePicker.requestMediaLibraryPermissionsAsync();
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1,
       });
 
       if (!result.canceled) {
-        setImage(result.assets![0].uri);
+        setImage(result.assets![0]);
         setDialog(false);
       }
     } catch (error) {
@@ -73,13 +72,11 @@ export default function UploadScreen() {
       await ImagePicker.requestCameraPermissionsAsync();
       let result = await ImagePicker.launchCameraAsync({
         cameraType: ImagePicker.CameraType.back,
-        aspect: [1, 1],
-        quality: 1,
       });
 
       if (!result.canceled) {
         console.log(result);
-        setImage(result.assets![0].uri);
+        setImage(result.assets![0]);
         setDialog(false);
       }
     } catch (error) {
@@ -171,9 +168,9 @@ export default function UploadScreen() {
               }}
             >
               <FoodBox
-                source={image}
+                source={image?.uri}
                 upload={true}
-                onPress={undefined}
+                onPress={() => console.log(image)}
                 name={foodName}
                 rating={0}
                 fontSize={12}
@@ -344,13 +341,17 @@ export default function UploadScreen() {
                           try {
                             const response = await FileSystem.uploadAsync(
                               `http://10.0.0.136:3000/foods/tempRoute`,
-                              image,
+                              image.uri,
                               {
+                                headers: {
+                                  mimeType: image.mimeType!,
+                                },
                                 fieldName: "file",
                                 httpMethod: "PATCH",
                                 uploadType:
                                   FileSystem.FileSystemUploadType
                                     .BINARY_CONTENT,
+                                mimeType: image.mimeType,
                               }
                             );
 
