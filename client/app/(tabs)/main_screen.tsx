@@ -22,30 +22,34 @@ import {
 } from "@/utils/AsyncStorage";
 import MainCafBox from "@/components/MainCafBox";
 import { ActivityIndicator } from "react-native-paper";
+import * as Location from "expo-location";
+import { orderByDistance } from "geolib";
+import {
+  GeolibInputCoordinates,
+  GeolibLatitudeInputValue,
+  GeolibLongitudeInputValue,
+} from "geolib/es/types";
 
 export default function MainScreen() {
   const dimensions = useWindowDimensions();
   const [foods, setFoods] = useState<
-    Map<
-      string,
-      {
-        _id: string;
-        name: string;
-        image: string;
-        allergies: string[];
-        type: string;
-        averageRating: Number;
-        cafeterias: string[];
-      }[]
-    >
-  >(new Map());
+    {
+      _id: string;
+      name: string;
+      image: string;
+      allergies: string[];
+      type: string;
+      averageRating: Number;
+      cafeterias: string[];
+    }[]
+  >([]);
 
   const [loaded, setLoaded] = useState(false);
   const [categories, setCategories] = useState([""]);
-  const cafs = ["Delaware Hall", "Perth Hall"];
+  const cafs = ["Delaware Hall", "Perth Hall", "Ontario Hall"];
   const [cafNum, setCafNum] = useState(0);
   const [filterChosen, setFilterChosen] = useState(categories[0]);
-  const cafBoxes = [
+  const origBoxes = [
     {
       cafName: "Ontario Hall",
       latitude: 43.000857807496786,
@@ -91,29 +95,72 @@ export default function MainScreen() {
     },
   ];
 
-  const getFoods = () => {
-    let newMap = new Map<
-      string,
-      {
-        _id: string;
-        name: string;
-        image: string;
-        allergies: string[];
-        type: string;
-        averageRating: Number;
-        cafeterias: string[];
-      }[]
-    >();
-    cafs.forEach(async (name) => {
-      await axios
-        .get(`http://10.0.0.136:3000/cafeterias/getFood/${name}`)
-        .then((result) => {
-          newMap.set(name, result.data);
-        })
-        .catch((error) => console.log(error));
-    });
+  const [cafBoxes, setCafBoxes] = useState<
+    | { cafName: string; latitude: number; longitude: number; source: any }[]
+    | undefined
+  >(origBoxes);
 
-    setFoods(newMap);
+  const determineList = async () => {
+    let temp: any;
+    if (filterChosen == "A-Z") {
+      temp = origBoxes.sort((a, b) => a.cafName.localeCompare(b.cafName));
+    } else if (filterChosen == "Nearby") {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status == "granted") {
+        const loc = await Location.getCurrentPositionAsync();
+
+        let newList: {
+          latitude: GeolibLatitudeInputValue;
+          longitude: GeolibLongitudeInputValue;
+        }[] = [];
+        origBoxes.forEach((item) => {
+          newList.push({ latitude: item.latitude, longitude: item.longitude });
+        });
+        const tempList: GeolibInputCoordinates[] = orderByDistance(
+          { latitude: loc.coords.latitude, longitude: loc.coords.longitude },
+          newList
+        );
+
+        newList = [];
+        for (let i = 0; i < origBoxes.length; i++) {
+          for (let caf of origBoxes) {
+            if (
+              JSON.stringify({
+                latitude: caf.latitude,
+                longitude: caf.longitude,
+              }) == JSON.stringify(tempList[i])
+            ) {
+              newList.push(caf);
+              break;
+            }
+          }
+        }
+
+        temp = newList;
+      }
+    } else {
+      temp = [];
+    }
+
+    setCafBoxes(temp);
+  };
+
+  useEffect(() => {
+    determineList();
+  }, [filterChosen]);
+
+  const getFoods = async () => {
+    await axios
+      .get(`http://10.0.0.136:3000/cafeterias/favouriteCafs`, {
+        params: {
+          cafs: cafs,
+        },
+      })
+      .then((result) => {
+        setFoods(result.data);
+      })
+      .catch((error) => console.log(error));
   };
 
   useEffect(() => {
@@ -136,10 +183,12 @@ export default function MainScreen() {
   useFocusEffect(
     useCallback(() => {
       setLoaded(false);
-      getFoods();
-      setTimeout(() => {
+      getFoods().then(() => {
         setLoaded(true);
-      }, 1000);
+      });
+      // setTimeout(() => {
+      //   setLoaded(true);
+      // }, 1000);
     }, [])
   );
 
@@ -234,8 +283,8 @@ export default function MainScreen() {
               marginLeft: "3%",
             }}
           >
-            {foods.get(cafs[cafNum])?.map((item, index) => {
-              return (
+            {foods.map((item, index) => {
+              return item.cafeterias.includes(cafs[cafNum]) ? (
                 <FoodBox
                   onPress={() => {
                     router.push("/(tabs)/food_description");
@@ -257,7 +306,7 @@ export default function MainScreen() {
                   height={dimensions.width * 0.105}
                   marginTop="0%"
                 />
-              );
+              ) : null;
             })}
             <View style={{ width: dimensions.width * 0.18 }}></View>
           </ScrollView>
@@ -268,7 +317,7 @@ export default function MainScreen() {
               flexDirection: "row",
               alignItems: "center",
               marginHorizontal: "5%",
-              marginTop: "6%",
+              marginTop: "4%",
             }}
           >
             <Text style={styles.cafTitle}>All Residences</Text>
@@ -303,13 +352,13 @@ export default function MainScreen() {
                   onPress={() => {
                     setFilterChosen(item);
                   }}
-                  marginVertical={10}
-                  marginHorizontal={7}
+                  marginVertical={5}
+                  marginHorizontal={10}
                   buttonColor={
                     item == filterChosen ? colors.wpurple : "#B09DC7"
                   }
                   height={40}
-                  fontSize={14}
+                  fontSize={15}
                   borderRadius={60}
                   textColor={colors.white}
                   fontFamily="inter"
@@ -321,25 +370,47 @@ export default function MainScreen() {
               );
             })}
           </View>
-          <ScrollView
-            horizontal={true}
-            style={{ flex: 1, paddingVertical: 15, marginLeft: "5%" }}
-          >
-            {cafBoxes.map((item) => {
-              return (
-                <MainCafBox
-                  onPress={() => {
-                    router.push("/(tabs)/cafeteria");
-                    router.setParams({ cafName: item.cafName });
-                  }}
-                  key={item.cafName}
-                  cafName={item.cafName}
-                  source={item.source}
-                  //liked={item.liked}
-                />
-              );
-            })}
-          </ScrollView>
+          {cafBoxes ? (
+            <ScrollView
+              horizontal={true}
+              style={{ flex: 1, paddingVertical: 15, marginLeft: "5%" }}
+            >
+              {cafBoxes.map((item) => {
+                return (
+                  <MainCafBox
+                    onPress={() => {
+                      router.push("/(tabs)/cafeteria");
+                      router.setParams({ cafName: item.cafName });
+                    }}
+                    key={item.cafName}
+                    cafName={item.cafName}
+                    source={item.source}
+                    //liked={item.liked}
+                  />
+                );
+              })}
+            </ScrollView>
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                width: dimensions.width,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: colors.darkgray,
+                  fontFamily: "inter",
+                  fontSize: 20,
+                }}
+              >
+                Allow Location Services For{"\n"}Access To This Feature!
+              </Text>
+            </View>
+          )}
         </SafeAreaView>
       ) : (
         <View

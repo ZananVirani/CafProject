@@ -33,22 +33,44 @@ router.post("/", async (req, res) => {
 
 })
 
-
-//Consider converting to patch request - may make program much cleaner
-router.post('/addFood', async (req, res) => {
-  console.log('req.body: ', req.body)
-  const {cafeteriaName} = req.body;
-  const {foodName} = req.body;
-
+router.get("/favouriteCafs", async (req, res) => {
   try {
-    const result = await addFoodItemToCafeteria(cafeteriaName, foodName);
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    //Uses destructuring assignment syntax to assign values in body of request to the variables with the same name
+    const {cafs} = req.query;
+    console.log(req)
+    console.log(cafs)
+
+    //Test to see if assignment works
+
+    const foods = await Food.find({cafeterias : {$in : cafs}});
+
+    console.log(foods)
+
+   return res.json(foods)
+
+  } catch(err){
+    console.log("error: ", err)
+    return res.status(500).json({message : err.message})
   }
 
-
 })
+
+
+// //Consider converting to patch request - may make program much cleaner
+// router.post('/addFood', async (req, res) => {
+//   console.log('req.body: ', req.body)
+//   const {cafeteriaName} = req.body;
+//   const {foodName} = req.body;
+
+//   try {
+//     const result = await addFoodItemToCafeteria(cafeteriaName, foodName);
+//     res.status(200).json(result);
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+
+
+// })
 
 router.get('/getFood/:cafeteriaName', async (req, res) => {
   try{
@@ -69,21 +91,5 @@ router.get('/getFood/:cafeteriaName', async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 })
-
-
-// try{
-//   foods = []
-
-//   for(foodId of menuIds){
-//     const food = await Food.findById(foodId)
-//     if (food) {
-//       foods.push(food);
-//     } 
-//   }  
-//   return foods
-// } catch (error){
-//   console.error('Error getting food from the cafeteria:', error);
-//   throw error;
-// }
 
 module.exports = router;
