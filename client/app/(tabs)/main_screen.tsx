@@ -48,31 +48,45 @@ export default function MainScreen() {
   const cafBoxes = [
     {
       cafName: "Ontario Hall",
+      latitude: 43.000857807496786,
+      longitude: -81.2791898025856,
       source: require("../../assets/images/ontario_caf.jpg"),
     },
     {
       cafName: "Sydenham Hall",
+      latitude: 43.00770220562324,
+      longitude: -81.26518228837382,
       source: require("../../assets/images/sydenham_caf.png"),
     },
     {
       cafName: "Perth Hall",
+      latitude: 42.99992857596394,
+      longitude: -81.27690098791986,
       source: require("../../assets/images/perth_caf.jpg"),
     },
 
     {
       cafName: "Delaware Hall",
+      latitude: 43.00869331329643,
+      longitude: -81.26906517337886,
       source: require("../../assets/images/delaware_caf.png"),
     },
     {
       cafName: "Elgin Hall",
+      latitude: 43.00826951356022,
+      longitude: -81.26499353540011,
       source: require("../../assets/images/elgin_caf.png"),
     },
     {
       cafName: "Essex Hall",
+      latitude: 43.00112215346329,
+      longitude: -81.27587825892331,
       source: require("../../assets/images/essex_caf.png"),
     },
     {
       cafName: "Saugeen Hall",
+      latitude: 43.01138296240347,
+      longitude: -81.27889573091967,
       source: require("../../assets/images/saugeen_caf.jpg"),
     },
   ];
