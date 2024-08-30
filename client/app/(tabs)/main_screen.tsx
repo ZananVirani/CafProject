@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import colors from "../../constants/Colors";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import FoodBox from "@/components/FoodBox";
 import { useWindowDimensions } from "react-native";
@@ -103,7 +103,7 @@ export default function MainScreen() {
   };
 
   useEffect(() => {
-    getFoods();
+    //getFoods()
     getSelectedCaf()
       .then((value) => {
         value >= cafs.length ? setCafNum(0) : setCafNum(value);
@@ -117,11 +117,17 @@ export default function MainScreen() {
         setFilterChosen(value[0]);
       })
       .catch((error) => console.log(error));
-
-    setTimeout(() => {
-      setLoaded(true);
-    }, 1000);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      setLoaded(false);
+      getFoods();
+      setTimeout(() => {
+        setLoaded(true);
+      }, 1000);
+    }, [])
+  );
 
   return (
     <View

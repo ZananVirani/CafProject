@@ -7,7 +7,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import colors from "../../constants/Colors";
 import FoodBox from "@/components/FoodBox";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,7 +17,7 @@ import { router, useGlobalSearchParams } from "expo-router";
 import CustomButton from "@/components/CustomButton";
 import { Dialog } from "react-native-simple-dialogs";
 import TextField from "@/components/TextField";
-import { TextInput } from "react-native-paper";
+import { ActivityIndicator, TextInput } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { presetState } from "@/state/presets/presetSlice";
 import { RootState } from "@/state/store";
@@ -36,6 +36,11 @@ export default function Preview() {
   const [toggle, setToggle] = useState(false);
   const [nameText, setNameText] = useState("");
   const [error, setError] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => setLoaded(true), 500);
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }}>
@@ -195,80 +200,91 @@ export default function Preview() {
           </Text>
         </View>
       </View>
-      <ScrollView>
-        {categories.map((category, index) => {
-          return (
-            <View key={category}>
-              <View
-                style={{
-                  paddingLeft: "3.5%",
-                  width: dimensions.width,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: index == 0 ? 8 : 23,
-                  marginBottom: 5,
-                }}
-              >
-                <Text
+      {loaded ? (
+        <ScrollView>
+          {categories.map((category, index) => {
+            return (
+              <View key={category}>
+                <View
                   style={{
-                    color: colors.black,
-                    fontSize: 23,
-                    fontFamily: "inter",
-                    fontWeight: "500",
-                    marginLeft: 8,
+                    paddingLeft: "3.5%",
+                    width: dimensions.width,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginTop: index == 0 ? 8 : 23,
+                    marginBottom: 5,
                   }}
                 >
-                  {category}
-                </Text>
-                <MaterialCommunityIcons
-                  name={
-                    category == "Hot Food"
-                      ? "fire" //
-                      : category == "Interactive"
-                      ? "food-turkey" //"filter"
-                      : "star-circle"
-                  }
-                  size={category == "Other" ? 32 : 37}
-                  color={colors.black}
+                  <Text
+                    style={{
+                      color: colors.black,
+                      fontSize: 23,
+                      fontFamily: "inter",
+                      fontWeight: "500",
+                      marginLeft: 8,
+                    }}
+                  >
+                    {category}
+                  </Text>
+                  <MaterialCommunityIcons
+                    name={
+                      category == "Hot Food"
+                        ? "fire" //
+                        : category == "Interactive"
+                        ? "food-turkey" //"filter"
+                        : "star-circle"
+                    }
+                    size={category == "Other" ? 32 : 37}
+                    color={colors.black}
+                    style={{
+                      width: 35,
+                      marginLeft: category == "Hot Food" ? 5 : 10,
+                    }}
+                  />
+                </View>
+                <View
                   style={{
-                    width: 35,
-                    marginLeft: category == "Hot Food" ? 5 : 10,
+                    alignItems: "center",
+                    flexDirection: "row",
+                    marginLeft: "1.3%",
+                    flexWrap: "wrap",
                   }}
-                />
+                >
+                  {presetList.presetList.map((item, index) => {
+                    return category == item.type ? (
+                      <FoodBox
+                        onPress={() => {
+                          console.log(item);
+                          router.push("/(tabs)/food_description");
+                          router.setParams({ itemName: item.name });
+                        }}
+                        source={`http://10.0.0.136:3000/images/${item.image}`}
+                        key={index}
+                        name={item.name}
+                        rating={item.averageRating}
+                        fontSize={12}
+                        width={dimensions.width * 0.29}
+                        minWidth={113.1}
+                      />
+                    ) : null;
+                  })}
+                </View>
               </View>
-              <View
-                style={{
-                  alignItems: "center",
-                  flexDirection: "row",
-                  marginLeft: "1.3%",
-                  flexWrap: "wrap",
-                }}
-              >
-                {presetList.presetList.map((item, index) => {
-                  return category == item.type ? (
-                    <FoodBox
-                      onPress={() => {
-                        console.log(item);
-                        router.push("/(tabs)/food_description");
-                        router.setParams({ itemName: item.name });
-                      }}
-                      source={`http://10.0.0.136:3000/images/${item.image}`}
-                      key={index}
-                      name={item.name}
-                      rating={item.averageRating}
-                      fontSize={12}
-                      width={dimensions.width * 0.29}
-                      minWidth={113.1}
-                    />
-                  ) : null;
-                })}
-              </View>
-            </View>
-          );
-        })}
+            );
+          })}
 
-        <View style={{ width: dimensions.width, height: 230 }}></View>
-      </ScrollView>
+          <View style={{ width: dimensions.width, height: 230 }}></View>
+        </ScrollView>
+      ) : (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator
+            animating={!loaded}
+            color={colors.wpurple}
+          ></ActivityIndicator>
+        </View>
+      )}
       <View
         style={{
           position: "absolute",
@@ -379,7 +395,45 @@ export default function Preview() {
               },
               {
                 text: "OK",
-                onPress: () => {},
+                onPress: async () => {
+                  let menu: string[] = [];
+                  presetList.presetList.forEach((item) => {
+                    console.log(item._id);
+                    menu.push(item._id);
+                  });
+                  await axios
+                    .patch(
+                      `http://10.0.0.136:3000/presets/tempUpload/${cafName}`,
+                      {
+                        foodIDs: menu,
+                      }
+                    )
+                    .then((result) => {
+                      Alert.alert("Menu Uploaded Successfully", undefined, [
+                        {
+                          text: "OK",
+                          onPress: () => {
+                            router.dismissAll();
+                            router.setParams({ cafName: cafName });
+                            dispatch(clear());
+                          },
+                        },
+                      ]);
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                      Alert.alert(
+                        "Something Went Wrong",
+                        "Check Your Connection And Try Again",
+                        [
+                          {
+                            text: "OK",
+                            onPress: () => {},
+                          },
+                        ]
+                      );
+                    });
+                },
               },
             ]);
           }}

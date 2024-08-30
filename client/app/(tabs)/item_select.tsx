@@ -35,7 +35,7 @@ export default function ItemSelect() {
       cafeterias: string[];
     }[]
   >([]);
-  const [selectMode, setSelectMode] = useState(false);
+  const [selectMode, setSelectMode] = useState(true);
   const [loaded, setLoaded] = useState(false);
   const [finalFoods, setFinalFoods] = useState<
     {

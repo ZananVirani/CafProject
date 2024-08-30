@@ -63,6 +63,38 @@ router.patch("/editPreset/:cafeteriaName", async(req, res)=>{
 
 })
 
+router.patch("/tempUpload/:cafeteriaName", async(req, res)=>{
+  try {
+      const {cafeteriaName} = req.params
+      const {foodIDs} = req.body
+
+      const cafeteria = await Cafeteria.findOne({name : cafeteriaName})
+
+
+        const oldFoods = await Food.find({cafeterias : cafeteriaName})
+  oldFoods.forEach((item)=>{
+    item.cafeterias = item.cafeterias.filter((value)=>value!=cafeteriaName)
+    item.save()
+  })
+
+  for (let food of foodIDs){
+    const item = await Food.findById(food)
+    if (item){
+    item.cafeterias.push(cafeteriaName)
+    item.save()}
+  }
+
+      cafeteria.menu = foodIDs
+      cafeteria.save()
+    
+      return res.status(200).json({message : "Successful Upload"})
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({error : error})
+  }
+
+})
+
 router.get("/:cafeteriaName", async(req, res)=>{
   try {
       const cafName = req.params.cafeteriaName

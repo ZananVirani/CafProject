@@ -311,6 +311,7 @@ export default function Cafeteria() {
                 </View>
               );
             })}
+            <View style={{ width: dimensions.width, height: 80 }}></View>
           </ScrollView>
         ) : (
           <View
