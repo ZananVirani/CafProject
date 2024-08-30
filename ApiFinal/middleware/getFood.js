@@ -2,21 +2,18 @@ const Cafeteria = require('../models/Cafeteria');
 const Food = require('../models/Food');
 
 
-async function getFoodFromCaf(menuIds){
+async function getPresetFoods(menuIds){
   try{
-    foods = []
 
-    for(foodId of menuIds){
-      const food = await Food.findById(foodId)
-      if (food) {
-        foods.push(food);
+      const food = await Food.find({_id : {$in : menuIds}})
+      if (!food) {
+        throw Exception("Not good")
       } 
-    }  
-    return foods
+    return food
   } catch (error){
     console.error('Error getting food from the cafeteria:', error);
     throw error;
   }
 }
 
-module.exports = getFoodFromCaf;
+module.exports = getPresetFoods;

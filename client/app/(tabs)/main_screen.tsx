@@ -21,63 +21,89 @@ import {
   setSelectedCaf,
 } from "@/utils/AsyncStorage";
 import MainCafBox from "@/components/MainCafBox";
+import { ActivityIndicator } from "react-native-paper";
 
 export default function MainScreen() {
   const dimensions = useWindowDimensions();
-  const testFoods = [
-    ["Grilled Cheese Sandwich", 4.3],
-    ["Hot Dog", 1.4],
-    ["Popcorn Chicken", 3.1],
-    ["Mac And Cheese", 3.8],
-    ["Freak Sandwich", 4.1],
-    ["Navan Sehra Asscheeks and butt", 6.0],
-  ];
+  const [foods, setFoods] = useState<
+    Map<
+      string,
+      {
+        _id: string;
+        name: string;
+        image: string;
+        allergies: string[];
+        type: string;
+        averageRating: Number;
+        cafeterias: string[];
+      }[]
+    >
+  >(new Map());
 
-  const [loading, setLoading] = useState(true);
+  const [loaded, setLoaded] = useState(false);
   const [categories, setCategories] = useState([""]);
-  const cafs = ["Sydenham Hall", "Ontario Hall", "Perth Hall"];
+  const cafs = ["Delaware Hall", "Perth Hall"];
   const [cafNum, setCafNum] = useState(0);
   const [filterChosen, setFilterChosen] = useState(categories[0]);
   const cafBoxes = [
     {
       cafName: "Ontario Hall",
-      rating: 5.0,
       source: require("../../assets/images/ontario_caf.jpg"),
     },
     {
       cafName: "Sydenham Hall",
-      rating: 4.3,
       source: require("../../assets/images/sydenham_caf.png"),
     },
     {
       cafName: "Perth Hall",
-      rating: 4.0,
       source: require("../../assets/images/perth_caf.jpg"),
     },
 
     {
       cafName: "Delaware Hall",
-      rating: 5.0,
       source: require("../../assets/images/delaware_caf.png"),
     },
     {
       cafName: "Elgin Hall",
-      rating: 5.0,
       source: require("../../assets/images/elgin_caf.png"),
     },
     {
       cafName: "Essex Hall",
-      rating: 5.0,
       source: require("../../assets/images/essex_caf.png"),
     },
     {
       cafName: "Saugeen Hall",
-      rating: 5.0,
       source: require("../../assets/images/saugeen_caf.jpg"),
     },
   ];
 
+  const getFoods = () => {
+    let newMap = new Map<
+      string,
+      {
+        _id: string;
+        name: string;
+        image: string;
+        allergies: string[];
+        type: string;
+        averageRating: Number;
+        cafeterias: string[];
+      }[]
+    >();
+    cafs.forEach(async (name) => {
+      await axios
+        .get(`http://10.0.0.136:3000/cafeterias/getFood/${name}`)
+        .then((result) => {
+          newMap.set(name, result.data);
+        })
+        .catch((error) => console.log(error));
+    });
+
+    setFoods(newMap);
+  };
+
   useEffect(() => {
+    getFoods();
     getSelectedCaf()
       .then((value) => {
         value >= cafs.length ? setCafNum(0) : setCafNum(value);
@@ -89,9 +115,12 @@ export default function MainScreen() {
       .then((value) => {
         setCategories(value);
         setFilterChosen(value[0]);
-        setLoading(false);
       })
       .catch((error) => console.log(error));
+
+    setTimeout(() => {
+      setLoaded(true);
+    }, 1000);
   }, []);
 
   return (
@@ -101,196 +130,207 @@ export default function MainScreen() {
         backgroundColor: colors.white,
       }}
     >
-      <SafeAreaView style={{ flex: 1 }}>
-        {/* Header//////////////////////////// */}
-        <View
-          style={{
-            height: 80,
-            flexDirection: "row",
-            alignItems: "center",
-            marginHorizontal: "5%",
-          }}
-        >
+      {loaded ? (
+        <SafeAreaView style={{ flex: 1 }}>
+          {/* Header//////////////////////////// */}
           <View
             style={{
-              flex: 0.97,
-              flexDirection: "column",
-              paddingRight: 5,
-            }}
-          >
-            <Text style={styles.title} numberOfLines={1}>
-              Hi, Shriraam
-            </Text>
-            <Text style={styles.subtitle}>Check Out What's Cooking</Text>
-          </View>
-          <FontAwesome5
-            color={colors.black}
-            name="user-circle"
-            size={40}
-            onPress={() => {
-              router.push("/(tabs)/profile");
-            }}
-          />
-          <View style={{ flex: 0.03 }}></View>
-        </View>
-        {/* Header//////////////////////////// */}
-        {/* First DIPLAY ROWWWW /////////////////////////////// */}
-        <View
-          style={{
-            width: dimensions.width,
-            flexDirection: "row",
-            marginLeft: "5%",
-            marginTop: "6%",
-            alignItems: "center",
-          }}
-        >
-          <View
-            style={{
-              width: dimensions.width * 0.64,
+              height: 80,
               flexDirection: "row",
+              alignItems: "center",
+              marginHorizontal: "5%",
             }}
           >
-            <Ionicons
-              name="shuffle"
-              size={33}
-              color={colors.gray}
-              onPress={async () => {
-                let newNum = (cafNum + 1) % cafs.length;
-                setCafNum(newNum);
-                await setSelectedCaf(newNum);
+            <View
+              style={{
+                flex: 0.97,
+                flexDirection: "column",
+                paddingRight: 5,
+              }}
+            >
+              <Text style={styles.title} numberOfLines={1}>
+                Hi, Shriraam
+              </Text>
+              <Text style={styles.subtitle}>Check Out What's Cooking</Text>
+            </View>
+            <FontAwesome5
+              color={colors.black}
+              name="user-circle"
+              size={40}
+              onPress={() => {
+                router.push("/(tabs)/profile");
               }}
             />
-            <Text style={styles.cafTitle}>{cafs[cafNum]}</Text>
+            <View style={{ flex: 0.03 }}></View>
           </View>
-          <TouchableOpacity
-            onPress={async () => {
-              router.push("/(tabs)/cafeteria");
-              router.setParams({ cafName: cafs[cafNum] });
-            }}
-            style={{ flex: 1 }}
-          >
-            <Text style={[styles.subtitle, { fontSize: 15 }]}>
-              See Cafeteria
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <ScrollView
-          horizontal={true}
-          style={{
-            maxHeight: dimensions.width * 0.4,
-            width: dimensions.width,
-            marginTop: 15,
-            flexDirection: "row",
-            marginLeft: "3%",
-          }}
-        >
-          {testFoods.map((item) => {
-            return (
-              <FoodBox
-                onPress={() => {
-                  router.push("/(tabs)/food_description");
-                  router.setParams({ cafName: cafs[cafNum] });
-                  // router.setParams({
-                  //   cafName: cafs[cafNum],
-                  //   itemName: item[0],
-                  //   itemRating: item[1],
-                  // });
-                }}
-                key={item}
-                name={item[0]}
-                rating={item[1]}
-                fontSize={10.5}
-                ratingFont={9}
-                starSize={10}
-                width={dimensions.width * 0.26}
-                minWidth={100}
-                marginLeft="1%"
-                height={dimensions.width * 0.105}
-                marginTop="0%"
-              />
-            );
-          })}
-          <View style={{ width: dimensions.width * 0.18 }}></View>
-        </ScrollView>
-        {/* First DIPLAY ROWWWW /////////////////////////////// */}
-        <View
-          style={{
-            width: dimensions.width,
-            flexDirection: "row",
-            alignItems: "center",
-            marginHorizontal: "5%",
-            marginTop: "6%",
-          }}
-        >
-          <Text style={styles.cafTitle}>All Residences</Text>
-          <TouchableOpacity
-            style={{ marginLeft: dimensions.width * 0.13 }}
-            onPress={async () => {
-              let newFilters = Array.from(categories);
-              categories.forEach((item, index) => {
-                let newIndex = (index + 1) % categories.length;
-                newFilters[newIndex] = item;
-              });
-              setCategories(newFilters);
-              await setFilters(newFilters);
+          {/* Header//////////////////////////// */}
+          {/* First DIPLAY ROWWWW /////////////////////////////// */}
+          <View
+            style={{
+              width: dimensions.width,
+              flexDirection: "row",
+              marginLeft: "5%",
+              marginTop: "6%",
+              alignItems: "center",
             }}
           >
-            <Text style={[styles.subtitle, { fontSize: 16 }]}>
-              Shuffle Titles
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            marginTop: 8,
-            marginHorizontal: "5%",
-          }}
-        >
-          {categories.map((item) => {
-            return (
-              <CustomButton
-                key={item}
-                onPress={() => {
-                  setFilterChosen(item);
+            <View
+              style={{
+                width: dimensions.width * 0.64,
+                flexDirection: "row",
+              }}
+            >
+              <Ionicons
+                name="shuffle"
+                size={33}
+                color={colors.gray}
+                onPress={async () => {
+                  let newNum = (cafNum + 1) % cafs.length;
+                  setCafNum(newNum);
+                  await setSelectedCaf(newNum);
                 }}
-                marginVertical={10}
-                marginHorizontal={7}
-                buttonColor={item == filterChosen ? colors.wpurple : "#B09DC7"}
-                height={40}
-                fontSize={14}
-                borderRadius={60}
-                textColor={colors.white}
-                fontFamily="inter"
-                fontWeight="medium"
-                lSpacing={undefined}
-              >
-                {item}
-              </CustomButton>
-            );
-          })}
-        </View>
-        <ScrollView
-          horizontal={true}
-          style={{ flex: 1, paddingVertical: 15, marginLeft: "5%" }}
-        >
-          {cafBoxes.map((item) => {
-            return (
-              <MainCafBox
-                onPress={() => {
-                  router.push("/(tabs)/cafeteria");
-                  router.setParams({ cafName: item.cafName });
-                }}
-                key={item.cafName}
-                rating={item.rating}
-                cafName={item.cafName}
-                source={item.source}
-                //liked={item.liked}
               />
-            );
-          })}
-        </ScrollView>
-      </SafeAreaView>
+              <Text style={styles.cafTitle}>{cafs[cafNum]}</Text>
+            </View>
+            <TouchableOpacity
+              onPress={async () => {
+                router.push("/(tabs)/cafeteria");
+                router.setParams({ cafName: cafs[cafNum] });
+              }}
+              style={{ flex: 1 }}
+            >
+              <Text style={[styles.subtitle, { fontSize: 15 }]}>
+                See Cafeteria
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <ScrollView
+            horizontal={true}
+            style={{
+              maxHeight: dimensions.width * 0.4,
+              width: dimensions.width,
+              marginTop: 15,
+              flexDirection: "row",
+              marginLeft: "3%",
+            }}
+          >
+            {foods.get(cafs[cafNum])?.map((item, index) => {
+              return (
+                <FoodBox
+                  onPress={() => {
+                    router.push("/(tabs)/food_description");
+                    router.setParams({
+                      cafName: cafs[cafNum],
+                      itemName: item.name,
+                    });
+                  }}
+                  key={index}
+                  source={`http://10.0.0.136:3000/images/${item.image}`}
+                  name={item.name}
+                  rating={item.averageRating}
+                  fontSize={10.5}
+                  ratingFont={9}
+                  starSize={10}
+                  width={dimensions.width * 0.26}
+                  minWidth={100}
+                  marginLeft="1%"
+                  height={dimensions.width * 0.105}
+                  marginTop="0%"
+                />
+              );
+            })}
+            <View style={{ width: dimensions.width * 0.18 }}></View>
+          </ScrollView>
+          {/* First DIPLAY ROWWWW /////////////////////////////// */}
+          <View
+            style={{
+              width: dimensions.width,
+              flexDirection: "row",
+              alignItems: "center",
+              marginHorizontal: "5%",
+              marginTop: "6%",
+            }}
+          >
+            <Text style={styles.cafTitle}>All Residences</Text>
+            <TouchableOpacity
+              style={{ marginLeft: dimensions.width * 0.13 }}
+              onPress={async () => {
+                let newFilters = Array.from(categories);
+                categories.forEach((item, index) => {
+                  let newIndex = (index + 1) % categories.length;
+                  newFilters[newIndex] = item;
+                });
+                setCategories(newFilters);
+                await setFilters(newFilters);
+              }}
+            >
+              <Text style={[styles.subtitle, { fontSize: 16 }]}>
+                Shuffle Titles
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 8,
+              marginHorizontal: "5%",
+            }}
+          >
+            {categories.map((item) => {
+              return (
+                <CustomButton
+                  key={item}
+                  onPress={() => {
+                    setFilterChosen(item);
+                  }}
+                  marginVertical={10}
+                  marginHorizontal={7}
+                  buttonColor={
+                    item == filterChosen ? colors.wpurple : "#B09DC7"
+                  }
+                  height={40}
+                  fontSize={14}
+                  borderRadius={60}
+                  textColor={colors.white}
+                  fontFamily="inter"
+                  fontWeight="medium"
+                  lSpacing={undefined}
+                >
+                  {item}
+                </CustomButton>
+              );
+            })}
+          </View>
+          <ScrollView
+            horizontal={true}
+            style={{ flex: 1, paddingVertical: 15, marginLeft: "5%" }}
+          >
+            {cafBoxes.map((item) => {
+              return (
+                <MainCafBox
+                  onPress={() => {
+                    router.push("/(tabs)/cafeteria");
+                    router.setParams({ cafName: item.cafName });
+                  }}
+                  key={item.cafName}
+                  cafName={item.cafName}
+                  source={item.source}
+                  //liked={item.liked}
+                />
+              );
+            })}
+          </ScrollView>
+        </SafeAreaView>
+      ) : (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator
+            animating={!loaded}
+            color={colors.wpurple}
+          ></ActivityIndicator>
+        </View>
+      )}
     </View>
   );
 }

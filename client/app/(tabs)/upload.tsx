@@ -22,9 +22,12 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { Dialog } from "react-native-simple-dialogs";
 import * as FileSystem from "expo-file-system";
+import { useDispatch } from "react-redux";
+import { add } from "@/state/presets/presetSlice";
 
 export default function UploadScreen() {
   const dimensions = useWindowDimensions();
+  const dispatch = useDispatch();
   const [filterChosen, setFilterChosen] = useState("");
   const categories = ["Hot Food", "Interactive"];
   const [map, setMap] = useState(
@@ -369,14 +372,15 @@ export default function UploadScreen() {
                               {
                                 text: "Ok",
                                 onPress: () => {
+                                  dispatch(add(another.data));
                                   router.back();
                                 },
                               },
                             ]);
                           } catch (error) {
                             Alert.alert(
-                              "Item Created Unsuccessfully",
-                              undefined,
+                              "Something Went Wrong",
+                              "Please Check Your Connection and Try Again",
                               [
                                 {
                                   text: "Ok",

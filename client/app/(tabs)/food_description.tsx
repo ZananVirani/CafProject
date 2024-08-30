@@ -24,27 +24,26 @@ import StarRating from "react-native-star-rating-widget";
 import CustomButton from "@/components/CustomButton";
 import axios from "axios";
 import { router, useGlobalSearchParams } from "expo-router";
-import { fetch, NetInfoStateType } from "@react-native-community/netinfo";
+import { ActivityIndicator } from "react-native-paper";
 export default function FoodDescription() {
-  const [apiInfo, setApiInfo] = useState({
-    name: "",
-    image: "",
-    type: "",
-    allergies: [],
-    ingredients: [],
-    averageRating: 0,
-    cafeterias: [],
-  });
+  const [apiInfo, setApiInfo] = useState<{
+    name: string;
+    image: string;
+    allergies: string[];
+    type: string;
+    averageRating: number;
+    cafeterias: string[];
+  }>();
   const { cafName, itemName } = useGlobalSearchParams();
 
-  const [loading, setLoading] = useState(true);
+  const [loaded, setLoaded] = useState(false);
 
   const getItem = async () => {
     await axios
-      .get(`http://10.0.0.136:3000/foods/food/${itemName ?? "Curry"}`)
+      .get(`http://10.0.0.136:3000/foods/food/${itemName}`)
       .then((value) => {
         setApiInfo(value.data);
-        setLoading(false);
+        setLoaded(true);
       })
       .catch((error) => {
         console.log(error);
@@ -151,10 +150,12 @@ export default function FoodDescription() {
           <View style={{ flex: 0.03 }}></View>
         </View>
 
-        {!loading && (
+        {loaded ? (
           <ScrollView>
             <Image
-              source={{ uri: apiInfo.image }}
+              source={{
+                uri: `http://10.0.0.136:3000/images/${apiInfo?.image}`,
+              }}
               style={{
                 //flex: 0.4,
                 alignSelf: "center",
@@ -186,7 +187,7 @@ export default function FoodDescription() {
                   }}
                 >
                   <Text style={styles.itemTitle} numberOfLines={2}>
-                    {apiInfo.name}
+                    {apiInfo?.name}
                   </Text>
                 </View>
                 <MaterialCommunityIcons
@@ -221,7 +222,13 @@ export default function FoodDescription() {
                   size={20}
                   onPress={() => {}}
                 />
-                <Text style={styles.rating}>{apiInfo.averageRating}</Text>
+                <Text style={styles.rating}>
+                  {!apiInfo ||
+                  apiInfo?.averageRating < 0 ||
+                  apiInfo?.averageRating > 5
+                    ? "NA"
+                    : apiInfo?.averageRating.toFixed(1)}
+                </Text>
                 <TouchableOpacity onPress={() => setDialog(true)}>
                   <Text
                     style={[
@@ -243,7 +250,7 @@ export default function FoodDescription() {
                   </Text>
                 </View>
               )}
-              <Collapsible title="Also Served At     ">
+              <Collapsible title="Available Cafeterias">
                 <View style={{ marginVertical: 3, width: "100%" }}>
                   <Text style={[styles.allergy, { textAlign: "left" }]}>
                     Served at the following cafeterias:
@@ -256,7 +263,7 @@ export default function FoodDescription() {
                     flexWrap: "wrap",
                   }}
                 >
-                  {otherCafs.map((item) => {
+                  {apiInfo?.cafeterias.map((item) => {
                     return (
                       <View
                         key={item}
@@ -300,7 +307,7 @@ export default function FoodDescription() {
                 </View>
               </Collapsible>
               <View style={{ width: "100%", height: 10 }}></View>
-              <Collapsible title="Food Restrictions">
+              <Collapsible title="Food Restrictions     ">
                 <View style={{ marginVertical: 3, width: "100%" }}>
                   <Text style={[styles.allergy, { textAlign: "left" }]}>
                     This dish contains the following:
@@ -313,7 +320,7 @@ export default function FoodDescription() {
                     flexWrap: "wrap",
                   }}
                 >
-                  {apiInfo.allergies.map((item) => {
+                  {apiInfo?.allergies.map((item) => {
                     return (
                       <View
                         key={item}
@@ -362,6 +369,15 @@ export default function FoodDescription() {
               </Collapsible>
             </View>
           </ScrollView>
+        ) : (
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <ActivityIndicator
+              animating={!loaded}
+              color={colors.wpurple}
+            ></ActivityIndicator>
+          </View>
         )}
         {bottomPop && (
           <View

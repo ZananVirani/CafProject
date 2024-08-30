@@ -15,10 +15,10 @@ const foodSchema = new schema({
     type: String, 
     required: true 
   },
-  ingredients: { 
-    type: [String],
-    required: false
-  },
+  // ingredients: { 
+  //   type: [String],
+  //   required: false
+  // },
   allergies: { 
     type: [String],
     required: true
@@ -31,14 +31,10 @@ const foodSchema = new schema({
     type: Number,
     default: 7
   },
-  cafeterias: [{ 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Cafeteria' 
-  }]
-  // cafeterias: { 
-  //   type: [String], 
-  //   required: true
-  // }
+  cafeterias: { 
+    type: [String], 
+    default : []
+  }
 })
 
 const Food = mongoose.model("food", foodSchema)

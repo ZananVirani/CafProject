@@ -18,16 +18,19 @@ import CustomButton from "@/components/CustomButton";
 import { Dialog } from "react-native-simple-dialogs";
 import TextField from "@/components/TextField";
 import { TextInput } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
+import { presetState } from "@/state/presets/presetSlice";
+import { RootState } from "@/state/store";
+import axios from "axios";
+import { clear } from "@/state/presets/presetSlice";
 
 export default function Preview() {
-  const { presetName } = useGlobalSearchParams();
+  const { presetName, cafName } = useGlobalSearchParams();
   const dimensions = useWindowDimensions();
-  const testFoods = [
-    ["Grilled Cheese Sandwich", 4.3],
-    ["Hot Dog", 1.4],
-    ["Popcorn Chicken", 3.1],
-    ["Mac And Cheese", 3.8],
-  ];
+  const presetList: presetState = useSelector(
+    (state: RootState) => state.presetList
+  );
+  const dispatch = useDispatch();
   const [dialog, setDialog] = useState(false);
   const categories = ["Hot Food", "Interactive"];
   const [toggle, setToggle] = useState(false);
@@ -109,8 +112,47 @@ export default function Preview() {
                       },
                       {
                         text: "OK",
-                        onPress: () => {
+                        onPress: async () => {
+                          let menu: string[] = [];
+                          presetList.presetList.forEach((item) => {
+                            console.log(item._id);
+                            menu.push(item._id);
+                          });
                           setDialog(false);
+                          await axios
+                            .post(`http://10.0.0.136:3000/presets/${cafName}`, {
+                              presetName: nameText,
+                              foodIDs: menu,
+                            })
+                            .then((result) => {
+                              Alert.alert(
+                                "Menu Uploaded Successfully",
+                                undefined,
+                                [
+                                  {
+                                    text: "OK",
+                                    onPress: () => {
+                                      router.dismissAll();
+                                      router.setParams({ cafName: cafName });
+                                      dispatch(clear());
+                                    },
+                                  },
+                                ]
+                              );
+                            })
+                            .catch((error) => {
+                              console.log(error);
+                              Alert.alert(
+                                "Something Went Wrong",
+                                "Check Your Connection And Try Again",
+                                [
+                                  {
+                                    text: "OK",
+                                    onPress: () => {},
+                                  },
+                                ]
+                              );
+                            });
                         },
                       },
                     ]
@@ -122,7 +164,7 @@ export default function Preview() {
             height={50}
             width="90%"
           >
-            Submit
+            Upload
           </CustomButton>
         </View>
       </Dialog>
@@ -149,7 +191,7 @@ export default function Preview() {
             onPress={() => router.back()}
           />
           <Text style={styles.title} numberOfLines={1}>
-            {presetName ?? "New Menu"}
+            {cafName}
           </Text>
         </View>
       </View>
@@ -202,20 +244,23 @@ export default function Preview() {
                   flexWrap: "wrap",
                 }}
               >
-                {testFoods.map((item) => {
-                  return (
+                {presetList.presetList.map((item, index) => {
+                  return category == item.type ? (
                     <FoodBox
                       onPress={() => {
+                        console.log(item);
                         router.push("/(tabs)/food_description");
+                        router.setParams({ itemName: item.name });
                       }}
-                      key={item}
-                      name={item[0]}
-                      rating={item[1]}
+                      source={`http://10.0.0.136:3000/images/${item.image}`}
+                      key={index}
+                      name={item.name}
+                      rating={item.averageRating}
                       fontSize={12}
                       width={dimensions.width * 0.29}
                       minWidth={113.1}
                     />
-                  );
+                  ) : null;
                 })}
               </View>
             </View>
@@ -229,7 +274,7 @@ export default function Preview() {
           position: "absolute",
           bottom: 0,
           width: dimensions.width,
-          marginBottom: 170,
+          marginBottom: presetName ? 170 : 85,
         }}
       >
         <CustomButton
@@ -237,44 +282,85 @@ export default function Preview() {
             setDialog(true);
           }}
           borderRadius={14}
-          marginVertical={0}
+          marginVertical={presetName ? 0 : 20}
           buttonColor={colors.darkgray}
         >
           Save As New & Upload
         </CustomButton>
       </View>
-      <View
-        style={{
-          position: "absolute",
-          bottom: 0,
-          width: dimensions.width,
-          marginBottom: 85,
-        }}
-      >
-        <CustomButton
-          onPress={() => {
-            Alert.alert(
-              `Are You Sure You Want To Edit Current Preset And Upload Menu?`,
-              undefined,
-              [
-                {
-                  text: "Cancel",
-                  onPress: () => {},
-                  style: "cancel",
-                },
-                {
-                  text: "OK",
-                  onPress: () => {},
-                },
-              ]
-            );
+      {presetName && (
+        <View
+          style={{
+            position: "absolute",
+            bottom: 0,
+            width: dimensions.width,
+            marginBottom: 85,
           }}
-          borderRadius={14}
-          marginVertical={20}
         >
-          Edit Preset & Upload
-        </CustomButton>
-      </View>
+          <CustomButton
+            onPress={() => {
+              Alert.alert(
+                `Are You Sure You Want To Edit Current Preset And Upload Menu?`,
+                undefined,
+                [
+                  {
+                    text: "Cancel",
+                    onPress: () => {},
+                    style: "cancel",
+                  },
+                  {
+                    text: "OK",
+                    onPress: async () => {
+                      let menu: string[] = [];
+                      presetList.presetList.forEach((item) => {
+                        console.log(item._id);
+                        menu.push(item._id);
+                      });
+                      await axios
+                        .patch(
+                          `http://10.0.0.136:3000/presets/editPreset/${cafName}`,
+                          {
+                            presetName: presetName,
+                            foodIDs: menu,
+                          }
+                        )
+                        .then((result) => {
+                          Alert.alert("Menu Uploaded Successfully", undefined, [
+                            {
+                              text: "OK",
+                              onPress: () => {
+                                router.dismissAll();
+                                router.setParams({ cafName: cafName });
+                                dispatch(clear());
+                              },
+                            },
+                          ]);
+                        })
+                        .catch((error) => {
+                          console.log(error);
+                          Alert.alert(
+                            "Something Went Wrong",
+                            "Check Your Connection And Try Again",
+                            [
+                              {
+                                text: "OK",
+                                onPress: () => {},
+                              },
+                            ]
+                          );
+                        });
+                    },
+                  },
+                ]
+              );
+            }}
+            borderRadius={14}
+            marginVertical={20}
+          >
+            Edit Preset & Upload
+          </CustomButton>
+        </View>
+      )}
       <View
         style={{
           position: "absolute",
@@ -339,5 +425,3 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
 });
-
-// TODO: Add Name Dialog For New Name Preset

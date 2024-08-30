@@ -60,12 +60,9 @@ router.get('/getFood/:cafeteriaName', async (req, res) => {
       return res.status(404).json({ message: 'Cafeteria not found' });
     }
 
-    console.log("Found Cafeteria", caf)
-    //Array of Food Ids
-    const menuIds = caf.menu
-    const foods = await Food.find({cafeterias : caf.name})
+    const foods = await Food.find({cafeterias : cafeteriaName})
 
-    //getFoodFromCaf(menuIds)
+    if (!foods) return res.status(400).json({message : "Foods not found"})
 
     return res.json(foods);
   } catch(error){

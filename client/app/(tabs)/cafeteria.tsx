@@ -1,11 +1,12 @@
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
   useWindowDimensions,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import colors from "../../constants/Colors";
 import FoodBox from "@/components/FoodBox";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -16,24 +17,57 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import Toggle from "@imcarlosguerrero/react-native-switch-toggle";
-import { router, useGlobalSearchParams } from "expo-router";
+import { router, useFocusEffect, useGlobalSearchParams } from "expo-router";
 import { Dialog } from "react-native-simple-dialogs";
 import CustomButton from "@/components/CustomButton";
+import axios from "axios";
+import { ActivityIndicator } from "react-native-paper";
 
 export default function Cafeteria() {
   const { cafName } = useGlobalSearchParams();
   const dimensions = useWindowDimensions();
-  const testFoods = [
-    ["Grilled Cheese Sandwich", 4.3],
-    ["Hot Dog", 1.4],
-    ["Popcorn Chicken", 3.1],
-    ["Mac And Cheese", 3.8],
-  ];
+  const [foods, setFoods] = useState<
+    {
+      _id: string;
+      name: string;
+      image: string;
+      allergies: string[];
+      type: string;
+      averageRating: Number;
+      cafeterias: string[];
+    }[]
+  >();
   const categories = ["Favourites", "Hot Food", "Interactive"];
   const [toggle, setToggle] = useState(false);
   const [dialog, setDialog] = useState(false);
   const [bottomPop, setBottomPop] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  const getFoods = async () => {
+    await axios
+      .get(`http://10.0.0.136:3000/cafeterias/getFood/${cafName}`)
+      .then((result) => {
+        setFoods(result.data);
+        setLoaded(true);
+      })
+      .catch((error) => {
+        setLoaded(true);
+        console.log(error);
+        Alert.alert(
+          "Something Went Wrong",
+          "Check Your Connection And Try Again",
+          [
+            {
+              text: "OK",
+              onPress: () => {},
+            },
+          ]
+        );
+      });
+  };
+
   useEffect(() => {
+    getFoods();
     const result = !getCafOpen();
     setDialog(result);
     setBottomPop(result);
@@ -68,7 +102,7 @@ export default function Cafeteria() {
               size={70}
               color={colors.wpurple}
             />
-            <View
+            {/* <View
               style={{
                 width: "100%",
                 marginTop: 20,
@@ -80,11 +114,14 @@ export default function Cafeteria() {
               <Text style={styles.subdialog} numberOfLines={1}>
                 Something
               </Text>
-            </View>
+            </View> */}
           </View>
           <CustomButton
             onPress={() => {
               setDialog(false);
+              setTimeout(() => {
+                router.back();
+              }, 500);
             }}
             borderRadius={15}
             marginHorizontal={0}
@@ -123,85 +160,85 @@ export default function Cafeteria() {
           />
           <View style={{ flex: 0.03 }}></View>
         </View>
-        <ScrollView>
-          <View
-            style={{
-              width: dimensions.width,
-              backgroundColor: colors.verylightgray,
-              flexDirection: "row",
-            }}
-          >
+        {loaded ? (
+          <ScrollView>
             <View
               style={{
-                flex: 0.57,
-                borderRightColor: colors.gray,
-                borderRightWidth: 2,
-                borderStyle: "solid",
-                paddingLeft: 15,
-                paddingTop: 13,
-                paddingBottom: 20,
-                paddingRight: 5,
+                width: dimensions.width,
+                backgroundColor: colors.verylightgray,
+                flexDirection: "row",
               }}
             >
-              <Text style={styles.text}>Regular Hours:</Text>
-              <Text style={styles.subtext}>Weekdays: 7:30am - 11:00pm</Text>
-              <Text style={styles.subtext}>Weekends: 7:30am - 7:30pm</Text>
-            </View>
-            <View
-              style={{
-                flex: 0.43,
-                paddingHorizontal: 10,
-                paddingTop: 15,
-                alignItems: "center",
-              }}
-            >
-              <Text
+              <View
                 style={{
-                  color: colors.wpurple,
-                  fontSize: 15,
-                  fontWeight: "medium",
-                  lineHeight: 40,
+                  flex: 0.57,
+                  borderRightColor: colors.gray,
+                  borderRightWidth: 2,
+                  borderStyle: "solid",
+                  paddingLeft: 15,
+                  paddingTop: 13,
+                  paddingBottom: 20,
+                  paddingRight: 5,
                 }}
               >
-                Hide Restrictions:
-              </Text>
-              <Toggle
-                circleColorOff={colors.white}
-                circleColorOn={colors.white}
-                backgroundColorOff={colors.gray}
-                backgroundColorOn={colors.wpurple}
-                switchOn={toggle}
-                onPress={() => setToggle(!toggle)}
-                containerStyle={{
-                  width: dimensions.width * 0.17,
-                  height: dimensions.width * 0.07,
-                  borderRadius: 50,
+                <Text style={styles.text}>Regular Hours:</Text>
+                <Text style={styles.subtext}>Weekdays: 7:30am - 11:00pm</Text>
+                <Text style={styles.subtext}>Weekends: 7:30am - 7:30pm</Text>
+              </View>
+              <View
+                style={{
+                  flex: 0.43,
+                  paddingHorizontal: 10,
+                  paddingTop: 15,
+                  alignItems: "center",
                 }}
-                circleStyle={{
-                  width: dimensions.width * 0.07,
-                  height: dimensions.width * 0.07,
-                  borderRadius: 50,
-                }}
-              />
-            </View>
-          </View>
-          {true && (
-            <View style={{ width: dimensions.width }}>
-              <CustomButton
-                onPress={() => {
-                  router.push("/(tabs)/menu");
-                  router.setParams({ cafName: cafName });
-                }}
-                marginTop={20}
-                borderRadius={20}
-                buttonColor={colors.wpurple}
               >
-                Change Menu
-              </CustomButton>
+                <Text
+                  style={{
+                    color: colors.wpurple,
+                    fontSize: 15,
+                    fontWeight: "medium",
+                    lineHeight: 40,
+                  }}
+                >
+                  Hide Restrictions:
+                </Text>
+                <Toggle
+                  circleColorOff={colors.white}
+                  circleColorOn={colors.white}
+                  backgroundColorOff={colors.gray}
+                  backgroundColorOn={colors.wpurple}
+                  switchOn={toggle}
+                  onPress={() => setToggle(!toggle)}
+                  containerStyle={{
+                    width: dimensions.width * 0.17,
+                    height: dimensions.width * 0.07,
+                    borderRadius: 50,
+                  }}
+                  circleStyle={{
+                    width: dimensions.width * 0.07,
+                    height: dimensions.width * 0.07,
+                    borderRadius: 50,
+                  }}
+                />
+              </View>
             </View>
-          )}
-          {
-            categories.map((category, index) => {
+            {true && (
+              <View style={{ width: dimensions.width }}>
+                <CustomButton
+                  onPress={() => {
+                    router.push("/(tabs)/menu");
+                    router.setParams({ cafName: cafName });
+                  }}
+                  marginTop={20}
+                  borderRadius={20}
+                  buttonColor={colors.wpurple}
+                >
+                  Change Menu
+                </CustomButton>
+              </View>
+            )}
+            {categories.map((category, index) => {
               return (
                 <View key={category}>
                   <View
@@ -249,49 +286,42 @@ export default function Cafeteria() {
                       flexWrap: "wrap",
                     }}
                   >
-                    {testFoods.map((item) => {
-                      return (
-                        <FoodBox
-                          onPress={() => {
-                            router.push("/(tabs)/food_description");
-                            router.setParams({ cafName });
-                          }}
-                          key={item}
-                          name={item[0]}
-                          rating={item[1]}
-                          fontSize={12}
-                          width={dimensions.width * 0.29}
-                          minWidth={113.1}
-                        />
-                      );
-                    })}
+                    {foods &&
+                      foods.map((item, index) => {
+                        return category == item.type ? (
+                          <FoodBox
+                            onPress={() => {
+                              router.push("/(tabs)/food_description");
+                              router.setParams({
+                                cafName,
+                                itemName: item.name,
+                              });
+                            }}
+                            key={index}
+                            source={`http://10.0.0.136:3000/images/${item.image}`}
+                            name={item.name}
+                            rating={item.averageRating}
+                            fontSize={12}
+                            width={dimensions.width * 0.29}
+                            minWidth={113.1}
+                          />
+                        ) : null;
+                      })}
                   </View>
                 </View>
               );
-            })
-            // <View
-            //   style={{
-            //     height: dimensions.height * 0.7,
-            //     justifyContent: "center",
-            //     alignItems: "center",
-            //   }}
-            // >
-            //   <Text
-            //     style={{
-            //       color: colors.black,
-            //       fontSize: 23,
-            //       fontFamily: "inter",
-            //       fontWeight: "500",
-            //       marginLeft: 8,
-            //       textAlign: "center",
-            //     }}
-            //   >
-            //     Sorry! This Cafeteria Is Closed :{"("}
-            //     {"\n"}Come Back Soon!
-            //   </Text>
-            // </View>
-          }
-        </ScrollView>
+            })}
+          </ScrollView>
+        ) : (
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <ActivityIndicator
+              animating={!loaded}
+              color={colors.wpurple}
+            ></ActivityIndicator>
+          </View>
+        )}
         {bottomPop && (
           <View
             style={{

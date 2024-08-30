@@ -11,21 +11,20 @@ const router = express.Router();
 
 router.post("/", async (req,res) => {
   try{
-    const {name, image, ingredients, allergies, type, cafeterias} = req.body
+    const {name, image, allergies, type, cafeterias} = req.body
 
 
     const newFood = new Food({
       name: name,
       image: image,  
-      ingredients: ingredients,
       allergies: allergies,
       type: type,
       cafeterias: cafeterias
     });
 
-    await Food.create(newFood);
+    let something = await Food.create(newFood);
 
-    res.status(201).send("Food added successfully");
+    res.status(201).json(something);
 
   } catch(err){
     console.log("error: ", err);
@@ -103,6 +102,20 @@ router.patch('/tempRoute', async (req, res) =>{
 //   }
 
 // })
+
+router.get('/food/:foodName', async (req, res)=>{
+  try{
+    const {foodName} = req.params
+
+    const food = await Food.findOne({name : foodName})
+
+    if (!food) return res.status(400).json({message : "Food Not Found"})
+
+    return res.json(food)
+  }catch(e){
+    res.status(500).json({message : e.message})
+  }
+})
 
 // router.get('/food/:foodName', async (req, res) => {
 //   try {

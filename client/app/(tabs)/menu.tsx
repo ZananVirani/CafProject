@@ -40,11 +40,7 @@ export default function Menu() {
       .then((result) => {
         setAllPresets(result.data);
         setLoaded(true);
-        setPresets(
-          result.data.filter((item: String) => {
-            return item.toLowerCase().includes(searchText.toLowerCase());
-          })
-        );
+        setPresets(result.data);
       })
       .catch((error) => {
         console.log(error);
@@ -197,7 +193,7 @@ export default function Menu() {
               <TouchableOpacity
                 onPress={() => {
                   router.push("/(tabs)/preset");
-                  router.setParams({});
+                  router.setParams({ cafName: cafName });
                 }}
               >
                 <View
@@ -314,7 +310,7 @@ export default function Menu() {
 
   function visitPreset(item: String) {
     router.push("/(tabs)/preset");
-    router.setParams({ presetName: item.toString() });
+    router.setParams({ presetName: item.toString(), cafName: cafName });
   }
 }
 

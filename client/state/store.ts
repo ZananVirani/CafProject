@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import resReducer from "./residence/resSlice"
+import presetReducer from "./presets/presetSlice"
 
 export const store = configureStore({
     reducer : {
-        resList : resReducer
+        resList : resReducer,
+        presetList : presetReducer
     }
 })
 
