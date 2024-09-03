@@ -14,7 +14,7 @@ export default function OnBoarding() {
     >
       <SafeAreaView style={{ flex: 1 }}>
         <View style={{ flex: 0.85 }}>
-          <Text style={styles.title}>AppName</Text>
+          <Text style={styles.title}>ResEats</Text>
           <Text style={styles.subtitle}>Home of Western {"\n"}Dining</Text>
         </View>
         <View style={{ flex: 0.15 }}>

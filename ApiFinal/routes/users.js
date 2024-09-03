@@ -12,8 +12,6 @@ const router = express.Router();
 
 router.post("/register", async (req, res) => {
   try {
-    //Prints body of http request
-    console.log("req.body: ", req.body);
     
     //Uses destructuring assignment syntax to assign values in body of request to the variables with the same name
     const {studentId, firstName, lastName, password, role, allergies, favouriteCafeterias, favouriteFoods} = req.body;
@@ -26,48 +24,48 @@ router.post("/register", async (req, res) => {
       return res.status(400).send('User already exists.');
     }
 
-    if(favouriteCafeterias != null){
-      cafIds = await getCafs(favouriteCafeterias);
-      console.log(cafIds)
-      //Does this work
-      //favouriteCafeterias = cafIds;
-   
 
-      //Test to see if assignment works
-      const newUser = new User({
+    const newUser = new User({
       studentId: studentId,
       firstName,
       lastName,
       password,
       role,
       allergies,
-      favouriteCafeterias: cafIds,
+      favouriteCafeterias,
       favouriteFoods
     });
 
     await User.create(newUser);
-
-    } else{
-      const newUser = new User({
-        studentId: studentId,
-        firstName,
-        lastName,
-        password,
-        role,
-        allergies,
-        favouriteCafeterias,
-        favouriteFoods
-      });
-  
-      console.log(newUser)
-      await User.create(newUser);
-    }
 
     
     res.send("User added")
 
   } catch(err){
     console.log("error: ", err)
+    return res.status(500).send('Failed to create user');
+  }
+
+})
+
+router.get("/getUser/:studentId", async (req, res) => {
+  try {
+    
+    const {studentId} = req.params;
+
+    const existingUser = await User.findOne({studentId});
+  
+    // Return error if user exists
+    if (!existingUser) {
+      return res.status(400).send('User does not exist.');
+    }
+
+    
+    return res.json(existingUser)
+
+  } catch(err){
+    console.log("error: ", err)
+    return res.status(500).send('Failed to create user');
   }
 
 })

@@ -4,6 +4,7 @@ const Cafeteria = require('../models/Cafeteria');
 const addFoodItemToCafeteria = require('../middleware/addFood');
 const getFoodFromCaf = require('../middleware/getFood');
 const Food = require('../models/Food');
+const User = require('../models/User');
 
 const router = express.Router();
 
@@ -36,17 +37,16 @@ router.post("/", async (req, res) => {
 router.get("/favouriteCafs", async (req, res) => {
   try {
     //Uses destructuring assignment syntax to assign values in body of request to the variables with the same name
-    const {cafs} = req.query;
-    console.log(req)
-    console.log(cafs)
+    const {userID} = req.query;
 
     //Test to see if assignment works
+    const user = await User.findOne({studentId : userID})
+    console.log(user)
+    if (!user) return res.status(400).send("User Not Found!")
 
-    const foods = await Food.find({cafeterias : {$in : cafs}});
-
+    const foods = await Food.find({cafeterias : {$in : user.favouriteCafeterias}});
     console.log(foods)
-
-   return res.json(foods)
+   return res.json({foods : foods, user : user})
 
   } catch(err){
     console.log("error: ", err)

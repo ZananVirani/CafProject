@@ -20,7 +20,7 @@ const userSchema = new schema({
   },
   password: {
     type: String,
-    required: true
+    required: false
   },
   role: {
     type: String,
@@ -31,27 +31,27 @@ const userSchema = new schema({
     type: [String],
     enum: ['Meat', 'Gluten', 'Pork', 'Dairy', 'Seafood', 'Nuts'], 
   },
-  favouriteCafeterias: [{ 
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Cafeteria'
-  }],
+  favouriteCafeterias: {
+    type: [String],
+    enum: ["Ontario Hall", "Saugeen Hall", "Perth Hall", "Sydenham Hall", "Delaware Hall", "Elgin Hall", "Essex Hall"], 
+  },
   favouriteFoods: [{ 
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Food'
   }],
 });
 
-userSchema.pre('save', async function (next) {
-  console.log('Password before hashing:', this.password);
-  if (!this.isModified('password')) return next();
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (err) {
-    next(err);
-  }
-});
+// userSchema.pre('save', async function (next) {
+//   console.log('Password before hashing:', this.password);
+//   if (!this.isModified('password')) return next();
+//   try {
+//     const salt = await bcrypt.genSalt(10);
+//     this.password = await bcrypt.hash(this.password, salt);
+//     next();
+//   } catch (err) {
+//     next(err);
+//   }
+// });
 
 const User = mongoose.model("user", userSchema)
 

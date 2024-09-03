@@ -19,6 +19,7 @@ import {
 import ProfileButton from "@/components/ProfileButton";
 import * as Location from "expo-location";
 import * as Linking from "expo-linking";
+import { setUserID } from "@/utils/AsyncStorage";
 
 export default function ProfileScreen() {
   const dimensions = useWindowDimensions();
@@ -141,9 +142,10 @@ export default function ProfileScreen() {
                 },
                 {
                   text: "Logout",
-                  onPress: () => {
+                  onPress: async () => {
+                    setUserID(undefined);
                     router.dismissAll();
-                    router.replace("/(tabs)/");
+                    router.replace("/(tabs)/onboarding");
                   },
                 },
               ]);

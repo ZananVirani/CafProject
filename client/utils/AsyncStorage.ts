@@ -20,7 +20,7 @@ export async function getUserID() : Promise<string|undefined> {
     }
 }
 
-export async function setSelectedCaf(value:number) : Promise<void>{
+export async function setSelectedCaf(value:string) : Promise<void>{
     try {
         await AsyncStorage.setItem('selectedCaf', JSON.stringify(value));
     } catch (error) {
@@ -28,13 +28,13 @@ export async function setSelectedCaf(value:number) : Promise<void>{
     }
 }
 
-export async function getSelectedCaf() : Promise<number> {
+export async function getSelectedCaf() : Promise<string> {
     try {
         const hello = await AsyncStorage.getItem('selectedCaf');
-        return hello ? JSON.parse(hello) : 0;
+        return hello ? JSON.parse(hello) : "";
     } catch (error) {
         console.log(error);
-        return 0;
+        return "";
     }
 }
 

@@ -17,6 +17,7 @@ import CustomButton from "@/components/CustomButton";
 import {
   getFilters,
   getSelectedCaf,
+  getUserID,
   setFilters,
   setSelectedCaf,
 } from "@/utils/AsyncStorage";
@@ -43,10 +44,22 @@ export default function MainScreen() {
       cafeterias: string[];
     }[]
   >([]);
-
+  const [user, setUser] = useState<
+    | {
+        studentId: string;
+        firstName: string;
+        lastName: string;
+        password?: string;
+        role: string;
+        allergies: string[];
+        favouriteCafeterias: string[];
+        favouriteFoods: string[];
+      }
+    | undefined
+  >(undefined);
   const [loaded, setLoaded] = useState(false);
   const [categories, setCategories] = useState([""]);
-  const cafs = ["Delaware Hall", "Perth Hall", "Ontario Hall"];
+  //const cafs = ["Delaware Hall", "Perth Hall", "Ontario Hall"];
   const [cafNum, setCafNum] = useState(0);
   const [filterChosen, setFilterChosen] = useState(categories[0]);
   const origBoxes = [
@@ -151,27 +164,30 @@ export default function MainScreen() {
   }, [filterChosen]);
 
   const getFoods = async () => {
-    await axios
-      .get(`http://10.0.0.136:3000/cafeterias/favouriteCafs`, {
-        params: {
-          cafs: cafs,
-        },
-      })
-      .then((result) => {
-        setFoods(result.data);
-      })
-      .catch((error) => console.log(error));
+    await getUserID().then(async (userID) => {
+      await axios
+        .get(`http://10.0.0.136:3000/cafeterias/favouriteCafs`, {
+          params: {
+            userID,
+          },
+        })
+        .then((result) => {
+          setFoods(result.data.foods);
+          setUser(result.data.user);
+          getSelectedCaf()
+            .then((value) => {
+              let num = result.data.users.favouriteCafeterias.indexOf(value);
+              num > -1 ? setCafNum(num) : setCafNum(0);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        })
+        .catch((error) => console.log(error));
+    });
   };
 
   useEffect(() => {
-    //getFoods()
-    getSelectedCaf()
-      .then((value) => {
-        value >= cafs.length ? setCafNum(0) : setCafNum(value);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
     getFilters()
       .then((value) => {
         setCategories(value);
@@ -186,9 +202,6 @@ export default function MainScreen() {
       getFoods().then(() => {
         setLoaded(true);
       });
-      // setTimeout(() => {
-      //   setLoaded(true);
-      // }, 1000);
     }, [])
   );
 
@@ -218,7 +231,11 @@ export default function MainScreen() {
               }}
             >
               <Text style={styles.title} numberOfLines={1}>
-                Hi, Shriraam
+                Hi,
+                {user?.firstName.replace(
+                  user?.firstName.charAt(0),
+                  user?.firstName.charAt(0).toUpperCase()
+                )}
               </Text>
               <Text style={styles.subtitle}>Check Out What's Cooking</Text>
             </View>
@@ -254,17 +271,21 @@ export default function MainScreen() {
                 size={33}
                 color={colors.gray}
                 onPress={async () => {
-                  let newNum = (cafNum + 1) % cafs.length;
+                  let newNum = (cafNum + 1) % user!.favouriteCafeterias.length;
                   setCafNum(newNum);
-                  await setSelectedCaf(newNum);
+                  await setSelectedCaf(user!.favouriteCafeterias[newNum]);
                 }}
               />
-              <Text style={styles.cafTitle}>{cafs[cafNum]}</Text>
+              <Text style={styles.cafTitle}>
+                {user ? user.favouriteCafeterias[cafNum] : ""}
+              </Text>
             </View>
             <TouchableOpacity
               onPress={async () => {
                 router.push("/(tabs)/cafeteria");
-                router.setParams({ cafName: cafs[cafNum] });
+                router.setParams({
+                  cafName: user?.favouriteCafeterias[cafNum],
+                });
               }}
               style={{ flex: 1 }}
             >
@@ -283,31 +304,34 @@ export default function MainScreen() {
               marginLeft: "3%",
             }}
           >
-            {foods.map((item, index) => {
-              return item.cafeterias.includes(cafs[cafNum]) ? (
-                <FoodBox
-                  onPress={() => {
-                    router.push("/(tabs)/food_description");
-                    router.setParams({
-                      cafName: cafs[cafNum],
-                      itemName: item.name,
-                    });
-                  }}
-                  key={index}
-                  source={`http://10.0.0.136:3000/images/${item.image}`}
-                  name={item.name}
-                  rating={item.averageRating}
-                  fontSize={10.5}
-                  ratingFont={9}
-                  starSize={10}
-                  width={dimensions.width * 0.26}
-                  minWidth={100}
-                  marginLeft="1%"
-                  height={dimensions.width * 0.105}
-                  marginTop="0%"
-                />
-              ) : null;
-            })}
+            {user &&
+              foods.map((item, index) => {
+                return item.cafeterias.includes(
+                  user.favouriteCafeterias[cafNum]
+                ) ? (
+                  <FoodBox
+                    onPress={() => {
+                      router.push("/(tabs)/food_description");
+                      router.setParams({
+                        cafName: user?.favouriteCafeterias[cafNum],
+                        itemName: item.name,
+                      });
+                    }}
+                    key={index}
+                    source={`http://10.0.0.136:3000/images/${item.image}`}
+                    name={item.name}
+                    rating={item.averageRating}
+                    fontSize={10.5}
+                    ratingFont={9}
+                    starSize={10}
+                    width={dimensions.width * 0.26}
+                    minWidth={100}
+                    marginLeft="1%"
+                    height={dimensions.width * 0.105}
+                    marginTop="0%"
+                  />
+                ) : null;
+              })}
             <View style={{ width: dimensions.width * 0.18 }}></View>
           </ScrollView>
           {/* First DIPLAY ROWWWW /////////////////////////////// */}

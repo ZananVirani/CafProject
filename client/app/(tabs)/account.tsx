@@ -11,7 +11,7 @@ import CustomButton from "@/components/CustomButton";
 import colors from "../../constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TextField from "@/components/TextField";
-import { Checkbox } from "react-native-paper";
+import { ActivityIndicator, Checkbox } from "react-native-paper";
 import { Dialog } from "react-native-simple-dialogs";
 import CustomDropdown from "@/components/CustomDropdown";
 import { router } from "expo-router";
@@ -19,7 +19,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/state/store";
 import { AntDesign, Octicons } from "@expo/vector-icons";
 import { clear } from "@/state/residence/resSlice";
-import { getUserID } from "@/utils/AsyncStorage";
+import { getUserID, setUserID } from "@/utils/AsyncStorage";
+import axios from "axios";
 
 export default function AccountInfo() {
   const resList = useSelector((state: RootState) => state.resList);
@@ -31,11 +32,13 @@ export default function AccountInfo() {
   const [secondError, setSecondError] = useState(false);
   const [thirdError, setThirdError] = useState(false);
   const [dialog, setDialog] = useState(false);
-  const [userID, setUserID] = useState<string | undefined>(undefined);
+  const [userID, setUser] = useState<string | undefined>(undefined);
+  const [loaded, setLoaded] = useState(false);
 
   const getUser = async () => {
     let id = await getUserID();
-    id && setUserID(id);
+    id && setUser(id);
+    setLoaded(true);
   };
 
   useEffect(() => {
@@ -102,7 +105,7 @@ export default function AccountInfo() {
             onPress={async () => {
               setDialog(false);
               dispatch(clear([]));
-              await setTimeout(() => {
+              setTimeout(() => {
                 !userID ? router.replace("/(tabs)/main_screen") : router.back();
               }, 500);
             }}
@@ -116,170 +119,208 @@ export default function AccountInfo() {
             Let's Go!
           </CustomButton>
         </Dialog>
-        <SafeAreaView style={{ flex: 1 }}>
-          {!userID ? (
-            <View style={{ flex: 0.1 }}>
-              <Text style={styles.title}>Account Setup</Text>
-            </View>
-          ) : (
-            <View
-              style={{
-                height: 80,
-                flexDirection: "row",
-                alignItems: "center",
-                marginHorizontal: "7%",
-              }}
-            >
+        {loaded ? (
+          <SafeAreaView style={{ flex: 1 }}>
+            {!userID ? (
+              <View style={{ flex: 0.1 }}>
+                <Text style={styles.title}>Account Setup</Text>
+              </View>
+            ) : (
               <View
                 style={{
-                  flex: 1,
+                  height: 80,
                   flexDirection: "row",
                   alignItems: "center",
-                  width: dimensions.width,
+                  marginHorizontal: "7%",
                 }}
               >
-                <AntDesign
-                  color={colors.black}
-                  name="leftcircleo"
-                  size={30}
-                  onPress={() => {
-                    router.back();
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    width: dimensions.width,
                   }}
-                />
-                <Text style={styles.secondTitle}>Account Setup</Text>
-              </View>
-            </View>
-          )}
-          <View style={{ flex: 0.78 }}>
-            <TextField
-              placeText="First Name"
-              marginTop="7%"
-              onChangeText={(text: React.SetStateAction<string>) => {
-                setFirstName(text);
-              }}
-            ></TextField>
-            <View
-              style={{
-                height: 30,
-                width: "80%",
-                justifyContent: "center",
-                alignSelf: "center",
-                marginLeft: 30,
-              }}
-            >
-              {firstError && (
-                <Text style={styles.error}>Please Enter First Name</Text>
-              )}
-            </View>
-            <TextField
-              placeText="Last Name"
-              marginTop={0}
-              onChangeText={(text: React.SetStateAction<string>) => {
-                setLastName(text);
-              }}
-            ></TextField>
-            <View
-              style={{
-                height: 30,
-                width: "80%",
-                justifyContent: "center",
-                alignSelf: "center",
-                marginLeft: 30,
-              }}
-            >
-              {secondError && (
-                <Text style={styles.error}>Please Enter Last Name</Text>
-              )}
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-              }}
-            >
-              <Text style={styles.subtitle}>Food Restrictions?</Text>
-              <Checkbox.Android
-                status={checked ? "checked" : "unchecked"}
-                uncheckedColor={colors.wpurple}
-                color={colors.wpurple}
-                onPress={() => {
-                  setChecked(!checked);
-                }}
-              />
-            </View>
-            {checked && (
-              <View style={{ marginBottom: 6 }}>
-                <Text style={styles.text}>Check the foods you can NOT eat</Text>
+                >
+                  <AntDesign
+                    color={colors.black}
+                    name="leftcircleo"
+                    size={30}
+                    onPress={() => {
+                      router.back();
+                    }}
+                  />
+                  <Text style={styles.secondTitle}>Account Setup</Text>
+                </View>
               </View>
             )}
-            <View
-              style={{
-                flexDirection: "row",
-                marginHorizontal: "7%",
-                flexWrap: "wrap",
-                justifyContent: "center",
-              }}
-            >
-              {allergyList.map((item) => {
-                return (
-                  <CustomButton
-                    key={item}
-                    onPress={() => {
-                      let newValue = !map.get(item);
-                      setMap(
-                        new Map<string, boolean>([...map, [item, newValue]])
-                      );
-                    }}
-                    disabled={!checked}
-                    marginVertical={10}
-                    marginHorizontal={2.8}
-                    buttonColor={map.get(item) ? colors.wpurple : colors.white}
-                    height={40}
-                    fontSize={13}
-                    width={105}
-                    borderRadius={60}
-                    textColor={map.get(item) ? colors.white : colors.wpurple}
-                    borderColor={colors.wpurple}
-                    fontFamily="inter"
-                    fontWeight="medium"
-                    lSpacing={undefined}
-                  >
-                    {item}
-                  </CustomButton>
-                );
-              })}
-            </View>
-            <CustomDropdown setThirdError={setThirdError}></CustomDropdown>
-            <View
-              style={{
-                height: 25,
-                width: "80%",
-                alignSelf: "center",
-              }}
-            >
-              {thirdError && (
-                <Text style={styles.error}>
-                  Please Select At Least One Cafeteria
-                </Text>
+            <View style={{ flex: 0.78 }}>
+              <TextField
+                placeText="First Name"
+                marginTop="7%"
+                onChangeText={(text: React.SetStateAction<string>) => {
+                  setFirstName(text);
+                }}
+              ></TextField>
+              <View
+                style={{
+                  height: 30,
+                  width: "80%",
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  marginLeft: 30,
+                }}
+              >
+                {firstError && (
+                  <Text style={styles.error}>Please Enter First Name</Text>
+                )}
+              </View>
+              <TextField
+                placeText="Last Name"
+                marginTop={0}
+                onChangeText={(text: React.SetStateAction<string>) => {
+                  setLastName(text);
+                }}
+              ></TextField>
+              <View
+                style={{
+                  height: 30,
+                  width: "80%",
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  marginLeft: 30,
+                }}
+              >
+                {secondError && (
+                  <Text style={styles.error}>Please Enter Last Name</Text>
+                )}
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                }}
+              >
+                <Text style={styles.subtitle}>Food Restrictions?</Text>
+                <Checkbox.Android
+                  status={checked ? "checked" : "unchecked"}
+                  uncheckedColor={colors.wpurple}
+                  color={colors.wpurple}
+                  onPress={() => {
+                    setChecked(!checked);
+                  }}
+                />
+              </View>
+              {checked && (
+                <View style={{ marginBottom: 6 }}>
+                  <Text style={styles.text}>
+                    Check the foods you can NOT eat
+                  </Text>
+                </View>
               )}
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginHorizontal: "7%",
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                }}
+              >
+                {allergyList.map((item) => {
+                  return (
+                    <CustomButton
+                      key={item}
+                      onPress={() => {
+                        let newValue = !map.get(item);
+                        setMap(
+                          new Map<string, boolean>([...map, [item, newValue]])
+                        );
+                      }}
+                      disabled={!checked}
+                      marginVertical={10}
+                      marginHorizontal={2.8}
+                      buttonColor={
+                        map.get(item) ? colors.wpurple : colors.white
+                      }
+                      height={40}
+                      fontSize={13}
+                      width={105}
+                      borderRadius={60}
+                      textColor={map.get(item) ? colors.white : colors.wpurple}
+                      borderColor={colors.wpurple}
+                      fontFamily="inter"
+                      fontWeight="medium"
+                      lSpacing={undefined}
+                    >
+                      {item}
+                    </CustomButton>
+                  );
+                })}
+              </View>
+              <CustomDropdown setThirdError={setThirdError}></CustomDropdown>
+              <View
+                style={{
+                  height: 25,
+                  width: "80%",
+                  alignSelf: "center",
+                }}
+              >
+                {thirdError && (
+                  <Text style={styles.error}>
+                    Please Select At Least One Cafeteria
+                  </Text>
+                )}
+              </View>
             </View>
-          </View>
-          <View style={{ flex: 0.12 }}>
-            <CustomButton
-              onPress={() => {
-                firstName ? setFirstError(false) : setFirstError(true);
-                lastName ? setSecondError(false) : setSecondError(true);
-                if (resList.resList.length == 0) setThirdError(true);
+            <View style={{ flex: 0.12 }}>
+              <CustomButton
+                onPress={async () => {
+                  firstName ? setFirstError(false) : setFirstError(true);
+                  lastName ? setSecondError(false) : setSecondError(true);
+                  if (resList.resList.length == 0) setThirdError(true);
 
-                if (firstName && lastName && resList.resList.length != 0)
-                  setDialog(true);
-              }}
-              borderRadius={16}
-              buttonColor={colors.wpurple}
-            >
-              {!userID ? "Get Started" : "Update Info"}
-            </CustomButton>
+                  if (firstName && lastName && resList.resList.length != 0) {
+                    let newList: string[] = [];
+                    map.forEach((value, key) => {
+                      if (value) newList.push(key);
+                    });
+                    axios
+                      .post("http://10.0.0.136:3000/users/register", {
+                        studentId: "Student 4",
+                        firstName,
+                        lastName,
+                        role: "user",
+                        allergies: newList,
+                        favouriteCafeterias: resList.resList,
+                        favouriteFoods: [],
+                      })
+                      .then((result) => {
+                        setDialog(true);
+                        setUserID("Student 4");
+                      })
+                      .catch((e) => console.log(e));
+                  }
+                }}
+                borderRadius={16}
+                buttonColor={colors.wpurple}
+              >
+                {!userID ? "Get Started" : "Update Info"}
+              </CustomButton>
+            </View>
+          </SafeAreaView>
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ActivityIndicator
+              animating={!loaded}
+              color={colors.wpurple}
+            ></ActivityIndicator>
           </View>
-        </SafeAreaView>
+        )}
       </View>
     </TouchableWithoutFeedback>
   );
