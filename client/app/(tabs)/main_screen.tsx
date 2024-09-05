@@ -58,10 +58,13 @@ export default function MainScreen() {
     | undefined
   >(undefined);
   const [loaded, setLoaded] = useState(false);
+  const [partialLoaded, setPartialLoaded] = useState(false);
   const [categories, setCategories] = useState([""]);
   //const cafs = ["Delaware Hall", "Perth Hall", "Ontario Hall"];
   const [cafNum, setCafNum] = useState(0);
-  const [filterChosen, setFilterChosen] = useState(categories[0]);
+  const [filterChosen, setFilterChosen] = useState<string | undefined>(
+    undefined
+  );
   const origBoxes = [
     {
       cafName: "Ontario Hall",
@@ -108,16 +111,18 @@ export default function MainScreen() {
     },
   ];
 
-  const [cafBoxes, setCafBoxes] = useState<
-    | { cafName: string; latitude: number; longitude: number; source: any }[]
-    | undefined
-  >(origBoxes);
+  let tempNum = useRef(0);
+  const [cafBoxes, setCafBoxes] =
+    useState<
+      { cafName: string; latitude: number; longitude: number; source: any }[]
+    >(origBoxes);
 
-  const determineList = async () => {
+  const determineList = async (tempFilter: string, favFoods: string[]) => {
     let temp: any;
-    if (filterChosen == "A-Z") {
+
+    if (tempFilter == "A-Z") {
       temp = origBoxes.sort((a, b) => a.cafName.localeCompare(b.cafName));
-    } else if (filterChosen == "Nearby") {
+    } else if (tempFilter == "Nearby") {
       let { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status == "granted") {
@@ -153,53 +158,92 @@ export default function MainScreen() {
         temp = newList;
       }
     } else {
-      temp = [];
+      const response = await axios.get(
+        `http://10.0.0.135:3000/users/getAvailableCafs`,
+        {
+          params: {
+            foodIDs: favFoods,
+          },
+        }
+      );
+
+      const newList: {
+        cafName: string;
+        latitude: number;
+        longitude: number;
+        source: any;
+      }[] = [];
+
+      origBoxes?.forEach((item) => {
+        if (response.data.includes(item.cafName)) {
+          newList.push(item);
+        }
+      });
+
+      temp = newList;
     }
 
     setCafBoxes(temp);
   };
 
   useEffect(() => {
-    determineList();
+    if (filterChosen) {
+      if (tempNum.current > 0) {
+        setPartialLoaded(false);
+        determineList(filterChosen, user?.favouriteFoods!).then(() => {
+          setPartialLoaded(true);
+        });
+      } else {
+        tempNum.current = tempNum.current + 1;
+      }
+    }
   }, [filterChosen]);
 
   const getFoods = async () => {
-    await getUserID().then(async (userID) => {
-      await axios
-        .get(`http://10.0.0.135:3000/cafeterias/favouriteCafs`, {
+    try {
+      const userID = await getUserID();
+      const result = await axios.get(
+        `http://10.0.0.135:3000/cafeterias/favouriteCafs`,
+        {
           params: {
             userID,
           },
-        })
-        .then((result) => {
-          setFoods(result.data.foods);
-          setUser(result.data.user);
-          getSelectedCaf()
-            .then((value) => {
-              let num = result.data.user.favouriteCafeterias.indexOf(value);
-              num > -1 ? setCafNum(num) : setCafNum(0);
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        })
-        .catch((error) => console.log(error));
-    });
-  };
+        }
+      );
 
-  useEffect(() => {
-    getFilters()
-      .then((value) => {
-        setCategories(value);
-        setFilterChosen(value[0]);
-      })
-      .catch((error) => console.log(error));
-  }, []);
+      setFoods(result.data.foods);
+      setUser(result.data.user);
+      getSelectedCaf()
+        .then((value) => {
+          let num = result.data.user.favouriteCafeterias.indexOf(value);
+          num > -1 ? setCafNum(num) : setCafNum(0);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      return result;
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+  };
 
   useFocusEffect(
     useCallback(() => {
       setLoaded(false);
-      getFoods().then(() => {
+      getFoods().then((result) => {
+        getFilters()
+          .then((value) => {
+            setCategories(value);
+            setFilterChosen(value[0]);
+            setPartialLoaded(false);
+            determineList(value[0], result?.data.user.favouriteFoods).then(
+              () => {
+                setPartialLoaded(true);
+              }
+            );
+          })
+          .catch((error) => console.log(error));
         setLoaded(true);
       });
     }, [])
@@ -398,50 +442,87 @@ export default function MainScreen() {
               );
             })}
           </View>
-          {cafBoxes ? (
-            <ScrollView
-              horizontal={true}
-              style={{ flex: 1, paddingVertical: 15, marginLeft: "5%" }}
-            >
-              {cafBoxes.map((item) => {
-                return (
-                  <MainCafBox
-                    onPress={() => {
-                      router.push("/(tabs)/cafeteria");
-                      router.setParams({
-                        cafName: item.cafName,
-                        role: user?.role,
-                        allergies: user?.allergies,
-                        favouriteFoods: user?.favouriteFoods,
-                      });
+          {partialLoaded ? (
+            cafBoxes ? (
+              cafBoxes.length == 0 ? (
+                <View
+                  style={{
+                    flex: 1,
+                    width: dimensions.width,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      color: colors.darkgray,
+                      fontFamily: "inter",
+                      fontSize: 20,
                     }}
-                    key={item.cafName}
-                    cafName={item.cafName}
-                    source={item.source}
-                    //liked={item.liked}
-                  />
-                );
-              })}
-            </ScrollView>
+                  >
+                    {"No Cafeterias Are Serving\nYour Favourites :("}
+                  </Text>
+                </View>
+              ) : (
+                <ScrollView
+                  horizontal={true}
+                  style={{ flex: 1, paddingVertical: 15, marginLeft: "5%" }}
+                >
+                  {cafBoxes.map((item) => {
+                    return (
+                      <MainCafBox
+                        onPress={() => {
+                          router.push("/(tabs)/cafeteria");
+                          router.setParams({
+                            cafName: item.cafName,
+                            role: user?.role,
+                            allergies: user?.allergies,
+                            favouriteFoods: user?.favouriteFoods,
+                          });
+                        }}
+                        key={item.cafName}
+                        cafName={item.cafName}
+                        source={item.source}
+                        //liked={item.liked}
+                      />
+                    );
+                  })}
+                </ScrollView>
+              )
+            ) : (
+              <View
+                style={{
+                  flex: 1,
+                  width: dimensions.width,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: colors.darkgray,
+                    fontFamily: "inter",
+                    fontSize: 20,
+                  }}
+                >
+                  Allow Location Services For{"\n"}Access To This Feature!
+                </Text>
+              </View>
+            )
           ) : (
             <View
               style={{
                 flex: 1,
-                width: dimensions.width,
                 justifyContent: "center",
                 alignItems: "center",
               }}
             >
-              <Text
-                style={{
-                  textAlign: "center",
-                  color: colors.darkgray,
-                  fontFamily: "inter",
-                  fontSize: 20,
-                }}
-              >
-                Allow Location Services For{"\n"}Access To This Feature!
-              </Text>
+              <ActivityIndicator
+                animating={!partialLoaded}
+                color={colors.wpurple}
+              ></ActivityIndicator>
             </View>
           )}
         </SafeAreaView>

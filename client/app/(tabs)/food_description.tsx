@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  Alert,
 } from "react-native";
 import React, { Suspense, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -133,8 +134,42 @@ export default function FoodDescription() {
             </TouchableWithoutFeedback>
           </View>
           <CustomButton
-            onPress={() => {
-              console.log(rating);
+            onPress={async () => {
+              const userID = await getUserID();
+              await axios
+                .post(
+                  `http://10.0.0.135:3000/reviews/${userID}/${apiInfo?._id}`,
+                  { rating: rating }
+                )
+                .then((response) => {
+                  if (response.status == 201) {
+                    Alert.alert("Successfully Changed Review", undefined, [
+                      {
+                        text: "OK",
+                        onPress: () => {},
+                      },
+                    ]);
+                  } else {
+                    Alert.alert("Successfully Added Review", undefined, [
+                      {
+                        text: "OK",
+                        onPress: () => {},
+                      },
+                    ]);
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                  Alert.alert("Not Added Properly", undefined, [
+                    {
+                      text: "OK",
+                      onPress: () => {},
+                    },
+                  ]);
+                })
+                .finally(() => {
+                  setDialog(false);
+                });
             }}
             borderRadius={15}
             marginHorizontal="6%"

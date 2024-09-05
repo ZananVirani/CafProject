@@ -66,12 +66,14 @@ export default function Cafeteria() {
       });
   };
 
-  useEffect(() => {
-    getFoods();
-    const result = !getCafOpen();
-    setDialog(result);
-    setBottomPop(result);
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getFoods();
+      const result = !getCafOpen();
+      setDialog(result);
+      setBottomPop(result);
+    }, [])
+  );
 
   return (
     <View
@@ -296,6 +298,7 @@ export default function Cafeteria() {
                                 router.push("/(tabs)/food_description");
                                 router.setParams({
                                   cafName,
+                                  favouriteFoods,
                                   itemName: item.name,
                                   allergies: allergies,
                                 });
@@ -316,6 +319,7 @@ export default function Cafeteria() {
                               router.push("/(tabs)/food_description");
                               router.setParams({
                                 cafName,
+                                favouriteFoods,
                                 itemName: item.name,
                                 allergies: allergies,
                               });

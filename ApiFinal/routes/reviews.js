@@ -2,37 +2,45 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
+const User = require('../models/User')
+const Food = require('../models/Food')
 const Review = require('../models/Review');
 const updateAverageReview = require('../middleware/updateAverageRating')
 const getReviewData = require('../middleware/getReviewData');
 
 const router = express.Router();
 
-router.post("/:userName/:foodName", async (req,res) =>{
+router.post("/:userID/:foodID", async (req,res) =>{
   try{
-    const {userName} = req.params;
-    const {foodName} = req.params;
+    const {userID, foodID} = req.params;
 
     const {rating} = req.body;
 
-    data = await getReviewData(userName, foodName);
-    console.log(data)
-    user = data[0];
-    food = data[1];
+    const user = await User.findOne({studentId : userID})
 
-    const newReview = new Review({
-      user,
-      food,
-      rating
-    });
-    
-    await Review.create(newReview);
+    const result = await Review.findOne({user : user._id, food : foodID})
 
-    await updateAverageReview(foodName);
+    let status = 200;
 
-    res.send("Review Added")  
+    if (result){
+      status = 201;
+      await Review.findOneAndUpdate({user : user._id, food : foodID}, {rating : rating})
+    }else{
+      const newReview = new Review({
+        user  :user._id,
+        food : foodID,
+        rating
+      });
+
+      const answer = await Review.create(newReview);
+    }
+
+    await updateAverageReview(foodID);
+
+    return res.status(status).send("Success")
     
   }catch(error){
+    console.log(error)
     res.status(500).json({ error: error.message });
   }
 })

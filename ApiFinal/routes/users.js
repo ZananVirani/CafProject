@@ -80,6 +80,33 @@ router.patch("/editUser", async (req, res) => {
 
 })
 
+router.get("/getAvailableCafs", async (req, res) => {
+  try {
+    
+    const {foodIDs} = req.query;
+
+    const foods = await Food.find({_id : {$in : foodIDs}});
+
+    let newSet = new Set()
+
+    foods.forEach((item)=>{
+      item.cafeterias.forEach((caf)=>{
+        newSet.add(caf)
+      })
+    })
+
+    const newList = Array.from(newSet)
+
+    return res.send(newList)
+
+  } catch(err){
+    console.log("error: ", err)
+    return res.status(500).send('Failed to create user');
+  }
+
+})
+
+
 router.get("/getUser/:studentId", async (req, res) => {
   try {
     
