@@ -14,7 +14,7 @@ import TextField from "@/components/TextField";
 import { ActivityIndicator, Checkbox } from "react-native-paper";
 import { Dialog } from "react-native-simple-dialogs";
 import CustomDropdown from "@/components/CustomDropdown";
-import { router } from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/state/store";
 import { AntDesign, Octicons } from "@expo/vector-icons";
@@ -23,6 +23,7 @@ import { getUserID, setUserID } from "@/utils/AsyncStorage";
 import axios from "axios";
 
 export default function AccountInfo() {
+  const { studentId, password } = useGlobalSearchParams();
   const resList = useSelector((state: RootState) => state.resList);
   const dispatch = useDispatch();
   const dimensions = useWindowDimensions();
@@ -283,21 +284,35 @@ export default function AccountInfo() {
                     map.forEach((value, key) => {
                       if (value) newList.push(key);
                     });
-                    axios
-                      .post("http://10.0.0.136:3000/users/register", {
-                        studentId: "Student 4",
-                        firstName,
-                        lastName,
-                        role: "user",
-                        allergies: newList,
-                        favouriteCafeterias: resList.resList,
-                        favouriteFoods: [],
-                      })
-                      .then((result) => {
-                        setDialog(true);
-                        setUserID("Student 4");
-                      })
-                      .catch((e) => console.log(e));
+                    userID
+                      ? axios
+                          .patch("http://10.0.0.135:3000/users/editUser", {
+                            studentId: userID,
+                            firstName,
+                            lastName,
+                            allergies: newList,
+                            favouriteCafeterias: resList.resList,
+                          })
+                          .then((result) => {
+                            setDialog(true);
+                          })
+                          .catch((e) => console.log(e))
+                      : axios
+                          .post("http://10.0.0.135:3000/users/register", {
+                            studentId: studentId ?? "Student 4",
+                            firstName,
+                            lastName,
+                            password,
+                            allergies: newList,
+                            favouriteCafeterias: resList.resList,
+                          })
+                          .then(async (result) => {
+                            setDialog(true);
+                            await setUserID(
+                              studentId.toString() ?? "Student 4"
+                            );
+                          })
+                          .catch((e) => console.log(e));
                   }
                 }}
                 borderRadius={16}

@@ -36,7 +36,7 @@ export default function Menu() {
 
   const getPresets = async () => {
     await axios
-      .get(`http://10.0.0.136:3000/presets/${cafName}`)
+      .get(`http://10.0.0.135:3000/presets/${cafName}`)
       .then((result) => {
         setAllPresets(result.data);
         setLoaded(true);

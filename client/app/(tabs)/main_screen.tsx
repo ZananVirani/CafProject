@@ -166,7 +166,7 @@ export default function MainScreen() {
   const getFoods = async () => {
     await getUserID().then(async (userID) => {
       await axios
-        .get(`http://10.0.0.136:3000/cafeterias/favouriteCafs`, {
+        .get(`http://10.0.0.135:3000/cafeterias/favouriteCafs`, {
           params: {
             userID,
           },
@@ -176,7 +176,7 @@ export default function MainScreen() {
           setUser(result.data.user);
           getSelectedCaf()
             .then((value) => {
-              let num = result.data.users.favouriteCafeterias.indexOf(value);
+              let num = result.data.user.favouriteCafeterias.indexOf(value);
               num > -1 ? setCafNum(num) : setCafNum(0);
             })
             .catch((error) => {
@@ -285,6 +285,7 @@ export default function MainScreen() {
                 router.push("/(tabs)/cafeteria");
                 router.setParams({
                   cafName: user?.favouriteCafeterias[cafNum],
+                  role: user?.role,
                 });
               }}
               style={{ flex: 1 }}
@@ -318,7 +319,7 @@ export default function MainScreen() {
                       });
                     }}
                     key={index}
-                    source={`http://10.0.0.136:3000/images/${item.image}`}
+                    source={`http://10.0.0.135:3000/images/${item.image}`}
                     name={item.name}
                     rating={item.averageRating}
                     fontSize={10.5}
@@ -404,7 +405,10 @@ export default function MainScreen() {
                   <MainCafBox
                     onPress={() => {
                       router.push("/(tabs)/cafeteria");
-                      router.setParams({ cafName: item.cafName });
+                      router.setParams({
+                        cafName: item.cafName,
+                        role: user?.role,
+                      });
                     }}
                     key={item.cafName}
                     cafName={item.cafName}

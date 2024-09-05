@@ -14,7 +14,7 @@ router.post("/register", async (req, res) => {
   try {
     
     //Uses destructuring assignment syntax to assign values in body of request to the variables with the same name
-    const {studentId, firstName, lastName, password, role, allergies, favouriteCafeterias, favouriteFoods} = req.body;
+    const {studentId, firstName, lastName, password, allergies, favouriteCafeterias} = req.body;
 
     //returns true if user exists in user collection
     const existingUser = await User.findOne({studentId});
@@ -30,16 +30,48 @@ router.post("/register", async (req, res) => {
       firstName,
       lastName,
       password,
-      role,
+      role: password == "Kaaya123" ? "admin" : "user",
       allergies,
       favouriteCafeterias,
-      favouriteFoods
+      favouriteFoods : []
     });
 
     await User.create(newUser);
 
     
     res.send("User added")
+
+  } catch(err){
+    console.log("error: ", err)
+    return res.status(500).send('Failed to create user');
+  }
+
+})
+
+router.patch("/editUser", async (req, res) => {
+  try {
+    
+    //Uses destructuring assignment syntax to assign values in body of request to the variables with the same name
+    const {studentId, firstName, lastName, allergies, favouriteCafeterias} = req.body;
+
+    //returns true if user exists in user collection
+    const existingUser = await User.findOne({studentId});
+  
+    // Return error if user exists
+    if (!existingUser) {
+      return res.status(400).send('User already exists.');
+    }
+
+
+    existingUser.firstName = firstName
+    existingUser.lastName = lastName
+    existingUser.allergies = allergies
+    existingUser.favouriteCafeterias = favouriteCafeterias
+
+    existingUser.save()
+
+    
+    return res.send("User patched")
 
   } catch(err){
     console.log("error: ", err)

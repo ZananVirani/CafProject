@@ -24,7 +24,7 @@ import axios from "axios";
 import { ActivityIndicator } from "react-native-paper";
 
 export default function Cafeteria() {
-  const { cafName } = useGlobalSearchParams();
+  const { cafName, role } = useGlobalSearchParams();
   const dimensions = useWindowDimensions();
   const [foods, setFoods] = useState<
     {
@@ -45,7 +45,7 @@ export default function Cafeteria() {
 
   const getFoods = async () => {
     await axios
-      .get(`http://10.0.0.136:3000/cafeterias/getFood/${cafName}`)
+      .get(`http://10.0.0.135:3000/cafeterias/getFood/${cafName}`)
       .then((result) => {
         setFoods(result.data);
         setLoaded(true);
@@ -223,7 +223,7 @@ export default function Cafeteria() {
                 />
               </View>
             </View>
-            {true && (
+            {role == "admin" && (
               <View style={{ width: dimensions.width }}>
                 <CustomButton
                   onPress={() => {
@@ -298,7 +298,7 @@ export default function Cafeteria() {
                               });
                             }}
                             key={index}
-                            source={`http://10.0.0.136:3000/images/${item.image}`}
+                            source={`http://10.0.0.135:3000/images/${item.image}`}
                             name={item.name}
                             rating={item.averageRating}
                             fontSize={12}

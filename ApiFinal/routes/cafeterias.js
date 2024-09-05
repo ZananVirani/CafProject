@@ -41,11 +41,9 @@ router.get("/favouriteCafs", async (req, res) => {
 
     //Test to see if assignment works
     const user = await User.findOne({studentId : userID})
-    console.log(user)
     if (!user) return res.status(400).send("User Not Found!")
 
     const foods = await Food.find({cafeterias : {$in : user.favouriteCafeterias}});
-    console.log(foods)
    return res.json({foods : foods, user : user})
 
   } catch(err){

@@ -40,7 +40,7 @@ export default function FoodDescription() {
 
   const getItem = async () => {
     await axios
-      .get(`http://10.0.0.136:3000/foods/food/${itemName}`)
+      .get(`http://10.0.0.135:3000/foods/food/${itemName}`)
       .then((value) => {
         setApiInfo(value.data);
         setLoaded(true);
@@ -154,7 +154,7 @@ export default function FoodDescription() {
           <ScrollView>
             <Image
               source={{
-                uri: `http://10.0.0.136:3000/images/${apiInfo?.image}`,
+                uri: `http://10.0.0.135:3000/images/${apiInfo?.image}`,
               }}
               style={{
                 //flex: 0.4,

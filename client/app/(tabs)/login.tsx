@@ -14,6 +14,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import TextField from "@/components/TextField";
 
 import { router } from "expo-router";
+import axios from "axios";
+import { setUserID } from "@/utils/AsyncStorage";
 
 export default function Login() {
   const dimensions = useWindowDimensions();
@@ -83,7 +85,18 @@ export default function Login() {
           <CustomButton
             onPress={() => {
               if (!ID || !password) setError(true);
-              else router.replace("/(tabs)/account");
+              else {
+                axios
+                  .get(`http://10.0.0.135:3000/users/getUser/${ID}`)
+                  .then(async (value) => {
+                    await setUserID(value.data.studentId);
+                    router.replace("/(tabs)/main_screen");
+                  })
+                  .catch((e) => {
+                    router.replace("/(tabs)/account");
+                    router.setParams({ studentId: ID, password: password });
+                  });
+              }
             }}
             borderRadius={16}
             buttonColor={colors.wpurple}

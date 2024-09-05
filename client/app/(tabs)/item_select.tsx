@@ -62,7 +62,7 @@ export default function ItemSelect() {
 
   const getItems = async () => {
     axios
-      .get("http://10.0.0.136:3000/foods/allFoods")
+      .get("http://10.0.0.135:3000/foods/allFoods")
       .then((result) => {
         setAllItems(result.data);
         setFinalFoods(result.data);
@@ -207,7 +207,7 @@ export default function ItemSelect() {
                               ? toggleSelect(item)
                               : visitPreset(item.name);
                           }}
-                          source={`http://10.0.0.136:3000/images/${item.image}`}
+                          source={`http://10.0.0.135:3000/images/${item.image}`}
                           selected={
                             selectMode &&
                             selectedPresets.find((food, index) => {

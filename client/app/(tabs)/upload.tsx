@@ -343,7 +343,7 @@ export default function UploadScreen() {
                           });
                           try {
                             const response = await FileSystem.uploadAsync(
-                              `http://10.0.0.136:3000/foods/tempRoute`,
+                              `http://10.0.0.135:3000/foods/tempRoute`,
                               image.uri,
                               {
                                 headers: {
@@ -359,7 +359,7 @@ export default function UploadScreen() {
                             );
 
                             let another = await axios.post(
-                              "http://10.0.0.136:3000/foods/",
+                              "http://10.0.0.135:3000/foods/",
                               {
                                 name: foodName,
                                 image: response.body,

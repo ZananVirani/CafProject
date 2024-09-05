@@ -35,7 +35,7 @@ export default function Preset() {
 
   const getPresetMenu = async () => {
     await axios
-      .get(`http://10.0.0.136:3000/presets/getPreset/${presetName}`)
+      .get(`http://10.0.0.135:3000/presets/getPreset/${presetName}`)
       .then((result) => {
         result.data.forEach(
           (item: {
@@ -194,7 +194,7 @@ export default function Preset() {
                             }}
                             key={index}
                             name={item.name}
-                            source={`http://10.0.0.136:3000/images/${item.image}`}
+                            source={`http://10.0.0.135:3000/images/${item.image}`}
                             rating={item.averageRating}
                             fontSize={12}
                             width={dimensions.width * 0.29}

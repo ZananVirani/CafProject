@@ -125,7 +125,7 @@ export default function Preview() {
                           });
                           setDialog(false);
                           await axios
-                            .post(`http://10.0.0.136:3000/presets/${cafName}`, {
+                            .post(`http://10.0.0.135:3000/presets/${cafName}`, {
                               presetName: nameText,
                               foodIDs: menu,
                             })
@@ -258,7 +258,7 @@ export default function Preview() {
                           router.push("/(tabs)/food_description");
                           router.setParams({ itemName: item.name });
                         }}
-                        source={`http://10.0.0.136:3000/images/${item.image}`}
+                        source={`http://10.0.0.135:3000/images/${item.image}`}
                         key={index}
                         name={item.name}
                         rating={item.averageRating}
@@ -334,7 +334,7 @@ export default function Preview() {
                       });
                       await axios
                         .patch(
-                          `http://10.0.0.136:3000/presets/editPreset/${cafName}`,
+                          `http://10.0.0.135:3000/presets/editPreset/${cafName}`,
                           {
                             presetName: presetName,
                             foodIDs: menu,
@@ -403,7 +403,7 @@ export default function Preview() {
                   });
                   await axios
                     .patch(
-                      `http://10.0.0.136:3000/presets/tempUpload/${cafName}`,
+                      `http://10.0.0.135:3000/presets/tempUpload/${cafName}`,
                       {
                         foodIDs: menu,
                       }
