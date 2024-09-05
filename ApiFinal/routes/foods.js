@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require("path")
 const Food = require('../models/Food');
+const User = require('../models/User');
 // const uploadImage = require('../middleware/uploadImage')
 
 const router = express.Router();
@@ -103,15 +104,18 @@ router.patch('/tempRoute', async (req, res) =>{
 
 // })
 
-router.get('/food/:foodName', async (req, res)=>{
+router.get('/food/:foodName/:userID', async (req, res)=>{
   try{
-    const {foodName} = req.params
+    const {foodName, userID} = req.params
 
+    const user = await User.findOne({studentId : userID})
     const food = await Food.findOne({name : foodName})
 
-    if (!food) return res.status(400).json({message : "Food Not Found"})
+    console.log(food)
 
-    return res.json(food)
+    if (!food || !user) return res.status(400).json({message : "Not Found"})
+
+    return res.json({foods : food, user : user})
   }catch(e){
     res.status(500).json({message : e.message})
   }
@@ -166,9 +170,14 @@ router.get('/food/:foodName', async (req, res)=>{
 
 router.get('/allFoods', async (req, res) =>{
   try{
+    const {studentId} = req.query
     const foods = await Food.find({});
-    console.log(foods)
-    res.json(foods);
+    if (studentId){
+    const user = await User.findOne({studentId})
+    return res.json({foods : foods, user : user});
+    }else{
+      return res.json(foods)
+    }
   } catch (err){
     console.log(err)
     res.status(500).json({message: 'Error retrieving users', error: err.message })

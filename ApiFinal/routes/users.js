@@ -126,26 +126,27 @@ router.post('/login', async (req, res) => {
 
 
 //Adds more Favourite Foods; add studentId to parameters and array of favourite foods in body
-router.patch("/addFavouriteFoods/:id", async(req, res) => {
+router.patch("/changeFavouriteFoods/:userId/:itemID", async(req, res) => {
   try{
-    const {id} = req.params;
-    const {newFavourites} = req.body;
-    const newUser = await User.findOneAndUpdate({studentId: id},  { $addToSet: { favouriteFoods: { $each: newFavourites }}}, {new: true})
-    res.status(200).send("New favourites added: ", newUser)
-  } catch(err){
-    res.status(400).send("error: ", err)
-  }
-})
+    const {userId, itemID} = req.params;
+    const user = await User.findOne({studentId: userId})
+    if (!user) return res.status(400).send("User not found")
+    
+    let newFoods = user.favouriteFoods
+    if (newFoods.includes(itemID)){
+      newFoods = newFoods.filter((item)=>{
+        return item!=itemID
+      })
+    }else{
+      newFoods.push(itemID)
+    }
 
-//Removes some Favourite Foods; add studentId to parameters and array of favourite foods in body
-router.patch("/removeFavouriteFoods/:id", async(req, res) => {
-  try{
-    const {id} = req.params;
-    const {favourites} = req.body;
-    const newUser = await User.findOneAndUpdate({studentId: id},  { $pull: { favouriteFoods: { $in: favourites }}}, {new: true})
-    res.status(200).send("Favourites removed: ", newUser)
+    user.favouriteFoods = newFoods
+    user.save()
+
+    res.status(200).send("New favourites changed.")
   } catch(err){
-    res.status(400).send("error: ", err)
+    return res.status(500).send("error: ", err)
   }
 })
 

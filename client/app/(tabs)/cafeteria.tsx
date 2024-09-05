@@ -24,7 +24,7 @@ import axios from "axios";
 import { ActivityIndicator } from "react-native-paper";
 
 export default function Cafeteria() {
-  const { cafName, role } = useGlobalSearchParams();
+  const { cafName, role, allergies, favouriteFoods } = useGlobalSearchParams();
   const dimensions = useWindowDimensions();
   const [foods, setFoods] = useState<
     {
@@ -288,13 +288,36 @@ export default function Cafeteria() {
                   >
                     {foods &&
                       foods.map((item, index) => {
-                        return category == item.type ? (
+                        return category == "Favourites" ? (
+                          favouriteFoods.includes(item._id) &&
+                          (!toggle || !hasSimilar(item.allergies)) ? (
+                            <FoodBox
+                              onPress={() => {
+                                router.push("/(tabs)/food_description");
+                                router.setParams({
+                                  cafName,
+                                  itemName: item.name,
+                                  allergies: allergies,
+                                });
+                              }}
+                              key={index}
+                              source={`http://10.0.0.135:3000/images/${item.image}`}
+                              name={item.name}
+                              rating={item.averageRating}
+                              fontSize={12}
+                              width={dimensions.width * 0.29}
+                              minWidth={113.1}
+                            />
+                          ) : null
+                        ) : category == item.type &&
+                          (!toggle || !hasSimilar(item.allergies)) ? (
                           <FoodBox
                             onPress={() => {
                               router.push("/(tabs)/food_description");
                               router.setParams({
                                 cafName,
                                 itemName: item.name,
+                                allergies: allergies,
                               });
                             }}
                             key={index}
@@ -367,6 +390,15 @@ export default function Cafeteria() {
       CafStuff.getDinner(date) ||
       CafStuff.getSnackBar(date)
     );
+  }
+
+  function hasSimilar(list: string[]) {
+    for (let allergy of list) {
+      if (allergies.includes(allergy)) {
+        return true;
+      }
+      return false;
+    }
   }
 }
 

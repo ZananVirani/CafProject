@@ -22,11 +22,13 @@ import { Collapsible } from "@/components/Collapsible";
 import { Dialog } from "react-native-simple-dialogs";
 import StarRating from "react-native-star-rating-widget";
 import CustomButton from "@/components/CustomButton";
-import axios from "axios";
+import axios, { all } from "axios";
 import { router, useGlobalSearchParams } from "expo-router";
 import { ActivityIndicator } from "react-native-paper";
+import { getUserID } from "@/utils/AsyncStorage";
 export default function FoodDescription() {
   const [apiInfo, setApiInfo] = useState<{
+    _id: string;
     name: string;
     image: string;
     allergies: string[];
@@ -34,16 +36,39 @@ export default function FoodDescription() {
     averageRating: number;
     cafeterias: string[];
   }>();
-  const { cafName, itemName } = useGlobalSearchParams();
+  const { cafName, itemName, allergies } = useGlobalSearchParams();
+  const [user, setUser] = useState<
+    | {
+        studentId: string;
+        firstName: string;
+        lastName: string;
+        password?: string;
+        role: string;
+        allergies: string[];
+        favouriteCafeterias: string[];
+        favouriteFoods: string[];
+      }
+    | undefined
+  >(undefined);
 
+  const [ID, setID] = useState("");
   const [loaded, setLoaded] = useState(false);
 
   const getItem = async () => {
+    const userID = await getUserID();
+    setID(userID!);
     await axios
-      .get(`http://10.0.0.135:3000/foods/food/${itemName}`)
+      .get(`http://10.0.0.135:3000/foods/food/${itemName}/${userID}`)
       .then((value) => {
-        setApiInfo(value.data);
+        setApiInfo(value.data.foods);
+        setUser(value.data.user);
         setLoaded(true);
+        allergies &&
+          value.data.foods.allergies.forEach((item: string) => {
+            allergies.includes(item) && setIsAllergic(true);
+          });
+        value.data.user.favouriteFoods.includes(value.data.foods._id) &&
+          setChecked(true);
       })
       .catch((error) => {
         console.log(error);
@@ -56,7 +81,6 @@ export default function FoodDescription() {
   const otherCafs = ["Perth Hall", "Ontario Hall", "Sydenham Hall"];
   const [isAllergic, setIsAllergic] = useState(false);
   const dimensions = useWindowDimensions();
-  const allergies = ["Meat", "Gluten", "Pork", "Dairy", "Seafood", "Nuts"];
   const [checked, setChecked] = useState(false);
   const [dialog, setDialog] = useState(false);
   const [rating, setRating] = useState(0);
@@ -194,12 +218,19 @@ export default function FoodDescription() {
                   color={checked ? colors.wpurple : colors.gray}
                   name={"heart-circle"}
                   size={50}
-                  onPress={() => {
-                    if (!checked) {
-                      setBottomPop(true);
-                      setTimeout(() => setBottomPop(false), 2000);
-                    }
-                    setChecked(!checked);
+                  onPress={async () => {
+                    await axios
+                      .patch(
+                        `http://10.0.0.135:3000/users/changeFavouriteFoods/${ID}/${apiInfo?._id}`
+                      )
+                      .then((result) => {
+                        if (!checked) {
+                          setBottomPop(true);
+                          setTimeout(() => setBottomPop(false), 2000);
+                        }
+                        setChecked(!checked);
+                      })
+                      .catch((e) => console.log(e));
                   }}
                   style={{
                     position: "absolute",

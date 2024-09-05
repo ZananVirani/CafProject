@@ -286,6 +286,8 @@ export default function MainScreen() {
                 router.setParams({
                   cafName: user?.favouriteCafeterias[cafNum],
                   role: user?.role,
+                  allergies: user?.allergies,
+                  favouriteFoods: user?.favouriteFoods,
                 });
               }}
               style={{ flex: 1 }}
@@ -316,6 +318,7 @@ export default function MainScreen() {
                       router.setParams({
                         cafName: user?.favouriteCafeterias[cafNum],
                         itemName: item.name,
+                        allergies: user?.allergies,
                       });
                     }}
                     key={index}
@@ -408,6 +411,8 @@ export default function MainScreen() {
                       router.setParams({
                         cafName: item.cafName,
                         role: user?.role,
+                        allergies: user?.allergies,
+                        favouriteFoods: user?.favouriteFoods,
                       });
                     }}
                     key={item.cafName}

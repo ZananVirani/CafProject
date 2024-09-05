@@ -7,14 +7,15 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import colors from "@/constants/Colors";
 import { AntDesign } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import CustomButton from "@/components/CustomButton";
 import { ActivityIndicator, TextInput } from "react-native-paper";
 import FoodBox from "@/components/FoodBox";
 import axios from "axios";
+import { getUserID } from "@/utils/AsyncStorage";
 
 export default function Favourites() {
   const dimensions = useWindowDimensions();
@@ -44,13 +45,33 @@ export default function Favourites() {
     }[]
   >([]);
   const [loaded, setLoaded] = useState(false);
+  const [user, setUser] = useState<
+    | {
+        studentId: string;
+        firstName: string;
+        lastName: string;
+        password?: string;
+        role: string;
+        allergies: string[];
+        favouriteCafeterias: string[];
+        favouriteFoods: string[];
+      }
+    | undefined
+  >(undefined);
 
   const getItems = async () => {
+    setLoaded(false);
+    const userID = await getUserID();
     axios
-      .get("http://10.0.0.135:3000/foods/allFoods")
+      .get("http://10.0.0.135:3000/foods/allFoods", {
+        params: {
+          studentId: userID,
+        },
+      })
       .then((result) => {
-        setAllItems(result.data);
-        setFinalFoods(result.data);
+        setAllItems(result.data.foods);
+        setFinalFoods(result.data.foods);
+        setUser(result.data.user);
         setLoaded(true);
       })
       .catch((error) => {
@@ -58,9 +79,11 @@ export default function Favourites() {
       });
   };
 
-  useEffect(() => {
-    getItems();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getItems();
+    }, [])
+  );
 
   useEffect(() => {
     let tempFoods = allItems;
@@ -178,11 +201,13 @@ export default function Favourites() {
                   }}
                 >
                   {finalFoods.map((item, index) => {
-                    return (
+                    return filterChosen == "All" ||
+                      (user && user?.favouriteFoods.includes(item._id)) ? (
                       <FoodBox
                         key={index}
                         onPress={() => {
                           router.push("/(tabs)/food_description");
+                          router.setParams({ itemName: item.name });
                         }}
                         source={`http://10.0.0.135:3000/images/${item.image}`}
                         name={item.name}
@@ -191,7 +216,7 @@ export default function Favourites() {
                         width={dimensions.width * 0.29}
                         minWidth={113.1}
                       />
-                    );
+                    ) : null;
                   })}
                 </View>
               </View>
