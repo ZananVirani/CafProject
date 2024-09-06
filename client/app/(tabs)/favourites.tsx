@@ -1,6 +1,7 @@
 import {
   Keyboard,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
@@ -191,7 +192,7 @@ export default function Favourites() {
                   ></TextInput>
                 </View>
               </View>
-              <View>
+              <ScrollView>
                 <View
                   style={{
                     alignItems: "center",
@@ -219,7 +220,7 @@ export default function Favourites() {
                     ) : null;
                   })}
                 </View>
-              </View>
+              </ScrollView>
             </>
           ) : (
             <View

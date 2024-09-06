@@ -103,7 +103,7 @@ export default function Menu() {
               }}
             >
               <View style={{ width: "50%", flexDirection: "row" }}>
-                <CustomButton
+                {/* <CustomButton
                   onPress={() => {
                     setSelectMode(!selectMode);
                   }}
@@ -161,21 +161,7 @@ export default function Menu() {
                       />
                     </TouchableOpacity>
                   </>
-                )}
-              </View>
-              <View style={{ width: "40%" }}>
-                <Text
-                  style={{
-                    textAlign: "right",
-                    fontSize: 16,
-                    fontFamily: "inter",
-                  }}
-                  adjustsFontSizeToFit={true}
-                >
-                  {smth}
-                  {"\n"}
-                  {cafName}
-                </Text>
+                )} */}
               </View>
             </View>
             {/*NEXTTTTTTTTTTTTTTTT*/}
@@ -231,6 +217,28 @@ export default function Menu() {
                   </Text>
                 </View>
               </TouchableOpacity>
+              <View
+                style={{
+                  width: dimensions.width,
+                  marginTop: "5%",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    textAlign: "right",
+                    fontSize: 20,
+                    fontFamily: "inter",
+                  }}
+                  adjustsFontSizeToFit={true}
+                >
+                  {cafName}
+
+                  {"       "}
+                  {smth}
+                </Text>
+              </View>
               {/*NEXTTTTTTTTTTTTTTTT*/}
               {/*NEXTTTTTTTTTTTTTTTT*/}
               {/*NEXTTTTTTTTTTTTTTTT*/}
