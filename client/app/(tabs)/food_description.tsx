@@ -37,7 +37,7 @@ export default function FoodDescription() {
     averageRating: number;
     cafeterias: string[];
   }>();
-  const { cafName, itemName, allergies } = useGlobalSearchParams();
+  const { cafName, itemName } = useGlobalSearchParams();
   const [user, setUser] = useState<
     | {
         studentId: string;
@@ -64,10 +64,9 @@ export default function FoodDescription() {
         setApiInfo(value.data.foods);
         setUser(value.data.user);
         setLoaded(true);
-        allergies &&
-          value.data.foods.allergies.forEach((item: string) => {
-            allergies.includes(item) && setIsAllergic(true);
-          });
+        value.data.foods.allergies.forEach((item: string) => {
+          value.data.user.allergies.includes(item) && setIsAllergic(true);
+        });
         value.data.user.favouriteFoods.includes(value.data.foods._id) &&
           setChecked(true);
       })

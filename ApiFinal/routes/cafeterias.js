@@ -70,22 +70,17 @@ router.get("/favouriteCafs", async (req, res) => {
 
 // })
 
-router.get('/getFood/:cafeteriaName', async (req, res) => {
+router.get('/getFood/:cafeteriaName/:userID', async (req, res) => {
   try{
-    const {cafeteriaName} = req.params;
+    const {cafeteriaName, userID} = req.params;
     //Cafeteria Document
-    const caf = await Cafeteria.findOne({name: cafeteriaName});
-
-    if (!caf) {
-      return res.status(404).json({ message: 'Cafeteria not found' });
-    }
-
+    const user = await User.findOne({studentId : userID})
     const foods = await Food.find({cafeterias : cafeteriaName})
+    if (!user) return res.status(400).json({message : "User not found"})
 
-    if (!foods) return res.status(400).json({message : "Foods not found"})
-
-    return res.json(foods);
+    return res.json({foods : foods, user : user});
   } catch(error){
+    console.log(error)
     return res.status(500).json({ error: error.message });
   }
 })

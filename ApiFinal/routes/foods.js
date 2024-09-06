@@ -111,7 +111,6 @@ router.get('/food/:foodName/:userID', async (req, res)=>{
     const user = await User.findOne({studentId : userID})
     const food = await Food.findOne({name : foodName})
 
-    console.log(food)
 
     if (!food || !user) return res.status(400).json({message : "Not Found"})
 

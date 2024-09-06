@@ -380,7 +380,7 @@ export default function MainScreen() {
                   />
                 ) : null;
               })}
-            <View style={{ width: dimensions.width * 0.18 }}></View>
+            <View style={{ flex: 1, width: 120 }}></View>
           </ScrollView>
           {/* First DIPLAY ROWWWW /////////////////////////////// */}
           <View

@@ -22,9 +22,10 @@ import { Dialog } from "react-native-simple-dialogs";
 import CustomButton from "@/components/CustomButton";
 import axios from "axios";
 import { ActivityIndicator } from "react-native-paper";
+import { getUserID } from "@/utils/AsyncStorage";
 
 export default function Cafeteria() {
-  const { cafName, role, allergies, favouriteFoods } = useGlobalSearchParams();
+  const { cafName } = useGlobalSearchParams();
   const dimensions = useWindowDimensions();
   const [foods, setFoods] = useState<
     {
@@ -37,6 +38,19 @@ export default function Cafeteria() {
       cafeterias: string[];
     }[]
   >();
+  const [user, setUser] = useState<
+    | {
+        studentId: string;
+        firstName: string;
+        lastName: string;
+        password?: string;
+        role: string;
+        allergies: string[];
+        favouriteCafeterias: string[];
+        favouriteFoods: string[];
+      }
+    | undefined
+  >(undefined);
   const categories = ["Favourites", "Hot Food", "Interactive"];
   const [toggle, setToggle] = useState(false);
   const [dialog, setDialog] = useState(false);
@@ -44,10 +58,13 @@ export default function Cafeteria() {
   const [loaded, setLoaded] = useState(false);
 
   const getFoods = async () => {
+    setLoaded(false);
+    const userID = await getUserID();
     await axios
-      .get(`http://10.0.0.135:3000/cafeterias/getFood/${cafName}`)
+      .get(`http://10.0.0.135:3000/cafeterias/getFood/${cafName}/${userID}`)
       .then((result) => {
-        setFoods(result.data);
+        setFoods(result.data.foods);
+        setUser(result.data.user);
         setLoaded(true);
       })
       .catch((error) => {
@@ -228,7 +245,7 @@ export default function Cafeteria() {
                 />
               </View>
             </View>
-            {role == "admin" && (
+            {user?.role == "admin" && (
               <View style={{ width: dimensions.width }}>
                 <CustomButton
                   onPress={() => {
@@ -294,16 +311,14 @@ export default function Cafeteria() {
                     {foods &&
                       foods.map((item, index) => {
                         return category == "Favourites" ? (
-                          favouriteFoods?.includes(item._id) &&
+                          user?.favouriteFoods.includes(item._id) &&
                           (!toggle || !hasSimilar(item.allergies)) ? (
                             <FoodBox
                               onPress={() => {
                                 router.push("/(tabs)/food_description");
                                 router.setParams({
                                   cafName,
-                                  favouriteFoods,
                                   itemName: item.name,
-                                  allergies: allergies,
                                 });
                               }}
                               key={index}
@@ -322,9 +337,7 @@ export default function Cafeteria() {
                               router.push("/(tabs)/food_description");
                               router.setParams({
                                 cafName,
-                                favouriteFoods,
                                 itemName: item.name,
-                                allergies: allergies,
                               });
                             }}
                             key={index}
@@ -401,7 +414,7 @@ export default function Cafeteria() {
 
   function hasSimilar(list: string[]) {
     for (let allergy of list) {
-      if (allergies.includes(allergy)) {
+      if (user?.allergies.includes(allergy)) {
         return true;
       }
       return false;
