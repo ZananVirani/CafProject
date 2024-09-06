@@ -69,11 +69,14 @@ export default function Cafeteria() {
   useFocusEffect(
     useCallback(() => {
       getFoods();
-      const result = !getCafOpen();
-      setDialog(result);
-      setBottomPop(result);
     }, [])
   );
+
+  useEffect(() => {
+    const result = !getCafOpen();
+    setDialog(result);
+    setBottomPop(result);
+  }, []);
 
   return (
     <View
@@ -291,7 +294,7 @@ export default function Cafeteria() {
                     {foods &&
                       foods.map((item, index) => {
                         return category == "Favourites" ? (
-                          favouriteFoods.includes(item._id) &&
+                          favouriteFoods?.includes(item._id) &&
                           (!toggle || !hasSimilar(item.allergies)) ? (
                             <FoodBox
                               onPress={() => {

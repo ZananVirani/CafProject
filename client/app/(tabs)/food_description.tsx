@@ -142,6 +142,10 @@ export default function FoodDescription() {
                   { rating: rating }
                 )
                 .then((response) => {
+                  setApiInfo({
+                    ...apiInfo!,
+                    averageRating: response.data.newAvg,
+                  });
                   if (response.status == 201) {
                     Alert.alert("Successfully Changed Review", undefined, [
                       {
@@ -160,7 +164,7 @@ export default function FoodDescription() {
                 })
                 .catch((error) => {
                   console.log(error);
-                  Alert.alert("Not Added Properly", undefined, [
+                  Alert.alert("Unsuccessful Review Attempt", undefined, [
                     {
                       text: "OK",
                       onPress: () => {},
@@ -200,12 +204,12 @@ export default function FoodDescription() {
             />
             <Text style={styles.title}>{cafName}</Text>
           </View>
-          <FontAwesome5
+          {/* <FontAwesome5
             color={colors.black}
             name="user-circle"
             size={33}
             onPress={() => router.push("/(tabs)/profile")}
-          />
+          /> */}
           <View style={{ flex: 0.03 }}></View>
         </View>
 

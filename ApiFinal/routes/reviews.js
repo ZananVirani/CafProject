@@ -35,9 +35,9 @@ router.post("/:userID/:foodID", async (req,res) =>{
       const answer = await Review.create(newReview);
     }
 
-    await updateAverageReview(foodID);
+    const newAvg = await updateAverageReview(foodID);
 
-    return res.status(status).send("Success")
+    return res.status(status).json({newAvg : newAvg})
     
   }catch(error){
     console.log(error)
