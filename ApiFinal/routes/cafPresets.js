@@ -7,6 +7,31 @@ const getPresetFoods = require('../middleware/getFood');
 
 const router = express.Router();
 
+router.patch("/deletePresets/:cafeteriaName", async(req, res)=>{
+  try {
+      const {cafeteriaName} = req.params
+      const {presetNames} = req.body
+
+      const cafeteria = await Cafeteria.findOne({name : cafeteriaName})
+
+      const deleted = await CafPreset.deleteMany({$and : [{name : {$in : presetNames}}, {caf : cafeteriaName}]})
+
+      if (!deleted) return res.status(500).json({message : "Server Error"})
+
+      cafeteria.presets = cafeteria.presets.filter((item)=>{
+        return !presetNames.includes(item)
+      })
+
+      cafeteria.save()
+    
+      return res.status(200).json({message : "Successful edit"})
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({error : error})
+  }
+
+})
+
 router.get("/getPreset/:presetName", async(req, res)=>{
   try {
       const {presetName} = req.params
@@ -152,6 +177,7 @@ router.post("/:cafeteriaName", async (req, res) =>{
 
 
   }catch(error){
+    console.log(error)
     return res.status(500).json({error : error})
   }
 })

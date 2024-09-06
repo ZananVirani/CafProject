@@ -7,7 +7,6 @@ const cafPresetsSchema = new schema({
   name: {
     type: String,
     required: true,
-    unique: true
   },
   caf: {
     type : String,

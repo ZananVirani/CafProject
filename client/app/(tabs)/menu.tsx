@@ -103,7 +103,7 @@ export default function Menu() {
               }}
             >
               <View style={{ width: "50%", flexDirection: "row" }}>
-                {/* <CustomButton
+                <CustomButton
                   onPress={() => {
                     setSelectMode(!selectMode);
                   }}
@@ -136,8 +136,59 @@ export default function Menu() {
                               style: "cancel",
                             },
                             {
-                              text: "Yes",
-                              onPress: () => {},
+                              text: "Delete",
+                              onPress: async () => {
+                                if (deletedPresets.size > 0) {
+                                  axios
+                                    .patch(
+                                      `http://10.0.0.135:3000/presets/deletePresets/${cafName}`,
+                                      {
+                                        presetNames: Array.from(deletedPresets),
+                                      }
+                                    )
+                                    .then((result) => {
+                                      const newPresets = allPresets.filter(
+                                        (item) => {
+                                          return !deletedPresets.has(item);
+                                        }
+                                      );
+
+                                      const otherPresets = presets.filter(
+                                        (item) => {
+                                          return !deletedPresets.has(item);
+                                        }
+                                      );
+
+                                      setAllPresets(newPresets);
+                                      setPresets(otherPresets);
+                                      setDeletedPresets(new Set());
+
+                                      Alert.alert(
+                                        `Presets Deleted`,
+                                        undefined,
+                                        [
+                                          {
+                                            text: "Ok",
+                                            onPress: () => {},
+                                          },
+                                        ]
+                                      );
+                                    })
+                                    .catch((e) => {
+                                      console.log(e);
+                                      Alert.alert(
+                                        `Something Went Wrong`,
+                                        "Check Your Connection And Try Again",
+                                        [
+                                          {
+                                            text: "Ok",
+                                            onPress: () => {},
+                                          },
+                                        ]
+                                      );
+                                    });
+                                }
+                              },
                             },
                           ]
                         );
@@ -161,7 +212,21 @@ export default function Menu() {
                       />
                     </TouchableOpacity>
                   </>
-                )} */}
+                )}
+              </View>
+              <View style={{ width: "40%" }}>
+                <Text
+                  style={{
+                    textAlign: "right",
+                    fontSize: 16,
+                    fontFamily: "inter",
+                  }}
+                  adjustsFontSizeToFit={true}
+                >
+                  {smth}
+                  {"\n"}
+                  {cafName}
+                </Text>
               </View>
             </View>
             {/*NEXTTTTTTTTTTTTTTTT*/}
@@ -217,28 +282,6 @@ export default function Menu() {
                   </Text>
                 </View>
               </TouchableOpacity>
-              <View
-                style={{
-                  width: dimensions.width,
-                  marginTop: "5%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    textAlign: "right",
-                    fontSize: 20,
-                    fontFamily: "inter",
-                  }}
-                  adjustsFontSizeToFit={true}
-                >
-                  {cafName}
-
-                  {"       "}
-                  {smth}
-                </Text>
-              </View>
               {/*NEXTTTTTTTTTTTTTTTT*/}
               {/*NEXTTTTTTTTTTTTTTTT*/}
               {/*NEXTTTTTTTTTTTTTTTT*/}
