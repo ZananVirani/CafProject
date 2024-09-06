@@ -204,8 +204,26 @@ export default function Cafeteria() {
                 }}
               >
                 <Text style={styles.text}>Regular Hours:</Text>
-                <Text style={styles.subtext}>Weekdays: 7:30am - 11:00pm</Text>
-                <Text style={styles.subtext}>Weekends: 7:30am - 7:30pm</Text>
+                <Text style={styles.subtext}>
+                  Weekdays: 7:30am -{" "}
+                  {["Ontario Hall", "Saugeen Hall", "Sydenham Hall"].includes(
+                    cafName.toString()
+                  )
+                    ? "11:00"
+                    : cafName.toString() == "Delaware Hall"
+                    ? "11:00"
+                    : "7:30"}
+                  pm
+                </Text>
+                <Text style={styles.subtext}>
+                  Weekends: 7:30am -
+                  {["Ontario Hall", "Saugeen Hall", "Sydenham Hall"].includes(
+                    cafName.toString()
+                  )
+                    ? "11:00"
+                    : "7:30"}
+                  pm
+                </Text>
               </View>
               <View
                 style={{
