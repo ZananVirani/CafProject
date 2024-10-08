@@ -28,7 +28,6 @@ export default function Preset() {
   const dispatch = useDispatch();
   const dimensions = useWindowDimensions();
   const { presetName, cafName } = useGlobalSearchParams();
-
   const categories = ["Hot Food", "Interactive"];
   const [title, setTitle] = useState("");
   const [loaded, setLoaded] = useState(false);
@@ -123,6 +122,7 @@ export default function Preset() {
                 <ItemAdd
                   onPress={() => {
                     router.push("/(tabs)/upload");
+                    router.setParams({ cafName: cafName });
                   }}
                   text="Create New Item"
                   marginRight={30}
@@ -131,6 +131,7 @@ export default function Preset() {
                 <ItemAdd
                   onPress={() => {
                     router.push("/(tabs)/item_select");
+                    router.setParams({ cafName: cafName });
                   }}
                   text="Choose Item"
                   iconName="mouse-pointer"
