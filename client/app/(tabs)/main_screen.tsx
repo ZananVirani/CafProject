@@ -358,11 +358,13 @@ export default function MainScreen() {
                 ) ? (
                   <FoodBox
                     onPress={() => {
-                      router.push("/(tabs)/food_description");
-                      router.setParams({
-                        cafName: user?.favouriteCafeterias[cafNum],
-                        itemName: item.name,
-                        allergies: user?.allergies,
+                      router.push({
+                        pathname: "/(tabs)/food_description",
+                        params: {
+                          cafName: user?.favouriteCafeterias[cafNum],
+                          itemName: item.name,
+                          allergies: user?.allergies,
+                        },
                       });
                     }}
                     key={index}
@@ -473,12 +475,14 @@ export default function MainScreen() {
                     return (
                       <MainCafBox
                         onPress={() => {
-                          router.push("/(tabs)/cafeteria");
-                          router.setParams({
-                            cafName: item.cafName,
-                            role: user?.role,
-                            allergies: user?.allergies,
-                            favouriteFoods: user?.favouriteFoods,
+                          router.push({
+                            pathname: "/(tabs)/cafeteria",
+                            params: {
+                              cafName: item.cafName,
+                              role: user?.role,
+                              allergies: user?.allergies,
+                              favouriteFoods: user?.favouriteFoods,
+                            },
                           });
                         }}
                         key={item.cafName}
