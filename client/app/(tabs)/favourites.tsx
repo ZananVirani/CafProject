@@ -207,8 +207,12 @@ export default function Favourites() {
                       <FoodBox
                         key={index}
                         onPress={() => {
-                          router.push("/(tabs)/food_description");
-                          router.setParams({ itemName: item.name });
+                          router.push({
+                            pathname: "/(tabs)/food_description",
+                            params: {
+                              itemName: item.name,
+                            },
+                          });
                         }}
                         source={`http://10.0.0.135:3000/images/${item.image}`}
                         name={item.name}

@@ -60,7 +60,6 @@ export default function MainScreen() {
   const [loaded, setLoaded] = useState(false);
   const [partialLoaded, setPartialLoaded] = useState(false);
   const [categories, setCategories] = useState([""]);
-  //const cafs = ["Delaware Hall", "Perth Hall", "Ontario Hall"];
   const [cafNum, setCafNum] = useState(0);
   const [filterChosen, setFilterChosen] = useState<string | undefined>(
     undefined
@@ -326,12 +325,14 @@ export default function MainScreen() {
             </View>
             <TouchableOpacity
               onPress={async () => {
-                router.push("/(tabs)/cafeteria");
-                router.setParams({
-                  cafName: user?.favouriteCafeterias[cafNum],
-                  role: user?.role,
-                  allergies: user?.allergies,
-                  favouriteFoods: user?.favouriteFoods,
+                router.push({
+                  pathname: "/(tabs)/cafeteria",
+                  params: {
+                    cafName: user?.favouriteCafeterias[cafNum],
+                    role: user?.role,
+                    allergies: user?.allergies,
+                    favouriteFoods: user?.favouriteFoods,
+                  },
                 });
               }}
               style={{ flex: 1 }}

@@ -93,8 +93,13 @@ export default function Login() {
                     router.replace("/(tabs)/main_screen");
                   })
                   .catch((e) => {
-                    router.replace("/(tabs)/account");
-                    router.setParams({ studentId: ID, password: password });
+                    router.replace({
+                      pathname: "/(tabs)/account",
+                      params: {
+                        studentId: ID,
+                        password: password,
+                      },
+                    });
                   });
               }
             }}

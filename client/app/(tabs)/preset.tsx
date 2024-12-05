@@ -121,8 +121,12 @@ export default function Preset() {
               >
                 <ItemAdd
                   onPress={() => {
-                    router.push("/(tabs)/upload");
-                    router.setParams({ cafName: cafName });
+                    router.push({
+                      pathname: "/(tabs)/upload",
+                      params: {
+                        cafName: cafName,
+                      },
+                    });
                   }}
                   text="Create New Item"
                   marginRight={30}
@@ -130,8 +134,12 @@ export default function Preset() {
                 />
                 <ItemAdd
                   onPress={() => {
-                    router.push("/(tabs)/item_select");
-                    router.setParams({ cafName: cafName });
+                    router.push({
+                      pathname: "/(tabs)/item_select",
+                      params: {
+                        cafName: cafName,
+                      },
+                    });
                   }}
                   text="Choose Item"
                   iconName="mouse-pointer"
@@ -190,8 +198,12 @@ export default function Preset() {
                         return category == item.type ? (
                           <FoodBox
                             onPress={() => {
-                              router.push("/(tabs)/food_description");
-                              router.setParams({ itemName: item.name });
+                              router.push({
+                                pathname: "/(tabs)/food_description",
+                                params: {
+                                  itemName: item.name,
+                                },
+                              });
                             }}
                             key={index}
                             name={item.name}
@@ -238,10 +250,12 @@ export default function Preset() {
             >
               <CustomButton
                 onPress={() => {
-                  router.push("/(tabs)/preview");
-                  router.setParams({
-                    presetName: title ? title : undefined,
-                    cafName: cafName,
+                  router.push({
+                    pathname: "/(tabs)/preview",
+                    params: {
+                      presetName: title ? title : undefined,
+                      cafName: cafName,
+                    },
                   });
                 }}
                 borderRadius={20}

@@ -28,7 +28,7 @@ import { add } from "@/state/presets/presetSlice";
 export default function UploadScreen() {
   const dimensions = useWindowDimensions();
   const dispatch = useDispatch();
-  const [filterChosen, setFilterChosen] = useState("");
+  const [filterChosen, setFilterChosen] = useState<String>();
   const categories = ["Hot Food", "Interactive"];
   const [map, setMap] = useState(
     new Map<string, boolean>([

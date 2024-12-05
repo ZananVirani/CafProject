@@ -301,8 +301,12 @@ export default function ItemSelect() {
   }
 
   function visitPreset(item: string) {
-    router.push("/(tabs)/food_description");
-    router.setParams({ itemName: item });
+    router.push({
+      pathname: "/(tabs)/food_description",
+      params: {
+        itemName: item,
+      },
+    });
   }
 }
 

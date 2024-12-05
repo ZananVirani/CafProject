@@ -267,8 +267,10 @@ export default function Cafeteria() {
               <View style={{ width: dimensions.width }}>
                 <CustomButton
                   onPress={() => {
-                    router.push("/(tabs)/menu");
-                    router.setParams({ cafName: cafName });
+                    router.push({
+                      pathname: "/(tabs)/menu",
+                      params: { cafName: cafName },
+                    });
                   }}
                   marginTop={20}
                   borderRadius={20}
@@ -333,10 +335,12 @@ export default function Cafeteria() {
                           (!toggle || !hasSimilar(item.allergies)) ? (
                             <FoodBox
                               onPress={() => {
-                                router.push("/(tabs)/food_description");
-                                router.setParams({
-                                  cafName,
-                                  itemName: item.name,
+                                router.push({
+                                  pathname: "/(tabs)/food_description",
+                                  params: {
+                                    cafName,
+                                    itemName: item.name,
+                                  },
                                 });
                               }}
                               key={index}
@@ -352,10 +356,12 @@ export default function Cafeteria() {
                           (!toggle || !hasSimilar(item.allergies)) ? (
                           <FoodBox
                             onPress={() => {
-                              router.push("/(tabs)/food_description");
-                              router.setParams({
-                                cafName,
-                                itemName: item.name,
+                              router.push({
+                                pathname: "/(tabs)/food_description",
+                                params: {
+                                  cafName,
+                                  itemName: item.name,
+                                },
                               });
                             }}
                             key={index}

@@ -120,7 +120,6 @@ export default function Preview() {
                         onPress: async () => {
                           let menu: string[] = [];
                           presetList.presetList.forEach((item) => {
-                            console.log(item._id);
                             menu.push(item._id);
                           });
                           setDialog(false);
@@ -254,9 +253,12 @@ export default function Preview() {
                     return category == item.type ? (
                       <FoodBox
                         onPress={() => {
-                          console.log(item);
-                          router.push("/(tabs)/food_description");
-                          router.setParams({ itemName: item.name });
+                          router.push({
+                            pathname: "/(tabs)/food_description",
+                            params: {
+                              itemName: item.name,
+                            },
+                          });
                         }}
                         source={`http://10.0.0.135:3000/images/${item.image}`}
                         key={index}
@@ -329,7 +331,6 @@ export default function Preview() {
                     onPress: async () => {
                       let menu: string[] = [];
                       presetList.presetList.forEach((item) => {
-                        console.log(item._id);
                         menu.push(item._id);
                       });
                       await axios
@@ -398,7 +399,6 @@ export default function Preview() {
                 onPress: async () => {
                   let menu: string[] = [];
                   presetList.presetList.forEach((item) => {
-                    console.log(item._id);
                     menu.push(item._id);
                   });
                   await axios

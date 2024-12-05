@@ -243,8 +243,12 @@ export default function Menu() {
             >
               <TouchableOpacity
                 onPress={() => {
-                  router.push("/(tabs)/preset");
-                  router.setParams({ cafName: cafName });
+                  router.push({
+                    pathname: "/(tabs)/preset",
+                    params: {
+                      cafName: cafName,
+                    },
+                  });
                 }}
               >
                 <View
@@ -360,8 +364,13 @@ export default function Menu() {
   }
 
   function visitPreset(item: String) {
-    router.push("/(tabs)/preset");
-    router.setParams({ presetName: item.toString(), cafName: cafName });
+    router.push({
+      pathname: "/(tabs)/preset",
+      params: {
+        presetName: item.toString(),
+        cafName: cafName,
+      },
+    });
   }
 }
 
