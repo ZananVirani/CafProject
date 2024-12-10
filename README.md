@@ -1,4 +1,4 @@
-# Western University Cafeteria Menu App
+# CafIt!: A Residence Cafeteria Menu App
 
 This project is a full-stack mobile application designed to enhance the dining experience at Western University's residence cafeterias. The app provides students with real-time access to menu offerings across all 8 residence cafeterias while empowering cafeteria staff to manage menu items with ease through robust CRUD operations.
 
