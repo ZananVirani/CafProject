@@ -13,5 +13,8 @@ Whether you're a student looking to plan your meals or a cafeteria manager maint
 ### Not In Affiliation With Western University
 
 Feel free to explore the repository! 🚀
+<br />
+<br />
+## App Main Screen
+<img src="https://github.com/user-attachments/assets/1f2422ca-22d9-458c-a099-9661ef28ad3c" alt="Main Screen" width="400">
 
-![IMG_8372](https://github.com/user-attachments/assets/1f2422ca-22d9-458c-a099-9661ef28ad3c | width=200)
