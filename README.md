@@ -14,4 +14,4 @@ Whether you're a student looking to plan your meals or a cafeteria manager maint
 
 Feel free to explore the repository! 🚀
 
-![IMG_8372](https://github.com/user-attachments/assets/1f2422ca-22d9-458c-a099-9661ef28ad3c)
+![IMG_8372](https://github.com/user-attachments/assets/1f2422ca-22d9-458c-a099-9661ef28ad3c | width=200)
