@@ -10,4 +10,8 @@ This project is a full-stack mobile application designed to enhance the dining e
 
 Whether you're a student looking to plan your meals or a cafeteria manager maintaining menu updates, this app streamlines the process for everyone involved.
 
+### Not In Affiliation With Western University
+
 Feel free to explore the repository! 🚀
+
+![IMG_8372](https://github.com/user-attachments/assets/1f2422ca-22d9-458c-a099-9661ef28ad3c)
