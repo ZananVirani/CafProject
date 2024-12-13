@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 
 const cafSchema = new schema({
-  //consider changing 
   name: {
     type: String,
     required: true,

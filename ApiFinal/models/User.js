@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt');
 const schema = mongoose.Schema;
 
 const userSchema = new schema({
-  //consider changing 
   studentId: {
     type: String,
     required: true,

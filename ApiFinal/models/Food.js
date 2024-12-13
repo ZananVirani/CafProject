@@ -1,6 +1,3 @@
-// Things to add
-// - Allergies (array of strings)
-
 const mongoose = require('mongoose');
 
 const schema = mongoose.Schema;
@@ -15,10 +12,6 @@ const foodSchema = new schema({
     type: String, 
     required: true 
   },
-  // ingredients: { 
-  //   type: [String],
-  //   required: false
-  // },
   allergies: { 
     type: [String],
     required: true

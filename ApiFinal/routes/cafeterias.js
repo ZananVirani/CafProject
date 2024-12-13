@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Cafeteria = require('../models/Cafeteria');
-const addFoodItemToCafeteria = require('../middleware/addFood');
 const getFoodFromCaf = require('../middleware/getFood');
 const Food = require('../models/Food');
 const User = require('../models/User');
@@ -53,22 +52,6 @@ router.get("/favouriteCafs", async (req, res) => {
 
 })
 
-
-// //Consider converting to patch request - may make program much cleaner
-// router.post('/addFood', async (req, res) => {
-//   console.log('req.body: ', req.body)
-//   const {cafeteriaName} = req.body;
-//   const {foodName} = req.body;
-
-//   try {
-//     const result = await addFoodItemToCafeteria(cafeteriaName, foodName);
-//     res.status(200).json(result);
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-
-
-// })
 
 router.get('/getFood/:cafeteriaName/:userID', async (req, res) => {
   try{

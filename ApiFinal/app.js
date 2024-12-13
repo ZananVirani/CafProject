@@ -11,16 +11,14 @@ const path = require('path')
 
 const app = express();
 
-app.use(express.json({ limit: '10mb' })); // Adjust the limit as needed
+// Middleware - ensures you can use body for post request
+app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 app.use('/images', express.static(path.join(__dirname, 'uploads')));
 
 //Connects to Database
 connectDB();
-
-// Middleware - ensures you can use body for post request
-app.use(express.json());
 
 //Import Routes
 app.use('/users', userRoutes);
