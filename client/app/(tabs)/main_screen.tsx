@@ -158,7 +158,7 @@ export default function MainScreen() {
       }
     } else {
       const response = await axios.get(
-        `http://10.0.0.135:3000/users/getAvailableCafs`,
+        `http://10.0.0.135:3000/users/getFavFoods`,
         {
           params: {
             foodIDs: favFoods,
@@ -257,7 +257,6 @@ export default function MainScreen() {
     >
       {loaded ? (
         <SafeAreaView style={{ flex: 1 }}>
-          {/* Header//////////////////////////// */}
           <View
             style={{
               height: 80,
@@ -292,8 +291,6 @@ export default function MainScreen() {
             />
             <View style={{ flex: 0.03 }}></View>
           </View>
-          {/* Header//////////////////////////// */}
-          {/* First DIPLAY ROWWWW /////////////////////////////// */}
           <View
             style={{
               width: dimensions.width,
@@ -385,7 +382,6 @@ export default function MainScreen() {
               })}
             <View style={{ flex: 1, width: 120 }}></View>
           </ScrollView>
-          {/* First DIPLAY ROWWWW /////////////////////////////// */}
           <View
             style={{
               width: dimensions.width,
@@ -489,7 +485,6 @@ export default function MainScreen() {
                         key={item.cafName}
                         cafName={item.cafName}
                         source={item.source}
-                        //liked={item.liked}
                       />
                     );
                   })}

@@ -343,7 +343,7 @@ export default function UploadScreen() {
                           });
                           try {
                             const response = await FileSystem.uploadAsync(
-                              `http://10.0.0.135:3000/foods/tempRoute`,
+                              `http://10.0.0.135:3000/foods/uploadImage`,
                               image.uri,
                               {
                                 headers: {

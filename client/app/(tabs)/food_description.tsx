@@ -219,7 +219,6 @@ export default function FoodDescription() {
                 uri: `http://10.0.0.135:3000/images/${apiInfo?.image}`,
               }}
               style={{
-                //flex: 0.4,
                 alignSelf: "center",
                 borderRadius: 20,
                 width: dimensions.width * 0.9,
@@ -482,11 +481,6 @@ export default function FoodDescription() {
       </SafeAreaView>
     </View>
   );
-
-  // async function checkInternet() {
-  //   const isConnected = await fetch();
-  //   console.log(isConnected);
-  // }
 }
 
 const styles = StyleSheet.create({

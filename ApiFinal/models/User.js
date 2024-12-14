@@ -3,6 +3,17 @@ const bcrypt = require('bcrypt');
 
 const schema = mongoose.Schema;
 
+/**
+ * Identifies the schema for a User.
+ * studentId: Student ID of the User.
+ * firstName: First name of the User.
+ * lastName: Last name of the User.
+ * password: Password of the User.
+ * role: Role of the User (user or admin).
+ * allergies: List of allergies the User has.
+ * favouriteCafeterias: List of favourite Cafeterias of the User.
+ * favouriteFoods: List of favourite Food items of the User.
+ */
 const userSchema = new schema({
   studentId: {
     type: String,
@@ -39,18 +50,6 @@ const userSchema = new schema({
     ref: 'Food'
   }],
 });
-
-// userSchema.pre('save', async function (next) {
-//   console.log('Password before hashing:', this.password);
-//   if (!this.isModified('password')) return next();
-//   try {
-//     const salt = await bcrypt.genSalt(10);
-//     this.password = await bcrypt.hash(this.password, salt);
-//     next();
-//   } catch (err) {
-//     next(err);
-//   }
-// });
 
 const User = mongoose.model("user", userSchema)
 

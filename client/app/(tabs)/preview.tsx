@@ -228,9 +228,9 @@ export default function Preview() {
                   <MaterialCommunityIcons
                     name={
                       category == "Hot Food"
-                        ? "fire" //
+                        ? "fire"
                         : category == "Interactive"
-                        ? "food-turkey" //"filter"
+                        ? "food-turkey"
                         : "star-circle"
                     }
                     size={category == "Other" ? 32 : 37}

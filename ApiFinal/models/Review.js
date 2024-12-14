@@ -2,6 +2,12 @@ const mongoose = require('mongoose');
 
 const schema = mongoose.Schema;
 
+/**
+ * Identifies the schema for a Review of a Food.
+ * user: User who made the review.
+ * food: Food item being reviewed.
+ * rating: Rating given to the Food item.
+ */
 const reviewSchema = new schema({
   user: {
     type: mongoose.Schema.Types.ObjectId, 

@@ -307,9 +307,9 @@ export default function Cafeteria() {
                     <MaterialCommunityIcons
                       name={
                         category == "Hot Food"
-                          ? "fire" //
+                          ? "fire"
                           : category == "Interactive"
-                          ? "food-turkey" //"filter"
+                          ? "food-turkey"
                           : "star-circle"
                       }
                       size={category == "Other" ? 32 : 37}
@@ -482,8 +482,6 @@ const styles = StyleSheet.create({
     letterSpacing: -0.5,
   },
 });
-
-// TODO: Caf Closed Screen
 
 class CafStuff {
   static getBreakfast(date: Date) {

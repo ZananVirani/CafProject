@@ -1,3 +1,7 @@
+/**
+ * Defines all of the routes for endpoints related to cafPresets.
+ */
+
 const express = require('express');
 const mongoose = require('mongoose');
 const Food = require('../models/Food')
@@ -7,17 +11,23 @@ const getPresetFoods = require('../middleware/getFood');
 
 const router = express.Router();
 
+/**
+ * Delete all the presets in the cafeteria 'cafeteriaName' and the preset names in the body 'presetNames'.
+ */
 router.patch("/deletePresets/:cafeteriaName", async(req, res)=>{
   try {
       const {cafeteriaName} = req.params
       const {presetNames} = req.body
 
+      // Get the Cafeteria document
       const cafeteria = await Cafeteria.findOne({name : cafeteriaName})
 
+      // Delete all the presets in the cafeteria 'cafeteriaName' and the preset names in the body 'presetNames'.
       const deleted = await CafPreset.deleteMany({$and : [{name : {$in : presetNames}}, {caf : cafeteriaName}]})
 
       if (!deleted) return res.status(500).json({message : "Server Error"})
 
+      // Remove the preset names from the cafeteria document if the deletion was successful
       cafeteria.presets = cafeteria.presets.filter((item)=>{
         return !presetNames.includes(item)
       })
@@ -32,6 +42,9 @@ router.patch("/deletePresets/:cafeteriaName", async(req, res)=>{
 
 })
 
+/**
+ * Get the foods in the preset 'presetName'.
+ */
 router.get("/getPreset/:presetName", async(req, res)=>{
   try {
       const {presetName} = req.params
@@ -50,33 +63,41 @@ router.get("/getPreset/:presetName", async(req, res)=>{
 
 })
 
+/**
+ * Edit the preset 'presetName' in the cafeteria 'cafeteriaName', and upload the menu to the cafeteria.
+ */
 router.patch("/editPreset/:cafeteriaName", async(req, res)=>{
   try {
       const {cafeteriaName} = req.params
       const {presetName, foodIDs} = req.body
 
+      // Get the Cafeteria and CafPreset documents
       const cafeteria = await Cafeteria.findOne({name : cafeteriaName})
       const preset = await CafPreset.findOne({name : presetName})
 
       if (!preset) return res.status(500).json({message : "Server Error"})
 
+      // Get all the foods being served in the cafeteria.
         const oldFoods = await Food.find({cafeterias : cafeteriaName})
-  oldFoods.forEach((item)=>{
-    item.cafeterias = item.cafeterias.filter((value)=>value!=cafeteriaName)
-    item.save()
-  })
+      // Remove the current cafeteria from the cafeterias array of all the foods being served in the cafeteria.
+      oldFoods.forEach((item)=>{
+        item.cafeterias = item.cafeterias.filter((value)=>value!=cafeteriaName)
+        item.save()
+      })
 
-  for (let food of foodIDs){
-    const item = await Food.findById(food)
-    if (item){
-    item.cafeterias.push(cafeteriaName)
-    item.save()}
-  }
+      // Add the new cafeteria to the cafeterias array of all the foods in the new preset.
+      for (let food of foodIDs){
+        const item = await Food.findById(food)
+        if (item){
+        item.cafeterias.push(cafeteriaName)
+        item.save()}
+      }
 
-      
+      // Change the preset menu
       preset.menu = foodIDs
       preset.save()
 
+      // Change the cafeteria menu
       cafeteria.menu = foodIDs
       cafeteria.save()
     
@@ -88,6 +109,9 @@ router.patch("/editPreset/:cafeteriaName", async(req, res)=>{
 
 })
 
+/**
+ * Just upload the menu to the cafeteria 'cafeteriaName', but do not do anything with the presets.
+ */
 router.patch("/tempUpload/:cafeteriaName", async(req, res)=>{
   try {
       const {cafeteriaName} = req.params
@@ -95,20 +119,22 @@ router.patch("/tempUpload/:cafeteriaName", async(req, res)=>{
 
       const cafeteria = await Cafeteria.findOne({name : cafeteriaName})
 
+      const oldFoods = await Food.find({cafeterias : cafeteriaName})
+      // Remove the current cafeteria from the cafeterias array of all the foods being served in the cafeteria.
+      oldFoods.forEach((item)=>{
+        item.cafeterias = item.cafeterias.filter((value)=>value!=cafeteriaName)
+        item.save()
+      })
 
-        const oldFoods = await Food.find({cafeterias : cafeteriaName})
-  oldFoods.forEach((item)=>{
-    item.cafeterias = item.cafeterias.filter((value)=>value!=cafeteriaName)
-    item.save()
-  })
-
-  for (let food of foodIDs){
-    const item = await Food.findById(food)
-    if (item){
-    item.cafeterias.push(cafeteriaName)
-    item.save()}
-  }
-
+      // Add the new cafeteria to the cafeterias array of all the foods in the new preset.
+      for (let food of foodIDs){
+        const item = await Food.findById(food)
+        if (item){
+        item.cafeterias.push(cafeteriaName)
+        item.save()}
+      }
+      
+      // Change the cafeteria menu
       cafeteria.menu = foodIDs
       cafeteria.save()
     
@@ -120,6 +146,9 @@ router.patch("/tempUpload/:cafeteriaName", async(req, res)=>{
 
 })
 
+/**
+ * Get all the presets in the cafeteria 'cafeteriaName'.
+ */
 router.get("/:cafeteriaName", async(req, res)=>{
   try {
       const cafName = req.params.cafeteriaName
@@ -137,6 +166,9 @@ router.get("/:cafeteriaName", async(req, res)=>{
 
 })
 
+/**
+ * Create a new preset in the cafeteria 'cafeteriaName', and upload the menu to the cafeteria.
+ */
 router.post("/:cafeteriaName", async (req, res) =>{
   try{
   const cafName = req.params.cafeteriaName
@@ -150,17 +182,20 @@ router.post("/:cafeteriaName", async (req, res) =>{
     menu : foodIDs
   })
 
+  // Create the new preset, and add it to the cafeteria's presets array if the preset was created successfully.
   await CafPreset.create(newPreset).then(async (result)=>{
     cafeteria.presets.push(result.name)
     await cafeteria.save()
   })
 
+  // Remove the current cafeteria from the cafeterias array of all the foods being served in the cafeteria.
   const oldFoods = await Food.find({cafeterias : cafName})
   oldFoods.forEach((item)=>{
     item.cafeterias = item.cafeterias.filter((value)=>value!=cafName)
     item.save()
   })
 
+  // Add the new cafeteria to the cafeterias array of all the foods in the new preset.
   for (let food of foodIDs){
     const item = await Food.findById(food)
     if (item){
@@ -168,6 +203,7 @@ router.post("/:cafeteriaName", async (req, res) =>{
     item.save()}
   }
 
+  // Change the cafeteria menu
   cafeteria.menu = foodIDs;
   cafeteria.save();
 

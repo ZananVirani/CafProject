@@ -2,6 +2,15 @@ const mongoose = require('mongoose');
 
 const schema = mongoose.Schema;
 
+/**
+ * Identifies the schema for a Food item.
+ * name: Name of the Food item.
+ * image: String of the filename of the picture of the Food item.
+ * allergies: List of allergies the Food item contains.
+ * type: Type of the Food item (hot food or interactive).
+ * averageRating: Average rating of the Food item.
+ * cafeterias: List of Cafeterias that serve the Food item.
+ */
 const foodSchema = new schema({
   name: {
     type: String,

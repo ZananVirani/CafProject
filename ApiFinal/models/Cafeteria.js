@@ -2,6 +2,14 @@ const mongoose = require('mongoose');
 
 const schema = mongoose.Schema;
 
+/**
+ * Identifies the schema for a Cafeteria.
+ * name: Name of the Cafeteria.
+ * longitude: Longitude location of the Cafeteria.
+ * latitude: Latitude location of the Cafeteria.
+ * menu: List of Food items currently available in the Cafeteria.
+ * presets: List of preset menus available in the Cafeteria.
+ */
 const cafSchema = new schema({
   name: {
     type: String,

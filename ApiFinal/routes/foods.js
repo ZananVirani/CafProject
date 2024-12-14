@@ -1,3 +1,7 @@
+/**
+ * Defines all of the routes for endpoints related to Foods.
+ */
+
 const express = require('express');
 const mongoose = require('mongoose');
 const fs = require('fs');
@@ -7,6 +11,9 @@ const User = require('../models/User');
 
 const router = express.Router();
 
+/**
+ * Create a new food item, and return the created food item.
+ */
 router.post("/", async (req,res) => {
   try{
     const {name, image, allergies, type, cafeterias} = req.body
@@ -20,9 +27,9 @@ router.post("/", async (req,res) => {
       cafeterias: cafeterias
     });
 
-    let something = await Food.create(newFood);
+    let result = await Food.create(newFood);
 
-    res.status(201).json(something);
+    res.status(201).json(result);
 
   } catch(err){
     console.log("error: ", err);
@@ -31,8 +38,12 @@ router.post("/", async (req,res) => {
 
 })
 
-
-router.patch('/tempRoute', async (req, res) =>{
+/**
+ * Upload the image of the food item, setting the name to the current date and time in milliseconds, so it is a unique name.
+ * Return the name back to the user.
+ * This code uses expo-file-system to write the image to the server, where it gets stored in the 'uploads' folder.
+ */
+router.patch('/uploadImage', async (req, res) =>{
   try{
     const temp = req.headers.mimetype
     const name = Date.now() + '.' + temp.split('/')[1]
@@ -47,6 +58,9 @@ router.patch('/tempRoute', async (req, res) =>{
   }
 })
 
+/**
+ * Gets the food and user data for the food item 'foodName' and the user 'userID' (this was done to combine the two queries into one).
+ */
 router.get('/food/:foodName/:userID', async (req, res)=>{
   try{
     const {foodName, userID} = req.params
@@ -63,6 +77,9 @@ router.get('/food/:foodName/:userID', async (req, res)=>{
   }
 })
 
+/**
+ * Returns all of the food items stored in the database. If a studentId is provided, return the user data as well.
+ */
 router.get('/allFoods', async (req, res) =>{
   try{
     const {studentId} = req.query
@@ -77,13 +94,6 @@ router.get('/allFoods', async (req, res) =>{
     console.log(err)
     res.status(500).json({message: 'Error retrieving users', error: err.message })
   }
-})
-
-
-router.get('/getCafs/:foodName', async(req, res) =>{
-  const food = req.params;
-
-  const cafs = Food.findOne({foodName}, cafeterias)
 })
   
 

@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const { GridFSBucket } = require('mongodb');
 require('dotenv').config();
 
-
+// URI to connect to the MongoDB database, stored in .env file
 const uri = process.env.MONGODB_CONNECTION_STRING;
 
 /**
- * Connects to the MongoDB database
+ * Connects the application to the MongoDB database, throws an error if connection fails
  */
 const connectDB = async () => {
   try{
