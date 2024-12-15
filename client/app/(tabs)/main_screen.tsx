@@ -1,3 +1,7 @@
+/**
+ * The main screen of the application.
+ */
+
 import {
   SafeAreaView,
   ScrollView,
@@ -32,7 +36,9 @@ import {
 } from "geolib/es/types";
 
 export default function MainScreen() {
+  // Dimensions of the screen
   const dimensions = useWindowDimensions();
+  // Foods to be displayed
   const [foods, setFoods] = useState<
     {
       _id: string;
@@ -44,6 +50,7 @@ export default function MainScreen() {
       cafeterias: string[];
     }[]
   >([]);
+  // User information
   const [user, setUser] = useState<
     | {
         studentId: string;
@@ -57,13 +64,20 @@ export default function MainScreen() {
       }
     | undefined
   >(undefined);
+  // Show loading bar when the page is loading.
   const [loaded, setLoaded] = useState(false);
+  // Show loading bar when the cafeteria section of the page is loading.
   const [partialLoaded, setPartialLoaded] = useState(false);
+  // Categories to order the cafeteria boxes by.
   const [categories, setCategories] = useState([""]);
+  // The index of the cafeteria that is currently selected under the 'favourite cafeterias' section.
   const [cafNum, setCafNum] = useState(0);
+  // The category that is currently selected
   const [filterChosen, setFilterChosen] = useState<string | undefined>(
     undefined
   );
+  const [buttonColor, setButtonColor] = useState<string>("#B09DC7");
+  // The list of cafeterias to be displayed, all constant information is hardcoded.
   const origBoxes = [
     {
       cafName: "Ontario Hall",
@@ -110,18 +124,22 @@ export default function MainScreen() {
     },
   ];
 
-  let tempNum = useRef(0);
+  // The list of cafeterias to be displayed, this list is mutable.
   const [cafBoxes, setCafBoxes] =
     useState<
       { cafName: string; latitude: number; longitude: number; source: any }[]
     >(origBoxes);
 
+  // Function to order the list of cafeterias to be displayed based on the filter chosen.
   const determineList = async (tempFilter: string, favFoods: string[]) => {
     let temp: any;
 
+    // Order by alphabetical order.
     if (tempFilter == "A-Z") {
       temp = origBoxes.sort((a, b) => a.cafName.localeCompare(b.cafName));
-    } else if (tempFilter == "Nearby") {
+    }
+    // Order by location of the user, using Expo Location API.
+    else if (tempFilter == "Nearby") {
       let { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status == "granted") {
@@ -156,7 +174,10 @@ export default function MainScreen() {
 
         temp = newList;
       }
-    } else {
+    }
+    // Order by the user's favourite foods, only showing cafeterias that are serving
+    // at least one of the user's favourite foods.
+    else {
       const response = await axios.get(
         `http://10.0.0.135:3000/users/getFavFoods`,
         {
@@ -182,9 +203,13 @@ export default function MainScreen() {
       temp = newList;
     }
 
+    // Set the list of cafeterias to be displayed.
     setCafBoxes(temp);
   };
 
+  // Use the useRef hook to keep track of the number of times the a filter has been chosen,
+  // to prevent the filterChosen useEffect hook from running on the first render.
+  let tempNum = useRef(0);
   useEffect(() => {
     if (filterChosen) {
       if (tempNum.current > 0) {
@@ -198,6 +223,7 @@ export default function MainScreen() {
     }
   }, [filterChosen]);
 
+  // Function to get the foods and user information from the server.
   const getFoods = async () => {
     try {
       const userID = await getUserID();
@@ -212,6 +238,7 @@ export default function MainScreen() {
 
       setFoods(result.data.foods);
       setUser(result.data.user);
+      // Get the previously selected caf from AsyncStorage and set the cafNum to the index of the selected caf.
       getSelectedCaf()
         .then((value) => {
           let num = result.data.user.favouriteCafeterias.indexOf(value);
@@ -227,6 +254,7 @@ export default function MainScreen() {
     }
   };
 
+  // Get the foods and user information from the server everytime the screen loads in.
   useFocusEffect(
     useCallback(() => {
       setLoaded(false);
@@ -235,6 +263,7 @@ export default function MainScreen() {
           .then((value) => {
             setCategories(value);
             setFilterChosen(value[0]);
+            console.log(value);
             setPartialLoaded(false);
             determineList(value[0], result?.data.user.favouriteFoods).then(
               () => {
@@ -272,6 +301,7 @@ export default function MainScreen() {
                 paddingRight: 5,
               }}
             >
+              {/* Greet the user, capitalize the first letter of the name. */}
               <Text style={styles.title} numberOfLines={1}>
                 Hi,
                 {user?.firstName.replace(
@@ -281,6 +311,7 @@ export default function MainScreen() {
               </Text>
               <Text style={styles.subtitle}>Check Out What's Cooking</Text>
             </View>
+            {/* Profile icon to navigate to the profile screen. */}
             <FontAwesome5
               color={colors.black}
               name="user-circle"
@@ -306,6 +337,7 @@ export default function MainScreen() {
                 flexDirection: "row",
               }}
             >
+              {/* Shuffle through the user's favourite cafeterias. */}
               <Ionicons
                 name="shuffle"
                 size={33}
@@ -349,37 +381,40 @@ export default function MainScreen() {
               marginLeft: "3%",
             }}
           >
-            {user &&
-              foods.map((item, index) => {
-                return item.cafeterias.includes(
-                  user.favouriteCafeterias[cafNum]
-                ) ? (
-                  <FoodBox
-                    onPress={() => {
-                      router.push({
-                        pathname: "/(tabs)/food_description",
-                        params: {
-                          cafName: user?.favouriteCafeterias[cafNum],
-                          itemName: item.name,
-                          allergies: user?.allergies,
-                        },
-                      });
-                    }}
-                    key={index}
-                    source={`http://10.0.0.135:3000/images/${item.image}`}
-                    name={item.name}
-                    rating={item.averageRating}
-                    fontSize={10.5}
-                    ratingFont={9}
-                    starSize={10}
-                    width={dimensions.width * 0.26}
-                    minWidth={100}
-                    marginLeft="1%"
-                    height={dimensions.width * 0.105}
-                    marginTop="0%"
-                  />
-                ) : null;
-              })}
+            {
+              // Display the foods that are served at the selected cafeteria.
+              user &&
+                foods.map((item, index) => {
+                  return item.cafeterias.includes(
+                    user.favouriteCafeterias[cafNum]
+                  ) ? (
+                    <FoodBox
+                      onPress={() => {
+                        router.push({
+                          pathname: "/(tabs)/food_description",
+                          params: {
+                            cafName: user?.favouriteCafeterias[cafNum],
+                            itemName: item.name,
+                            allergies: user?.allergies,
+                          },
+                        });
+                      }}
+                      key={index}
+                      source={`http://10.0.0.135:3000/images/${item.image}`}
+                      name={item.name}
+                      rating={item.averageRating}
+                      fontSize={10.5}
+                      ratingFont={9}
+                      starSize={10}
+                      width={dimensions.width * 0.26}
+                      minWidth={100}
+                      marginLeft="1%"
+                      height={dimensions.width * 0.105}
+                      marginTop="0%"
+                    />
+                  ) : null;
+                })
+            }
             <View style={{ flex: 1, width: 120 }}></View>
           </ScrollView>
           <View
@@ -392,6 +427,7 @@ export default function MainScreen() {
             }}
           >
             <Text style={styles.cafTitle}>All Residences</Text>
+            {/* Shuffle through the categories. */}
             <TouchableOpacity
               style={{ marginLeft: dimensions.width * 0.13 }}
               onPress={async () => {
@@ -416,6 +452,7 @@ export default function MainScreen() {
               marginHorizontal: "5%",
             }}
           >
+            {/* Display the categories to order the cafeterias by. */}
             {categories.map((item) => {
               return (
                 <CustomButton

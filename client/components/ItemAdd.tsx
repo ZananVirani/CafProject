@@ -1,3 +1,7 @@
+/**
+ * ItemAdd component used in the preset screen, to either push to either upload screen or item_select screen.
+ */
+
 import {
   StyleSheet,
   Text,

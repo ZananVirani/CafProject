@@ -1,3 +1,7 @@
+/**
+ * Basic Layout of an Expo app, with Redux and React Navigation.
+ */
+
 import React from "react";
 import {
   DarkTheme,
@@ -35,6 +39,7 @@ export default function RootLayout() {
   }
 
   return (
+    // Provider tags are used to provide the Redux store to the app.
     <Provider store={store}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack>

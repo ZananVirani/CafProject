@@ -1,3 +1,7 @@
+/**
+ * Custom Text Field component for inputting text.
+ */
+
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { TextInput } from "react-native-paper";

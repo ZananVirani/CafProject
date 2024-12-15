@@ -1,3 +1,7 @@
+/**
+ * Onboarding screen for the app.
+ */
+
 import { ImageBackground, StyleSheet, Text, View } from "react-native";
 import React from "react";
 
@@ -8,6 +12,7 @@ import { useRouter } from "expo-router";
 export default function OnBoarding() {
   const router = useRouter();
   return (
+    // Western University background image
     <ImageBackground
       source={require("../../assets/images/splash_background.jpg")}
       style={styles.bg}

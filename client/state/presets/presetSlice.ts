@@ -1,5 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
+// Array of Foods.
 interface presetState {
     presetList : {
         _id : string;
@@ -12,9 +13,17 @@ interface presetState {
       }[]
 }
 
+// Initial State of the Preset Slice, the empty array.
 const initState : presetState = {
     presetList : []
 }
+
+/* Slice for the preset state, with the add, rid, and clear reducers.
+
+    add : adds a preset to the list of presets.
+    rid : removes a preset from the list of presets.
+    clear : clears the list of presets.
+*/
 
 const presetSlice = createSlice({
     name : "presets",

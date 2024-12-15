@@ -1,3 +1,7 @@
+/**
+ * Screen when a food item is clicked, displaying all of the food item's information.
+ */
+
 import {
   StyleSheet,
   Text,
@@ -27,7 +31,9 @@ import axios, { all } from "axios";
 import { router, useGlobalSearchParams } from "expo-router";
 import { ActivityIndicator } from "react-native-paper";
 import { getUserID } from "@/utils/AsyncStorage";
+
 export default function FoodDescription() {
+  // Food information
   const [apiInfo, setApiInfo] = useState<{
     _id: string;
     name: string;
@@ -37,24 +43,14 @@ export default function FoodDescription() {
     averageRating: number;
     cafeterias: string[];
   }>();
+  // Cafeteria and food item name
   const { cafName, itemName } = useGlobalSearchParams();
-  const [user, setUser] = useState<
-    | {
-        studentId: string;
-        firstName: string;
-        lastName: string;
-        password?: string;
-        role: string;
-        allergies: string[];
-        favouriteCafeterias: string[];
-        favouriteFoods: string[];
-      }
-    | undefined
-  >(undefined);
-
+  // User ID
   const [ID, setID] = useState("");
+  // Activity Indicator to show loading
   const [loaded, setLoaded] = useState(false);
 
+  // Get the food item and user allergies from the database.
   const getItem = async () => {
     const userID = await getUserID();
     setID(userID!);
@@ -62,7 +58,6 @@ export default function FoodDescription() {
       .get(`http://10.0.0.135:3000/foods/food/${itemName}/${userID}`)
       .then((value) => {
         setApiInfo(value.data.foods);
-        setUser(value.data.user);
         setLoaded(true);
         value.data.foods.allergies.forEach((item: string) => {
           value.data.user.allergies.includes(item) && setIsAllergic(true);
@@ -74,22 +69,30 @@ export default function FoodDescription() {
         console.log(error);
       });
   };
+
+  // Get the food item and user allergies from the database.
   useEffect(() => {
     getItem();
   }, []);
 
-  const otherCafs = ["Perth Hall", "Ontario Hall", "Sydenham Hall"];
+  // Triggers if the user is allergic to an ingredient in the food item.
   const [isAllergic, setIsAllergic] = useState(false);
+  // Dimensions of the window
   const dimensions = useWindowDimensions();
+  // State variable for the if the food item is liked or not by the user.
   const [checked, setChecked] = useState(false);
+  // Pop up the dialog for the user to leave a review.
   const [dialog, setDialog] = useState(false);
+  // State variable for the rating the user gives the food item.
   const [rating, setRating] = useState(0);
+  // State variable for the pop up at the bottom of the screen when the food item is added to favourites.
   const [bottomPop, setBottomPop] = useState(false);
 
   return (
     <View
       style={{ backgroundColor: "white", flex: 1, justifyContent: "center" }}
     >
+      {/* Dialog for the user to leave a review */}
       <Dialog
         visible={dialog}
         title="Leave A Review!"
@@ -133,6 +136,7 @@ export default function FoodDescription() {
             </TouchableWithoutFeedback>
           </View>
           <CustomButton
+            // Submit the review to the database, either making it a new review or updating the old one.
             onPress={async () => {
               const userID = await getUserID();
               await axios
@@ -203,12 +207,6 @@ export default function FoodDescription() {
             />
             <Text style={styles.title}>{cafName}</Text>
           </View>
-          {/* <FontAwesome5
-            color={colors.black}
-            name="user-circle"
-            size={33}
-            onPress={() => router.push("/(tabs)/profile")}
-          /> */}
           <View style={{ flex: 0.03 }}></View>
         </View>
 
@@ -251,7 +249,9 @@ export default function FoodDescription() {
                     {apiInfo?.name}
                   </Text>
                 </View>
+
                 <MaterialCommunityIcons
+                  // Like icon
                   color={checked ? colors.wpurple : colors.gray}
                   name={"heart-circle"}
                   size={50}
@@ -407,6 +407,7 @@ export default function FoodDescription() {
                           borderRadius: 7,
                         }}
                       >
+                        {/* Icon for the food allergies */}
                         <MaterialCommunityIcons
                           color={colors.wpurple}
                           name={

@@ -1,3 +1,8 @@
+/**
+ * Profile screen for the app, where users can access their
+ * account information, favourite foods, notifications, location, and learn more about Western Dining.
+ */
+
 import {
   Alert,
   SafeAreaView,
@@ -22,7 +27,9 @@ import * as Linking from "expo-linking";
 import { setUserID } from "@/utils/AsyncStorage";
 
 export default function ProfileScreen() {
+  // Dimensions of the window
   const dimensions = useWindowDimensions();
+
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <SafeAreaView style={{ flex: 1 }}>
@@ -60,6 +67,7 @@ export default function ProfileScreen() {
               flex: 1,
             }}
           >
+            {/* Profile buttons */}
             <ProfileButton
               text={"Account Information"}
               onPress={() => router.push("/(tabs)/account")}
@@ -76,13 +84,6 @@ export default function ProfileScreen() {
                 color={colors.wpurple}
               />
             </ProfileButton>
-            {/* <ProfileButton text={"Notifications"}>
-              <MaterialCommunityIcons
-                name="bell-ring"
-                size={45}
-                color={colors.wpurple}
-              />
-            </ProfileButton> */}
             <ProfileButton
               text={"Location"}
               onPress={async () => {
@@ -133,6 +134,7 @@ export default function ProfileScreen() {
         </View>
         <View style={{ flex: 0.12 }}>
           <CustomButton
+            // Confirmation button for logging out of the user's account.
             onPress={() => {
               Alert.alert(`Are You Sure You Want To Logout?`, undefined, [
                 {

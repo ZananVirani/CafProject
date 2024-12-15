@@ -1,13 +1,15 @@
+/**
+ * Profile Screen Button Component, to display account information, favourite foods, location, and learn more on the profile screen.
+ */
+
 import {
   StyleSheet,
   Text,
   TouchableOpacity,
   useWindowDimensions,
-  View,
 } from "react-native";
 import React from "react";
 import colors from "@/constants/Colors";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function ProfileButton(props: any) {
   const dimensions = useWindowDimensions();

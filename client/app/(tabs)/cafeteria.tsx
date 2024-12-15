@@ -1,3 +1,7 @@
+/**
+ * Cafeteria Screen, where the user can view the menu of a cafeteria.
+ */
+
 import {
   Alert,
   ScrollView,
@@ -25,8 +29,11 @@ import { ActivityIndicator } from "react-native-paper";
 import { getUserID } from "@/utils/AsyncStorage";
 
 export default function Cafeteria() {
+  // Name of the cafeteria for the header.
   const { cafName } = useGlobalSearchParams();
+  // Dimensions of the window.
   const dimensions = useWindowDimensions();
+  // Array of Foods being served in the cafeteria.
   const [foods, setFoods] = useState<
     {
       _id: string;
@@ -38,6 +45,7 @@ export default function Cafeteria() {
       cafeterias: string[];
     }[]
   >();
+  // User information.
   const [user, setUser] = useState<
     | {
         studentId: string;
@@ -51,12 +59,18 @@ export default function Cafeteria() {
       }
     | undefined
   >(undefined);
+  // Categories of food being served.
   const categories = ["Favourites", "Hot Food", "Interactive"];
+  // Toggle for hiding restrictions.
   const [toggle, setToggle] = useState(false);
+  // Dialog for when the cafeteria is closed.
   const [dialog, setDialog] = useState(false);
+  // Bottom pop up for when the cafeteria is closed.
   const [bottomPop, setBottomPop] = useState(false);
+  // Activity Indicator for when the page is loading.
   const [loaded, setLoaded] = useState(false);
 
+  // Load the foods being served in the cafeteria from the server.
   const getFoods = async () => {
     setLoaded(false);
     const userID = await getUserID();
@@ -83,12 +97,14 @@ export default function Cafeteria() {
       });
   };
 
+  // Load the foods being served everytime the screen is focused.
   useFocusEffect(
     useCallback(() => {
       getFoods();
     }, [])
   );
 
+  // Check if the cafeteria is open, display dialog and bottom pop up if not.
   useEffect(() => {
     const result = !getCafOpen();
     setDialog(result);
@@ -104,6 +120,7 @@ export default function Cafeteria() {
       }}
     >
       <SafeAreaView style={{ flex: 1 }}>
+        {/* Dialog for when the cafeteria is closed. */}
         <Dialog
           visible={dialog}
           title="Sorry! This Caf Is Closed"
@@ -124,19 +141,6 @@ export default function Cafeteria() {
               size={70}
               color={colors.wpurple}
             />
-            {/* <View
-              style={{
-                width: "100%",
-                marginTop: 20,
-              }}
-            >
-              <Text style={styles.subdialog} numberOfLines={1}>
-                Will Open Again At:
-              </Text>
-              <Text style={styles.subdialog} numberOfLines={1}>
-                Something
-              </Text>
-            </View> */}
           </View>
           <CustomButton
             onPress={() => {
@@ -182,260 +186,280 @@ export default function Cafeteria() {
           />
           <View style={{ flex: 0.03 }}></View>
         </View>
-        {loaded ? (
-          <ScrollView>
+        {
+          // If the page is loaded, display the menu.
+          loaded ? (
+            <ScrollView>
+              <View
+                style={{
+                  width: dimensions.width,
+                  backgroundColor: colors.verylightgray,
+                  flexDirection: "row",
+                }}
+              >
+                <View
+                  style={{
+                    flex: 0.57,
+                    borderRightColor: colors.gray,
+                    borderRightWidth: 2,
+                    borderStyle: "solid",
+                    paddingLeft: 15,
+                    paddingTop: 13,
+                    paddingBottom: 20,
+                    paddingRight: 5,
+                  }}
+                >
+                  {/* Display the regular hours of each cafeteria. */}
+                  <Text style={styles.text}>Regular Hours:</Text>
+                  <Text style={styles.subtext}>
+                    Weekdays: 7:30am -{" "}
+                    {["Ontario Hall", "Saugeen Hall", "Sydenham Hall"].includes(
+                      cafName.toString()
+                    )
+                      ? "11:00"
+                      : cafName.toString() == "Delaware Hall"
+                      ? "11:00"
+                      : "7:30"}
+                    pm
+                  </Text>
+                  <Text style={styles.subtext}>
+                    Weekends: 7:30am -
+                    {["Ontario Hall", "Saugeen Hall", "Sydenham Hall"].includes(
+                      cafName.toString()
+                    )
+                      ? "11:00"
+                      : "7:30"}
+                    pm
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flex: 0.43,
+                    paddingHorizontal: 10,
+                    paddingTop: 15,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: colors.wpurple,
+                      fontSize: 15,
+                      fontWeight: "medium",
+                      lineHeight: 40,
+                    }}
+                  >
+                    Hide Restrictions:
+                  </Text>
+                  <Toggle
+                    circleColorOff={colors.white}
+                    circleColorOn={colors.white}
+                    backgroundColorOff={colors.gray}
+                    backgroundColorOn={colors.wpurple}
+                    switchOn={toggle}
+                    onPress={() => setToggle(!toggle)}
+                    containerStyle={{
+                      width: dimensions.width * 0.17,
+                      height: dimensions.width * 0.07,
+                      borderRadius: 50,
+                    }}
+                    circleStyle={{
+                      width: dimensions.width * 0.07,
+                      height: dimensions.width * 0.07,
+                      borderRadius: 50,
+                    }}
+                  />
+                </View>
+              </View>
+              {
+                // If the user is an admin, display the button that allows them to change the menu.
+                user?.role == "admin" && (
+                  <View style={{ width: dimensions.width }}>
+                    <CustomButton
+                      onPress={() => {
+                        router.push({
+                          pathname: "/(tabs)/menu",
+                          params: { cafName: cafName },
+                        });
+                      }}
+                      marginTop={20}
+                      borderRadius={20}
+                      buttonColor={colors.wpurple}
+                    >
+                      Change Menu
+                    </CustomButton>
+                  </View>
+                )
+              }
+              {categories.map((category, index) => {
+                return (
+                  <View key={category}>
+                    <View
+                      style={{
+                        paddingLeft: "3.5%",
+                        width: dimensions.width,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        marginTop: 23,
+                        marginBottom: 5,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: colors.black,
+                          fontSize: 23,
+                          fontFamily: "inter",
+                          fontWeight: "500",
+                          marginLeft: 8,
+                        }}
+                      >
+                        {category}
+                      </Text>
+                      <MaterialCommunityIcons
+                        name={
+                          category == "Hot Food"
+                            ? "fire"
+                            : category == "Interactive"
+                            ? "food-turkey"
+                            : "star-circle"
+                        }
+                        size={category == "Other" ? 32 : 37}
+                        color={colors.black}
+                        style={{
+                          width: 35,
+                          marginLeft: category == "Hot Food" ? 5 : 10,
+                        }}
+                      />
+                    </View>
+                    <View
+                      style={{
+                        alignItems: "center",
+                        flexDirection: "row",
+                        marginLeft: "1.3%",
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      {
+                        // When the foods are loaded, display the food boxes under their respective categories.
+                        foods &&
+                          foods.map((item, index) => {
+                            return category == "Favourites" ? (
+                              user?.favouriteFoods.includes(item._id) &&
+                              (!toggle || !hasSimilar(item.allergies)) ? (
+                                <FoodBox
+                                  onPress={() => {
+                                    router.push({
+                                      pathname: "/(tabs)/food_description",
+                                      params: {
+                                        cafName,
+                                        itemName: item.name,
+                                      },
+                                    });
+                                  }}
+                                  key={index}
+                                  source={`http://10.0.0.135:3000/images/${item.image}`}
+                                  name={item.name}
+                                  rating={item.averageRating}
+                                  fontSize={12}
+                                  width={dimensions.width * 0.29}
+                                  minWidth={113.1}
+                                />
+                              ) : null
+                            ) : category == item.type &&
+                              (!toggle || !hasSimilar(item.allergies)) ? (
+                              <FoodBox
+                                onPress={() => {
+                                  router.push({
+                                    pathname: "/(tabs)/food_description",
+                                    params: {
+                                      cafName,
+                                      itemName: item.name,
+                                    },
+                                  });
+                                }}
+                                key={index}
+                                source={`http://10.0.0.135:3000/images/${item.image}`}
+                                name={item.name}
+                                rating={item.averageRating}
+                                fontSize={12}
+                                width={dimensions.width * 0.29}
+                                minWidth={113.1}
+                              />
+                            ) : null;
+                          })
+                      }
+                    </View>
+                  </View>
+                );
+              })}
+              <View style={{ width: dimensions.width, height: 80 }}></View>
+            </ScrollView>
+          ) : (
+            // Show actvivity indicator when the page is loading.
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <ActivityIndicator
+                animating={!loaded}
+                color={colors.wpurple}
+              ></ActivityIndicator>
+            </View>
+          )
+        }
+        {
+          // Display the bottom pop up for when the cafeteria is closed.
+          bottomPop && (
             <View
               style={{
                 width: dimensions.width,
-                backgroundColor: colors.verylightgray,
-                flexDirection: "row",
+                alignItems: "center",
+                position: "absolute",
+                bottom: 40,
               }}
             >
               <View
                 style={{
-                  flex: 0.57,
-                  borderRightColor: colors.gray,
-                  borderRightWidth: 2,
-                  borderStyle: "solid",
-                  paddingLeft: 15,
-                  paddingTop: 13,
-                  paddingBottom: 20,
-                  paddingRight: 5,
-                }}
-              >
-                <Text style={styles.text}>Regular Hours:</Text>
-                <Text style={styles.subtext}>
-                  Weekdays: 7:30am -{" "}
-                  {["Ontario Hall", "Saugeen Hall", "Sydenham Hall"].includes(
-                    cafName.toString()
-                  )
-                    ? "11:00"
-                    : cafName.toString() == "Delaware Hall"
-                    ? "11:00"
-                    : "7:30"}
-                  pm
-                </Text>
-                <Text style={styles.subtext}>
-                  Weekends: 7:30am -
-                  {["Ontario Hall", "Saugeen Hall", "Sydenham Hall"].includes(
-                    cafName.toString()
-                  )
-                    ? "11:00"
-                    : "7:30"}
-                  pm
-                </Text>
-              </View>
-              <View
-                style={{
-                  flex: 0.43,
-                  paddingHorizontal: 10,
-                  paddingTop: 15,
+                  backgroundColor: colors.darkgray,
+                  justifyContent: "center",
                   alignItems: "center",
+                  width: dimensions.width * 0.7,
+                  height: 50,
+                  borderRadius: 10,
                 }}
               >
                 <Text
                   style={{
-                    color: colors.wpurple,
-                    fontSize: 15,
-                    fontWeight: "medium",
-                    lineHeight: 40,
+                    color: colors.white,
+                    fontFamily: "inter",
+                    fontSize: 18,
                   }}
                 >
-                  Hide Restrictions:
+                  Caf Is Closed :{"("}
                 </Text>
-                <Toggle
-                  circleColorOff={colors.white}
-                  circleColorOn={colors.white}
-                  backgroundColorOff={colors.gray}
-                  backgroundColorOn={colors.wpurple}
-                  switchOn={toggle}
-                  onPress={() => setToggle(!toggle)}
-                  containerStyle={{
-                    width: dimensions.width * 0.17,
-                    height: dimensions.width * 0.07,
-                    borderRadius: 50,
-                  }}
-                  circleStyle={{
-                    width: dimensions.width * 0.07,
-                    height: dimensions.width * 0.07,
-                    borderRadius: 50,
-                  }}
-                />
               </View>
             </View>
-            {user?.role == "admin" && (
-              <View style={{ width: dimensions.width }}>
-                <CustomButton
-                  onPress={() => {
-                    router.push({
-                      pathname: "/(tabs)/menu",
-                      params: { cafName: cafName },
-                    });
-                  }}
-                  marginTop={20}
-                  borderRadius={20}
-                  buttonColor={colors.wpurple}
-                >
-                  Change Menu
-                </CustomButton>
-              </View>
-            )}
-            {categories.map((category, index) => {
-              return (
-                <View key={category}>
-                  <View
-                    style={{
-                      paddingLeft: "3.5%",
-                      width: dimensions.width,
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginTop: 23,
-                      marginBottom: 5,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: colors.black,
-                        fontSize: 23,
-                        fontFamily: "inter",
-                        fontWeight: "500",
-                        marginLeft: 8,
-                      }}
-                    >
-                      {category}
-                    </Text>
-                    <MaterialCommunityIcons
-                      name={
-                        category == "Hot Food"
-                          ? "fire"
-                          : category == "Interactive"
-                          ? "food-turkey"
-                          : "star-circle"
-                      }
-                      size={category == "Other" ? 32 : 37}
-                      color={colors.black}
-                      style={{
-                        width: 35,
-                        marginLeft: category == "Hot Food" ? 5 : 10,
-                      }}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      alignItems: "center",
-                      flexDirection: "row",
-                      marginLeft: "1.3%",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    {foods &&
-                      foods.map((item, index) => {
-                        return category == "Favourites" ? (
-                          user?.favouriteFoods.includes(item._id) &&
-                          (!toggle || !hasSimilar(item.allergies)) ? (
-                            <FoodBox
-                              onPress={() => {
-                                router.push({
-                                  pathname: "/(tabs)/food_description",
-                                  params: {
-                                    cafName,
-                                    itemName: item.name,
-                                  },
-                                });
-                              }}
-                              key={index}
-                              source={`http://10.0.0.135:3000/images/${item.image}`}
-                              name={item.name}
-                              rating={item.averageRating}
-                              fontSize={12}
-                              width={dimensions.width * 0.29}
-                              minWidth={113.1}
-                            />
-                          ) : null
-                        ) : category == item.type &&
-                          (!toggle || !hasSimilar(item.allergies)) ? (
-                          <FoodBox
-                            onPress={() => {
-                              router.push({
-                                pathname: "/(tabs)/food_description",
-                                params: {
-                                  cafName,
-                                  itemName: item.name,
-                                },
-                              });
-                            }}
-                            key={index}
-                            source={`http://10.0.0.135:3000/images/${item.image}`}
-                            name={item.name}
-                            rating={item.averageRating}
-                            fontSize={12}
-                            width={dimensions.width * 0.29}
-                            minWidth={113.1}
-                          />
-                        ) : null;
-                      })}
-                  </View>
-                </View>
-              );
-            })}
-            <View style={{ width: dimensions.width, height: 80 }}></View>
-          </ScrollView>
-        ) : (
-          <View
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-          >
-            <ActivityIndicator
-              animating={!loaded}
-              color={colors.wpurple}
-            ></ActivityIndicator>
-          </View>
-        )}
-        {bottomPop && (
-          <View
-            style={{
-              width: dimensions.width,
-              alignItems: "center",
-              position: "absolute",
-              bottom: 40,
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: colors.darkgray,
-                justifyContent: "center",
-                alignItems: "center",
-                width: dimensions.width * 0.7,
-                height: 50,
-                borderRadius: 10,
-              }}
-            >
-              <Text
-                style={{
-                  color: colors.white,
-                  fontFamily: "inter",
-                  fontSize: 18,
-                }}
-              >
-                Caf Is Closed :{"("}
-              </Text>
-            </View>
-          </View>
-        )}
+          )
+        }
       </SafeAreaView>
     </View>
   );
 
+  // Function to determine if the cafeteria is open according to the current time.
   function getCafOpen() {
     const date = new Date();
     return (
-      CafStuff.getBreakfast(date) ||
-      CafStuff.getLunch(date) ||
-      CafStuff.getLateLunch(date) ||
-      CafStuff.getDinner(date) ||
-      CafStuff.getSnackBar(date)
+      CafHours.getBreakfast(date) ||
+      CafHours.getLunch(date) ||
+      CafHours.getLateLunch(date) ||
+      CafHours.getDinner(date) ||
+      CafHours.getSnackBar(date)
     );
   }
 
+  // Function to determine if the user has allergies in the food being served.
   function hasSimilar(list: string[]) {
     for (let allergy of list) {
       if (user?.allergies.includes(allergy)) {
@@ -483,7 +507,11 @@ const styles = StyleSheet.create({
   },
 });
 
-class CafStuff {
+/**
+ *
+ */
+class CafHours {
+  // Method to determine if it is breakfast time.
   static getBreakfast(date: Date) {
     const hours = date.getHours();
     const minutes = date.getMinutes();
@@ -497,6 +525,7 @@ class CafStuff {
     return false;
   }
 
+  // Method to determine if it is lunch time.
   static getLunch(date: Date) {
     const hours = date.getHours();
     const minutes = date.getMinutes();
@@ -510,6 +539,7 @@ class CafStuff {
     return false;
   }
 
+  // Method to determine if it is late lunch time.
   static getLateLunch(date: Date) {
     const hours = date.getHours();
     const minutes = date.getMinutes();
@@ -523,6 +553,7 @@ class CafStuff {
     return false;
   }
 
+  // Method to determine if it is dinner time.
   static getDinner(date: Date) {
     const hours = date.getHours();
     const minutes = date.getMinutes();
@@ -536,6 +567,7 @@ class CafStuff {
     return false;
   }
 
+  // Method to determine if it is snack bar time.
   static getSnackBar(date: Date) {
     const hours = date.getHours();
     const minutes = date.getMinutes();

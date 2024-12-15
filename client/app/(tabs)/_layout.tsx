@@ -1,7 +1,13 @@
+/**
+ * Using React Navigation, this layout is used to define the screens that are used in the app.
+ * Header is hidden for all screens.
+ */
+
 import React from "react";
 
 import { useColorScheme } from "react-native";
 import { Stack } from "expo-router";
+import MainScreen from "./main_screen";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -20,9 +26,7 @@ export default function TabLayout() {
       <Stack.Screen name="favourites" options={{ headerShown: false }} />
       <Stack.Screen name="menu" options={{ headerShown: false }} />
       <Stack.Screen name="preset" options={{ headerShown: false }} />
-
       <Stack.Screen name="upload" options={{ headerShown: false }} />
-
       <Stack.Screen name="item_select" options={{ headerShown: false }} />
     </Stack>
   );

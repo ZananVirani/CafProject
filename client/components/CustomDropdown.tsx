@@ -1,3 +1,7 @@
+/**
+ * Custom Dropdown component for selecting most visited cafeterias
+ */
+
 import React from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
@@ -6,7 +10,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { MultiSelect } from "react-native-element-dropdown";
 import { RootState } from "../state/store";
 import { add, rid } from "../state/residence/resSlice";
-import Colors from "@/constants/Colors";
 
 interface ItemType {
   label: string;
@@ -14,9 +17,11 @@ interface ItemType {
 }
 
 const MultiSelectComponent = (props: any) => {
+  // Get the list of residences from the redux store, and the dispatch function
   const resList = useSelector((state: RootState) => state.resList);
   const dispatch = useDispatch();
 
+  // List of residences
   const data: ItemType[] = [
     { label: "Ontario Hall", value: "Ontario Hall" },
     { label: "Saugeen Hall", value: "Saugeen Hall" },
@@ -27,6 +32,7 @@ const MultiSelectComponent = (props: any) => {
     { label: "Essex Hall", value: "Essex Hall" },
   ];
 
+  // Render each item in the dropdown
   const renderItem = (item: ItemType) => {
     return (
       <View style={styles.item}>
@@ -48,6 +54,7 @@ const MultiSelectComponent = (props: any) => {
 
   return (
     <View style={{ marginHorizontal: "8%" }}>
+      {/* MultiSelect component used in an external library (react-native-element-dropdown). */}
       <MultiSelect
         dropdownPosition="auto"
         style={styles.dropdown}
@@ -60,6 +67,7 @@ const MultiSelectComponent = (props: any) => {
         placeholder="Most visited cafeterias..."
         search={false}
         onChange={(item) => {
+          // Set the error state to false when the user selects a cafeteria
           props.setThirdError(false);
           resList.resList.includes(item[0])
             ? dispatch(rid(item[0]))

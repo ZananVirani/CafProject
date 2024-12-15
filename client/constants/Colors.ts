@@ -1,5 +1,5 @@
 /**
- * Below are the colors that are used in the app
+ * Defines the colours being used in the application.
  */
 
 export default {

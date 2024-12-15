@@ -1,3 +1,7 @@
+/**
+ * Upload Screen where cafeteria staff can upload new food items to the database.
+ */
+
 import {
   SafeAreaView,
   StyleSheet,
@@ -26,10 +30,14 @@ import { useDispatch } from "react-redux";
 import { add } from "@/state/presets/presetSlice";
 
 export default function UploadScreen() {
+  // Dimensions of the window
   const dimensions = useWindowDimensions();
+  // Dispatch for presetSlice
   const dispatch = useDispatch();
+  // Filter chosen by user, either "Hot Food" or "Interactive"
   const [filterChosen, setFilterChosen] = useState<String>();
   const categories = ["Hot Food", "Interactive"];
+  // Map of allergies and whether they are included in the food item.
   const [map, setMap] = useState(
     new Map<string, boolean>([
       ["Meat", false],
@@ -40,13 +48,19 @@ export default function UploadScreen() {
       ["Nuts", false],
     ])
   );
+  // Image chosen or uploaded by the user
   const [image, setImage] = useState<ImagePicker.ImagePickerAsset | undefined>(
     undefined
   );
+  // Either show the dialog or not.
   const [dialog, setDialog] = useState(false);
+  // List of allergies
   const allergyList = ["Meat", "Gluten", "Pork", "Dairy", "Seafood", "Nuts"];
+  // Food name
   const [foodName, setFoodName] = useState("");
 
+  // Function to upload an image from the user's media library, using the
+  // expo-image-picker library.
   const uploadImage = async () => {
     try {
       await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -70,6 +84,7 @@ export default function UploadScreen() {
     }
   };
 
+  // Function to take an image using the user's camera, using the expo-image-picker library.
   const takeImage = async () => {
     try {
       await ImagePicker.requestCameraPermissionsAsync();
@@ -95,9 +110,11 @@ export default function UploadScreen() {
   };
 
   return (
+    // TouchableWithoutFeedback is used to dismiss the keyboard when the user
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={{ flex: 1, backgroundColor: colors.white }}>
         <SafeAreaView style={{ flex: 1 }}>
+          {/* Dialog for choosing the photo upload method, either to take a new picture or upload from media library. */}
           <Dialog
             visible={dialog}
             title="Choose Photo Upload Method"
@@ -162,7 +179,6 @@ export default function UploadScreen() {
               <Text style={styles.title}>Upload Item</Text>
             </View>
           </View>
-          {/*HEADERRRRRRRRRRRRRRRRRRRRRRR*/}
           <View style={{ marginTop: 5, alignItems: "center" }}>
             <View
               style={{
@@ -173,7 +189,7 @@ export default function UploadScreen() {
               <FoodBox
                 source={image?.uri}
                 upload={true}
-                onPress={() => console.log(image)}
+                onPress={() => {}}
                 name={foodName}
                 rating={0}
                 fontSize={12}
@@ -203,8 +219,7 @@ export default function UploadScreen() {
               </Text>
             </TouchableOpacity>
           </View>
-
-          {/*NEXTTTTTTTTTTTTT*/}
+          {/* Food Name Input Field */}
           <TextField
             placeText="Item Name"
             marginTop="7%"
@@ -232,37 +247,38 @@ export default function UploadScreen() {
                 justifyContent: "center",
               }}
             >
-              {categories.map((item) => {
-                return (
-                  <CustomButton
-                    key={item}
-                    onPress={() => {
-                      setFilterChosen(item);
-                    }}
-                    marginVertical={10}
-                    marginHorizontal={2.8}
-                    buttonColor={
-                      item == filterChosen ? colors.wpurple : colors.white
-                    }
-                    height={40}
-                    fontSize={13}
-                    borderRadius={60}
-                    textColor={
-                      item == filterChosen ? colors.white : colors.wpurple
-                    }
-                    borderColor={colors.wpurple}
-                    fontFamily="inter"
-                    fontWeight="medium"
-                    lSpacing={undefined}
-                  >
-                    {item}
-                  </CustomButton>
-                );
-              })}
+              {
+                // Map the categories to buttons
+                categories.map((item) => {
+                  return (
+                    <CustomButton
+                      key={item}
+                      onPress={() => {
+                        setFilterChosen(item);
+                      }}
+                      marginVertical={10}
+                      marginHorizontal={2.8}
+                      buttonColor={
+                        item == filterChosen ? colors.wpurple : colors.white
+                      }
+                      height={40}
+                      fontSize={13}
+                      borderRadius={60}
+                      textColor={
+                        item == filterChosen ? colors.white : colors.wpurple
+                      }
+                      borderColor={colors.wpurple}
+                      fontFamily="inter"
+                      fontWeight="medium"
+                      lSpacing={undefined}
+                    >
+                      {item}
+                    </CustomButton>
+                  );
+                })
+              }
             </View>
           </View>
-          {/*NEXTTTTTTTTTTTTT*/}
-
           <View
             style={{
               width: dimensions.width,
@@ -272,8 +288,6 @@ export default function UploadScreen() {
           >
             <Text style={styles.subtitle}>Restrictions:</Text>
           </View>
-
-          {/*NEXTTTTTTTTTTTTT*/}
           <View
             style={{
               flexDirection: "row",
@@ -282,37 +296,41 @@ export default function UploadScreen() {
               justifyContent: "center",
             }}
           >
-            {allergyList.map((item) => {
-              return (
-                <CustomButton
-                  key={item}
-                  onPress={() => {
-                    let newValue = !map.get(item);
-                    setMap(
-                      new Map<string, boolean>([...map, [item, newValue]])
-                    );
-                  }}
-                  marginVertical={5}
-                  marginHorizontal={2.8}
-                  buttonColor={map.get(item) ? colors.wpurple : colors.white}
-                  height={40}
-                  fontSize={13}
-                  width={105}
-                  borderRadius={60}
-                  textColor={map.get(item) ? colors.white : colors.wpurple}
-                  borderColor={colors.wpurple}
-                  fontFamily="inter"
-                  fontWeight="medium"
-                  lSpacing={undefined}
-                >
-                  {item}
-                </CustomButton>
-              );
-            })}
+            {
+              // Map the allergies to buttons
+              allergyList.map((item) => {
+                return (
+                  <CustomButton
+                    key={item}
+                    onPress={() => {
+                      let newValue = !map.get(item);
+                      setMap(
+                        new Map<string, boolean>([...map, [item, newValue]])
+                      );
+                    }}
+                    marginVertical={5}
+                    marginHorizontal={2.8}
+                    buttonColor={map.get(item) ? colors.wpurple : colors.white}
+                    height={40}
+                    fontSize={13}
+                    width={105}
+                    borderRadius={60}
+                    textColor={map.get(item) ? colors.white : colors.wpurple}
+                    borderColor={colors.wpurple}
+                    fontFamily="inter"
+                    fontWeight="medium"
+                    lSpacing={undefined}
+                  >
+                    {item}
+                  </CustomButton>
+                );
+              })
+            }
           </View>
           <View style={{ flex: 1, justifyContent: "center" }}>
             <CustomButton
               onPress={async () => {
+                // Confirm that all fields are filled in before uploading the item.
                 if (!foodName || !filterChosen || !image) {
                   Alert.alert(
                     `Please Make Sure Image, Item Name, And Item Category Are Filled In`,

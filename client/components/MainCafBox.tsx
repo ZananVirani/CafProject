@@ -1,3 +1,7 @@
+/**
+ * Component for the main cafeteria box on the main screen.
+ */
+
 import {
   Image,
   StyleSheet,
@@ -8,11 +12,9 @@ import {
 } from "react-native";
 import React from "react";
 import colors from "@/constants/Colors";
-import MaterialCommunityIcons from "@expo/vector-icons/build/MaterialCommunityIcons";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { ABeeZee_400Regular_Italic } from "@expo-google-fonts/abeezee";
 
 export default function MainCafBox(props: any) {
+  // Dimensions of the window
   const dimensions = useWindowDimensions();
 
   return (
@@ -31,17 +33,6 @@ export default function MainCafBox(props: any) {
           borderColor: colors.wpurple,
         }}
       />
-      {/* <MaterialCommunityIcons
-        color={props.liked ? colors.wpurple : colors.gray}
-        name={"heart-circle"}
-        size={50}
-        onPress={props.onPress}
-        style={{
-          position: "absolute",
-          right: 20,
-          top: 20,
-        }}
-      /> */}
       <View
         style={{
           position: "absolute",

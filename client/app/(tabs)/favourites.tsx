@@ -1,3 +1,7 @@
+/**
+ * Screen to display the user's favourite foods.
+ */
+
 import {
   Keyboard,
   SafeAreaView,
@@ -19,10 +23,15 @@ import axios from "axios";
 import { getUserID } from "@/utils/AsyncStorage";
 
 export default function Favourites() {
+  // Dimensions of the window
   const dimensions = useWindowDimensions();
+  // Text field in the search bar
   const [searchText, setSearchText] = useState("");
+  // Filter chosen by the user, either display all items or only favourites
   const [filterChosen, setFilterChosen] = useState("Favs");
   const categories: string[] = ["Favs", "All"];
+
+  // All food items in the database
   const [allItems, setAllItems] = useState<
     {
       _id: string;
@@ -34,6 +43,7 @@ export default function Favourites() {
       cafeterias: string[];
     }[]
   >([]);
+  // Food items to actually be displayed
   const [finalFoods, setFinalFoods] = useState<
     {
       _id: string;
@@ -45,7 +55,9 @@ export default function Favourites() {
       cafeterias: string[];
     }[]
   >([]);
+  // Activity indicator to show loading
   const [loaded, setLoaded] = useState(false);
+  // User data
   const [user, setUser] = useState<
     | {
         studentId: string;
@@ -60,6 +72,7 @@ export default function Favourites() {
     | undefined
   >(undefined);
 
+  // Get all food items from the database
   const getItems = async () => {
     setLoaded(false);
     const userID = await getUserID();
@@ -80,12 +93,14 @@ export default function Favourites() {
       });
   };
 
+  // Get all food items from the database when the screen is focused
   useFocusEffect(
     useCallback(() => {
       getItems();
     }, [])
   );
 
+  // Filter the food items based on the search text and filter chosen
   useEffect(() => {
     let tempFoods = allItems;
 
@@ -97,6 +112,7 @@ export default function Favourites() {
   }, [searchText, filterChosen]);
 
   return (
+    // TouchableWithoutFeedback is used to dismiss the keyboard when the user taps outside the text field
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={{ flex: 1, backgroundColor: colors.white }}>
         <SafeAreaView style={{ flex: 1 }}>

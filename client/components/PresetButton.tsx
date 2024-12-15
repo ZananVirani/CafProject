@@ -1,3 +1,7 @@
+/**
+ * Preset Button Component on the 'menu' screen.
+ */
+
 import {
   Dimensions,
   StyleSheet,
@@ -16,6 +20,7 @@ export default function PresetButton(props: {
   onPress: any;
   selected: boolean;
 }) {
+  // Dimensions of the window
   const dimensions = useWindowDimensions();
   return (
     <TouchableOpacity
@@ -34,28 +39,31 @@ export default function PresetButton(props: {
       }}
       onPress={props.onPress}
     >
-      {props.selected && (
-        <>
-          <View
-            style={{
-              width: dimensions.width * 0.35,
-              height: 50,
-              position: "absolute",
-              backgroundColor: colors.black,
-              opacity: 0.25,
-              borderRadius: 5,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          ></View>
-          <Feather
-            name="check"
-            size={40}
-            style={{ position: "absolute" }}
-            color={colors.darkgray}
-          ></Feather>
-        </>
-      )}
+      {
+        // If the item is selected, show a translucent checkmark on the image.
+        props.selected && (
+          <>
+            <View
+              style={{
+                width: dimensions.width * 0.35,
+                height: 50,
+                position: "absolute",
+                backgroundColor: colors.black,
+                opacity: 0.25,
+                borderRadius: 5,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            ></View>
+            <Feather
+              name="check"
+              size={40}
+              style={{ position: "absolute" }}
+              color={colors.darkgray}
+            ></Feather>
+          </>
+        )
+      }
       <Text style={{ fontFamily: "inter" }} numberOfLines={1}>
         {props.text}
       </Text>

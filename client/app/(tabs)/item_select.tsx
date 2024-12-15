@@ -1,3 +1,7 @@
+/**
+ * Cafeteria Staff screen that allows staff to select food items to add to the menu.
+ */
+
 import {
   Alert,
   Keyboard,
@@ -21,9 +25,13 @@ import { useDispatch } from "react-redux";
 import { add } from "@/state/presets/presetSlice";
 
 export default function ItemSelect() {
+  // Dimensions of the window
   const dimensions = useWindowDimensions();
+  // To add items to the Redux store
   const dispatch = useDispatch();
+  // Text field in the search bar
   const [searchText, setSearchText] = useState("");
+  // All food items in the database
   const [allItems, setAllItems] = useState<
     {
       _id: string;
@@ -35,8 +43,12 @@ export default function ItemSelect() {
       cafeterias: string[];
     }[]
   >([]);
+  // Filter chosen by the user, either add items to the menu or view the food item in question.
+  // If select mode is off, then clicking on a food box will bring the user to the food description screen.
   const [selectMode, setSelectMode] = useState(true);
+  // Either loading or loaded.
   const [loaded, setLoaded] = useState(false);
+  // Food items to actually be displayed.
   const [finalFoods, setFinalFoods] = useState<
     {
       _id: string;
@@ -48,6 +60,7 @@ export default function ItemSelect() {
       cafeterias: string[];
     }[]
   >([]);
+  // Items selected by the cafeteria staff, to be added to the menu.
   const [selectedPresets, setSelectedPresets] = useState<
     {
       _id: string;
@@ -60,6 +73,7 @@ export default function ItemSelect() {
     }[]
   >([]);
 
+  // Get all items from the database.
   const getItems = async () => {
     axios
       .get("http://10.0.0.135:3000/foods/allFoods")
@@ -77,6 +91,7 @@ export default function ItemSelect() {
     getItems();
   }, []);
 
+  // Filter the food items based on the search text.
   useEffect(() => {
     if (allItems) {
       let tempFoods = allItems;
@@ -90,6 +105,7 @@ export default function ItemSelect() {
   }, [searchText]);
 
   return (
+    // TouchableWithoutFeedback is used to dismiss the keyboard when the user clicks outside of the text field.
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={{ flex: 1, backgroundColor: colors.white }}>
         <SafeAreaView style={{ flex: 1 }}>
@@ -136,6 +152,7 @@ export default function ItemSelect() {
                   }}
                 >
                   <CustomButton
+                    // Button to toggle between select mode and view mode.
                     onPress={() => {
                       setSelectMode(!selectMode);
                     }}
@@ -198,30 +215,34 @@ export default function ItemSelect() {
                       flexWrap: "wrap",
                     }}
                   >
-                    {finalFoods.map((item, index) => {
-                      return (
-                        <FoodBox
-                          key={index}
-                          onPress={() => {
-                            selectMode
-                              ? toggleSelect(item)
-                              : visitPreset(item.name);
-                          }}
-                          source={`http://10.0.0.135:3000/images/${item.image}`}
-                          selected={
-                            selectMode &&
-                            selectedPresets.find((food, index) => {
-                              return item.name == food.name;
-                            })
-                          }
-                          name={item.name}
-                          rating={item.averageRating}
-                          fontSize={12}
-                          width={dimensions.width * 0.29}
-                          minWidth={113.1}
-                        />
-                      );
-                    })}
+                    {
+                      // Display all food items, show if they are selected or not.
+                      finalFoods.map((item, index) => {
+                        return (
+                          <FoodBox
+                            key={index}
+                            onPress={() => {
+                              selectMode
+                                ? toggleSelect(item)
+                                : visitPreset(item.name);
+                            }}
+                            source={`http://10.0.0.135:3000/images/${item.image}`}
+                            selected={
+                              // Check if the food item is selected.
+                              selectMode &&
+                              selectedPresets.find((food, index) => {
+                                return item.name == food.name;
+                              })
+                            }
+                            name={item.name}
+                            rating={item.averageRating}
+                            fontSize={12}
+                            width={dimensions.width * 0.29}
+                            minWidth={113.1}
+                          />
+                        );
+                      })
+                    }
                   </View>
                 </View>
               </ScrollView>
@@ -235,6 +256,7 @@ export default function ItemSelect() {
               >
                 <CustomButton
                   onPress={() =>
+                    // Pop up an alert to confirm the addition of the selected items.
                     Alert.alert(
                       `Are You Sure You Want Add Selected Items?`,
                       undefined,
@@ -247,6 +269,7 @@ export default function ItemSelect() {
                         {
                           text: "OK",
                           onPress: () => {
+                            // Add each of the selected items to the Redux store.
                             selectedPresets.forEach((item) => {
                               dispatch(add(item));
                             });
@@ -282,6 +305,7 @@ export default function ItemSelect() {
     </TouchableWithoutFeedback>
   );
 
+  // Add or remove the selected item from the list of selected items.
   function toggleSelect(item: {
     _id: string;
     name: string;
@@ -300,6 +324,7 @@ export default function ItemSelect() {
       : setSelectedPresets(newFoods);
   }
 
+  // Go to the food description screen.
   function visitPreset(item: string) {
     router.push({
       pathname: "/(tabs)/food_description",

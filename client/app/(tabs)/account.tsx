@@ -1,3 +1,7 @@
+/**
+ * Account Info Screen, both the setup and the update screen.
+ */
+
 import {
   Keyboard,
   StyleSheet,
@@ -23,19 +27,27 @@ import { getUserID, setUserID } from "@/utils/AsyncStorage";
 import axios from "axios";
 
 export default function AccountInfo() {
+  // Get the studentId and password from the last login screen, if it exists.
   const { studentId, password } = useGlobalSearchParams();
+  // Redux state and dispatch, used to store the user's favourite cafeterias.
   const resList = useSelector((state: RootState) => state.resList);
   const dispatch = useDispatch();
+  // Dimensions of the window.
   const dimensions = useWindowDimensions();
+  // Local state variables, the errors are used to display error messages if the user does not fill out the required fields.
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [firstError, setFirstError] = useState(false);
   const [secondError, setSecondError] = useState(false);
   const [thirdError, setThirdError] = useState(false);
+  // Dialog state variables, used to display a dialog when the user has successfully loaded their information.
   const [dialog, setDialog] = useState(false);
+  // Get the user ID from the AsyncStorage, if it exists.
   const [userID, setUser] = useState<string | undefined>(undefined);
+  // State variable used to display the loading circle when the user is being loaded.
   const [loaded, setLoaded] = useState(false);
 
+  // Get the user's id from AsyncStorage.
   const getUser = async () => {
     let id = await getUserID();
     id && setUser(id);
@@ -46,7 +58,9 @@ export default function AccountInfo() {
     getUser();
   }, []);
 
+  // Local state variable to see if the allergy checkbox is checked.
   const [checked, setChecked] = useState(false);
+  // Local state variable to store the user's allergies.
   const [map, setMap] = useState(
     new Map<string, boolean>([
       ["Meat", false],
@@ -57,6 +71,8 @@ export default function AccountInfo() {
       ["Nuts", false],
     ])
   );
+
+  // Reset the allergies when the checkbox is unchecked.
   useEffect(() => {
     setMap(
       new Map<string, boolean>([
@@ -69,11 +85,14 @@ export default function AccountInfo() {
       ])
     );
   }, [checked]);
+  // List of allergies.
   const allergyList = ["Meat", "Gluten", "Pork", "Dairy", "Seafood", "Nuts"];
 
   return (
+    // TouchableWithoutFeedback is used to dismiss the keyboard when the user clicks outside of the text fields.
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={{ flex: 1, backgroundColor: "white" }}>
+        {/* Dialog to display when the user has successfully loaded their information. */}
         <Dialog
           visible={dialog}
           title={userID ? "Information Updated!" : "All Set!"}
@@ -104,6 +123,8 @@ export default function AccountInfo() {
           </View>
           <CustomButton
             onPress={async () => {
+              // Redirect the user to the main screen after they have successfully loaded their information.
+              // Clear the redux state to reset the user's favourite cafeterias.
               setDialog(false);
               dispatch(clear([]));
               setTimeout(() => {
@@ -120,6 +141,7 @@ export default function AccountInfo() {
             Let's Go!
           </CustomButton>
         </Dialog>
+        {/* If the user is loaded, display the account setup screen. */}
         {loaded ? (
           <SafeAreaView style={{ flex: 1 }}>
             {!userID ? (
@@ -275,10 +297,14 @@ export default function AccountInfo() {
             <View style={{ flex: 0.12 }}>
               <CustomButton
                 onPress={async () => {
+                  // Check if the user has filled out the required fields.
                   firstName ? setFirstError(false) : setFirstError(true);
                   lastName ? setSecondError(false) : setSecondError(true);
                   if (resList.resList.length == 0) setThirdError(true);
 
+                  // If the user has filled out the required fields, send the information to the backend,
+                  // and either create a new user or update the existing user.
+                  // If successful, display the dialog.
                   if (firstName && lastName && resList.resList.length != 0) {
                     let newList: string[] = [];
                     map.forEach((value, key) => {
@@ -323,6 +349,7 @@ export default function AccountInfo() {
             </View>
           </SafeAreaView>
         ) : (
+          // Display the loading circle when the user is being loaded.
           <View
             style={{
               flex: 1,

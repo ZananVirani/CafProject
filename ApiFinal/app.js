@@ -15,6 +15,7 @@ const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
+// Allows for images to be accessed through the url
 app.use('/images', express.static(path.join(__dirname, 'uploads')));
 
 //Connects to Database

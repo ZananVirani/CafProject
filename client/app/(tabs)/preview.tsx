@@ -1,9 +1,14 @@
+/**
+ * Preview Screen, where a preview of what the students will see when the menu is uploaded is displayed to
+ * cafeteria staff before they actually upload the menu. This screen also allows the cafeteria staff to save
+ * the menu as a new preset, edit the current preset, or upload the menu temporarily.
+ */
+
 import {
   Alert,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableWithoutFeedback,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -12,11 +17,9 @@ import colors from "../../constants/Colors";
 import FoodBox from "@/components/FoodBox";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
-import Toggle from "@imcarlosguerrero/react-native-switch-toggle";
 import { router, useGlobalSearchParams } from "expo-router";
 import CustomButton from "@/components/CustomButton";
 import { Dialog } from "react-native-simple-dialogs";
-import TextField from "@/components/TextField";
 import { ActivityIndicator, TextInput } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { presetState } from "@/state/presets/presetSlice";
@@ -25,25 +28,34 @@ import axios from "axios";
 import { clear } from "@/state/presets/presetSlice";
 
 export default function Preview() {
+  // Get the preset name and cafeteria name from the global search params
   const { presetName, cafName } = useGlobalSearchParams();
+  // Get the window dimensions
   const dimensions = useWindowDimensions();
+  // Get the preset list from the preset slice and dispatch
   const presetList: presetState = useSelector(
     (state: RootState) => state.presetList
   );
   const dispatch = useDispatch();
+  // Local state to manage if the dialog should be displayed or not.
   const [dialog, setDialog] = useState(false);
+  // Categories of food
   const categories = ["Hot Food", "Interactive"];
-  const [toggle, setToggle] = useState(false);
+  // Name of the new preset, if the user chooses to save the menu as a new preset.
   const [nameText, setNameText] = useState("");
+  // Error state to manage if the user has not entered a name for the new preset.
   const [error, setError] = useState(false);
+  // Loaded state.
   const [loaded, setLoaded] = useState(false);
 
+  // Set a timeout to set the loaded state to true after 500ms, so items can load in properly.
   useEffect(() => {
     setTimeout(() => setLoaded(true), 500);
   }, []);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }}>
+      {/* Dialog to enter the name of the new preset */}
       <Dialog
         visible={dialog}
         title="Name of New Preset"
@@ -104,6 +116,7 @@ export default function Preview() {
           </View>
           <CustomButton
             onPress={() => {
+              // Error checking and confirmation alert
               nameText.length == 0
                 ? setError(true)
                 : Alert.alert(
@@ -249,27 +262,30 @@ export default function Preview() {
                     flexWrap: "wrap",
                   }}
                 >
-                  {presetList.presetList.map((item, index) => {
-                    return category == item.type ? (
-                      <FoodBox
-                        onPress={() => {
-                          router.push({
-                            pathname: "/(tabs)/food_description",
-                            params: {
-                              itemName: item.name,
-                            },
-                          });
-                        }}
-                        source={`http://10.0.0.135:3000/images/${item.image}`}
-                        key={index}
-                        name={item.name}
-                        rating={item.averageRating}
-                        fontSize={12}
-                        width={dimensions.width * 0.29}
-                        minWidth={113.1}
-                      />
-                    ) : null;
-                  })}
+                  {
+                    // Map through the preset list and display the food boxes.
+                    presetList.presetList.map((item, index) => {
+                      return category == item.type ? (
+                        <FoodBox
+                          onPress={() => {
+                            router.push({
+                              pathname: "/(tabs)/food_description",
+                              params: {
+                                itemName: item.name,
+                              },
+                            });
+                          }}
+                          source={`http://10.0.0.135:3000/images/${item.image}`}
+                          key={index}
+                          name={item.name}
+                          rating={item.averageRating}
+                          fontSize={12}
+                          width={dimensions.width * 0.29}
+                          minWidth={113.1}
+                        />
+                      ) : null;
+                    })
+                  }
                 </View>
               </View>
             );
@@ -295,6 +311,7 @@ export default function Preview() {
           marginBottom: presetName ? 170 : 85,
         }}
       >
+        {/* Button to save as a new preset and upload */}
         <CustomButton
           onPress={() => {
             setDialog(true);
@@ -306,78 +323,85 @@ export default function Preview() {
           Save As New & Upload
         </CustomButton>
       </View>
-      {presetName && (
-        <View
-          style={{
-            position: "absolute",
-            bottom: 0,
-            width: dimensions.width,
-            marginBottom: 85,
-          }}
-        >
-          <CustomButton
-            onPress={() => {
-              Alert.alert(
-                `Are You Sure You Want To Edit Current Preset And Upload Menu?`,
-                undefined,
-                [
-                  {
-                    text: "Cancel",
-                    onPress: () => {},
-                    style: "cancel",
-                  },
-                  {
-                    text: "OK",
-                    onPress: async () => {
-                      let menu: string[] = [];
-                      presetList.presetList.forEach((item) => {
-                        menu.push(item._id);
-                      });
-                      await axios
-                        .patch(
-                          `http://10.0.0.135:3000/presets/editPreset/${cafName}`,
-                          {
-                            presetName: presetName,
-                            foodIDs: menu,
-                          }
-                        )
-                        .then((result) => {
-                          Alert.alert("Menu Uploaded Successfully", undefined, [
-                            {
-                              text: "OK",
-                              onPress: () => {
-                                router.dismissAll();
-                                router.setParams({ cafName: cafName });
-                                dispatch(clear());
-                              },
-                            },
-                          ]);
-                        })
-                        .catch((error) => {
-                          console.log(error);
-                          Alert.alert(
-                            "Something Went Wrong",
-                            "Check Your Connection And Try Again",
-                            [
-                              {
-                                text: "OK",
-                                onPress: () => {},
-                              },
-                            ]
-                          );
-                        });
-                    },
-                  },
-                ]
-              );
+      {
+        // If the user had chosen a preset in the 'menu' screen, display the 'edit preset and upload' button.
+        presetName && (
+          <View
+            style={{
+              position: "absolute",
+              bottom: 0,
+              width: dimensions.width,
+              marginBottom: 85,
             }}
-            borderRadius={14}
-            marginVertical={20}
           >
-            Edit Preset & Upload
-          </CustomButton>
-        </View>
-      )}
+            <CustomButton
+              onPress={() => {
+                Alert.alert(
+                  `Are You Sure You Want To Edit Current Preset And Upload Menu?`,
+                  undefined,
+                  [
+                    {
+                      text: "Cancel",
+                      onPress: () => {},
+                      style: "cancel",
+                    },
+                    {
+                      text: "OK",
+                      onPress: async () => {
+                        let menu: string[] = [];
+                        presetList.presetList.forEach((item) => {
+                          menu.push(item._id);
+                        });
+                        await axios
+                          .patch(
+                            `http://10.0.0.135:3000/presets/editPreset/${cafName}`,
+                            {
+                              presetName: presetName,
+                              foodIDs: menu,
+                            }
+                          )
+                          .then((result) => {
+                            Alert.alert(
+                              "Menu Uploaded Successfully",
+                              undefined,
+                              [
+                                {
+                                  text: "OK",
+                                  onPress: () => {
+                                    router.dismissAll();
+                                    router.setParams({ cafName: cafName });
+                                    dispatch(clear());
+                                  },
+                                },
+                              ]
+                            );
+                          })
+                          .catch((error) => {
+                            console.log(error);
+                            Alert.alert(
+                              "Something Went Wrong",
+                              "Check Your Connection And Try Again",
+                              [
+                                {
+                                  text: "OK",
+                                  onPress: () => {},
+                                },
+                              ]
+                            );
+                          });
+                      },
+                    },
+                  ]
+                );
+              }}
+              borderRadius={14}
+              marginVertical={20}
+            >
+              Edit Preset & Upload
+            </CustomButton>
+          </View>
+        )
+      }
       <View
         style={{
           position: "absolute",
@@ -386,6 +410,7 @@ export default function Preview() {
           marginBottom: 40,
         }}
       >
+        {/* Button to upload the menu temporarily, no edits to the presets will be made. */}
         <CustomButton
           onPress={() => {
             Alert.alert(`Are You Sure You Want To Upload Menu?`, undefined, [

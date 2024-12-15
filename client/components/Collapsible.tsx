@@ -1,20 +1,17 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { PropsWithChildren, useState } from "react";
-import {
-  StyleSheet,
-  TouchableOpacity,
-  useColorScheme,
-  View,
-  Text,
-} from "react-native";
-import { ABeeZee_400Regular } from "@expo-google-fonts/abeezee";
+/**
+ * Collapsible component, which can be used to hide and show content
+ */
 
-import Colors from "@/constants/Colors";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import React from "react";
+import { PropsWithChildren, useState } from "react";
+import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 
 export function Collapsible({
   children,
   title,
 }: PropsWithChildren & { title: string }) {
+  // State to keep track of whether the collapsible is open or closed
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -26,11 +23,13 @@ export function Collapsible({
       >
         <Text style={styles.text}>{title}</Text>
         <Ionicons
+          // Change the icon according to whether the collapsible is open or closed
           name={isOpen ? "chevron-down" : "chevron-forward-outline"}
           size={24}
           color={"black"}
         />
       </TouchableOpacity>
+      {/* Show the content in only if the collapsible is open */}
       {isOpen && <View style={styles.content}>{children}</View>}
     </View>
   );

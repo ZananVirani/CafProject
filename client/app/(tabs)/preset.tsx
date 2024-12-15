@@ -1,3 +1,7 @@
+/**
+ * Screen where the main selection process of the menu is done, only available to users with the role of admin.
+ */
+
 import {
   Alert,
   SafeAreaView,
@@ -22,16 +26,22 @@ import { RootState } from "@/state/store";
 import axios from "axios";
 
 export default function Preset() {
+  // Redux state and dispatch
   const presetList: presetState = useSelector(
     (state: RootState) => state.presetList
   );
   const dispatch = useDispatch();
+  // Dimensions and search params
   const dimensions = useWindowDimensions();
   const { presetName, cafName } = useGlobalSearchParams();
+  // Categories, either Hot Food, Interactive, or Other
   const categories = ["Hot Food", "Interactive"];
+  // Title of the preset.
   const [title, setTitle] = useState("");
+  // Loaded state
   const [loaded, setLoaded] = useState(false);
 
+  // Get the preset menu from the server, set it to the redux state.
   const getPresetMenu = async () => {
     await axios
       .get(`http://10.0.0.135:3000/presets/getPreset/${presetName}`)
@@ -65,6 +75,7 @@ export default function Preset() {
       });
   };
 
+  // On initial load, get the preset menu.
   useEffect(() => {
     if (presetName && typeof presetName == "string") {
       setTitle(presetName);
@@ -119,6 +130,7 @@ export default function Preset() {
                   flexDirection: "row",
                 }}
               >
+                {/* Component to push to the item upload screen, where cafeteria staff can add a new item. */}
                 <ItemAdd
                   onPress={() => {
                     router.push({
@@ -132,6 +144,7 @@ export default function Preset() {
                   marginRight={30}
                   iconName="plus"
                 />
+                {/* Component to push to the item select screen, where cafeteria staff can select from existing items. */}
                 <ItemAdd
                   onPress={() => {
                     router.push({
@@ -146,98 +159,104 @@ export default function Preset() {
                 />
               </View>
 
-              {categories.map((category) => {
-                return (
-                  <View key={category}>
-                    <View
-                      style={{
-                        paddingLeft: "3.5%",
-                        width: dimensions.width,
-                        flexDirection: "row",
-                        alignItems: "center",
-                        marginTop: 23,
-                        marginBottom: 5,
-                      }}
-                    >
-                      <Text
+              {
+                // Map through the categories and display the items in each category.
+                categories.map((category) => {
+                  return (
+                    <View key={category}>
+                      <View
                         style={{
-                          color: colors.black,
-                          fontSize: 23,
-                          fontFamily: "inter",
-                          fontWeight: "500",
-                          marginLeft: 8,
+                          paddingLeft: "3.5%",
+                          width: dimensions.width,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginTop: 23,
+                          marginBottom: 5,
                         }}
                       >
-                        {category}
-                      </Text>
-                      <MaterialCommunityIcons
-                        name={
-                          category == "Hot Food"
-                            ? "fire"
-                            : category == "Interactive"
-                            ? "food-turkey"
-                            : "star-circle"
-                        }
-                        size={category == "Other" ? 32 : 37}
-                        color={colors.black}
+                        <Text
+                          style={{
+                            color: colors.black,
+                            fontSize: 23,
+                            fontFamily: "inter",
+                            fontWeight: "500",
+                            marginLeft: 8,
+                          }}
+                        >
+                          {category}
+                        </Text>
+                        <MaterialCommunityIcons
+                          name={
+                            category == "Hot Food"
+                              ? "fire"
+                              : category == "Interactive"
+                              ? "food-turkey"
+                              : "star-circle"
+                          }
+                          size={category == "Other" ? 32 : 37}
+                          color={colors.black}
+                          style={{
+                            width: 35,
+                            marginLeft: category == "Hot Food" ? 5 : 10,
+                          }}
+                        />
+                      </View>
+                      <View
                         style={{
-                          width: 35,
-                          marginLeft: category == "Hot Food" ? 5 : 10,
+                          alignItems: "center",
+                          flexDirection: "row",
+                          marginLeft: "1.3%",
+                          flexWrap: "wrap",
                         }}
-                      />
-                    </View>
-                    <View
-                      style={{
-                        alignItems: "center",
-                        flexDirection: "row",
-                        marginLeft: "1.3%",
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      {presetList.presetList.map((item: any, index: any) => {
-                        return category == item.type ? (
-                          <FoodBox
-                            onPress={() => {
-                              router.push({
-                                pathname: "/(tabs)/food_description",
-                                params: {
-                                  itemName: item.name,
-                                },
-                              });
-                            }}
-                            key={index}
-                            name={item.name}
-                            source={`http://10.0.0.135:3000/images/${item.image}`}
-                            rating={item.averageRating}
-                            fontSize={12}
-                            width={dimensions.width * 0.29}
-                            minWidth={113.1}
-                            onDelete={() => {
-                              Alert.alert(
-                                `Are You Sure You Want To Delete ${item.name} From The Menu?`,
-                                undefined,
-                                [
-                                  {
-                                    text: "Cancel",
-                                    onPress: () => {},
-                                    style: "cancel",
-                                  },
-                                  {
-                                    text: "OK",
-                                    onPress: () => {
-                                      dispatch(rid(item));
+                      >
+                        {
+                          // Display the items in the category.
+                          presetList.presetList.map((item: any, index: any) => {
+                            return category == item.type ? (
+                              <FoodBox
+                                onPress={() => {
+                                  router.push({
+                                    pathname: "/(tabs)/food_description",
+                                    params: {
+                                      itemName: item.name,
                                     },
-                                  },
-                                ]
-                              );
-                            }}
-                          />
-                        ) : null;
-                      })}
+                                  });
+                                }}
+                                key={index}
+                                name={item.name}
+                                source={`http://10.0.0.135:3000/images/${item.image}`}
+                                rating={item.averageRating}
+                                fontSize={12}
+                                width={dimensions.width * 0.29}
+                                minWidth={113.1}
+                                onDelete={() => {
+                                  Alert.alert(
+                                    `Are You Sure You Want To Delete ${item.name} From The Menu?`,
+                                    undefined,
+                                    [
+                                      {
+                                        text: "Cancel",
+                                        onPress: () => {},
+                                        style: "cancel",
+                                      },
+                                      {
+                                        text: "OK",
+                                        onPress: () => {
+                                          dispatch(rid(item));
+                                        },
+                                      },
+                                    ]
+                                  );
+                                }}
+                              />
+                            ) : null;
+                          })
+                        }
+                      </View>
                     </View>
-                  </View>
-                );
-              })}
+                  );
+                })
+              }
               <View style={{ width: dimensions.width, height: 100 }}></View>
             </ScrollView>
             <View
@@ -250,6 +269,7 @@ export default function Preset() {
             >
               <CustomButton
                 onPress={() => {
+                  // Push to the preview screen.
                   router.push({
                     pathname: "/(tabs)/preview",
                     params: {

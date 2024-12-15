@@ -1,3 +1,7 @@
+/**
+ * Screen where cafeteria staff can either choose from an existing preset, or create a new menu.
+ */
+
 import {
   Alert,
   Keyboard,
@@ -23,17 +27,26 @@ import axios from "axios";
 import { ActivityIndicator } from "react-native-paper";
 
 export default function Menu() {
+  // Dimensions of the screen
   const dimensions = useWindowDimensions();
+  // Name of the cafeteria
   const { cafName } = useGlobalSearchParams();
+  // Whether the user is in select mode
   const [selectMode, setSelectMode] = useState(false);
-  const smth = format(new Date(), "yyyy/MM/dd");
+  // Current date
+  const date = format(new Date(), "yyyy/MM/dd");
+  // All presets available to the cafeteria.
   const [allPresets, setAllPresets] = useState<String[]>([]);
+  // Presets that are currently displayed on the screen, according to search text.
   const [presets, setPresets] = useState(allPresets);
+  // Search text.
   const [searchText, setSearchText] = useState("");
+  // Presets that are selected for deletion.
   const [deletedPresets, setDeletedPresets] = useState(new Set());
-
+  // Whether the presets have been loaded.
   const [loaded, setLoaded] = useState(false);
 
+  // Fetch the presets from the backend.
   const getPresets = async () => {
     await axios
       .get(`http://10.0.0.135:3000/presets/${cafName}`)
@@ -51,6 +64,7 @@ export default function Menu() {
     getPresets();
   }, []);
 
+  // Update the presets shown on the screen according to the search text.
   useEffect(() => {
     setPresets(
       allPresets.filter((item) => {
@@ -60,6 +74,7 @@ export default function Menu() {
   }, [searchText]);
 
   return (
+    // TouchableWithoutFeedback is used to dismiss the keyboard when the user taps outside of the text field.
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <SafeAreaView style={{ backgroundColor: colors.white, flex: 1 }}>
         <View
@@ -103,6 +118,7 @@ export default function Menu() {
               }}
             >
               <View style={{ width: "50%", flexDirection: "row" }}>
+                {/* Toggle between select mode on and off */}
                 <CustomButton
                   onPress={() => {
                     setSelectMode(!selectMode);
@@ -126,6 +142,7 @@ export default function Menu() {
                   <>
                     <TouchableOpacity
                       onPress={() => {
+                        // Alert the user to confirm deletion of the selected presets.
                         Alert.alert(
                           `Are You Sure You Want To Delete The Selected Presets?`,
                           undefined,
@@ -223,16 +240,12 @@ export default function Menu() {
                   }}
                   adjustsFontSizeToFit={true}
                 >
-                  {smth}
+                  {date}
                   {"\n"}
                   {cafName}
                 </Text>
               </View>
             </View>
-            {/*NEXTTTTTTTTTTTTTTTT*/}
-            {/*NEXTTTTTTTTTTTTTTTT*/}
-            {/*NEXTTTTTTTTTTTTTTTT*/}
-            {/*NEXTTTTTTTTTTTTTTTT*/}
             <View
               style={{
                 justifyContent: "center",
@@ -324,19 +337,22 @@ export default function Menu() {
                     width: dimensions.width * 0.8,
                   }}
                 >
-                  {presets.map((item, index) => {
-                    return (
-                      <PresetButton
-                        key={index}
-                        text={item}
-                        index={index}
-                        selected={selectMode && deletedPresets.has(item)}
-                        onPress={() => {
-                          selectMode ? toggleSelect(item) : visitPreset(item);
-                        }}
-                      />
-                    );
-                  })}
+                  {
+                    // Display all the presets available to the cafeteria.
+                    presets.map((item, index) => {
+                      return (
+                        <PresetButton
+                          key={index}
+                          text={item}
+                          index={index}
+                          selected={selectMode && deletedPresets.has(item)}
+                          onPress={() => {
+                            selectMode ? toggleSelect(item) : visitPreset(item);
+                          }}
+                        />
+                      );
+                    })
+                  }
                 </View>
                 <View style={{ height: 270 }}></View>
               </ScrollView>
@@ -356,6 +372,7 @@ export default function Menu() {
     </TouchableWithoutFeedback>
   );
 
+  // Toggle the selection of a preset to be deleted.
   function toggleSelect(item: String) {
     let tempPresets = new Set(deletedPresets);
     tempPresets.has(item) ? tempPresets.delete(item) : tempPresets.add(item);
@@ -363,6 +380,7 @@ export default function Menu() {
     setDeletedPresets(tempPresets);
   }
 
+  // Visit the preset screen.
   function visitPreset(item: String) {
     router.push({
       pathname: "/(tabs)/preset",

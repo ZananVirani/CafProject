@@ -1,8 +1,13 @@
+/**
+ * Component that renders a custom button.
+ */
+
 import { GestureResponderEvent, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Button } from "react-native-paper";
 import colors from "@/constants/Colors";
 
+// Props for the button component
 type ButtonProps = {
   marginVertical?: number;
   buttonColor?: string;
@@ -24,6 +29,7 @@ type ButtonProps = {
 };
 
 export default function CustomButton(props: ButtonProps) {
+  // Return a button component, with custom props.
   return (
     <Button
       onPress={props.onPress}
@@ -36,6 +42,7 @@ export default function CustomButton(props: ButtonProps) {
         height: props.height ?? 60,
         marginHorizontal: props.marginHorizontal ?? "10%",
         justifyContent: "center",
+        backgroundColor: props.buttonColor ?? colors.lpurple,
         borderColor: props.borderColor,
         borderWidth: props.borderColor ? 1 : undefined,
         borderRadius: props.borderRadius,

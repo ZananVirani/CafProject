@@ -1,3 +1,7 @@
+/**
+ * Login screen for the app.
+ */
+
 import {
   Image,
   Keyboard,
@@ -18,12 +22,16 @@ import axios from "axios";
 import { setUserID } from "@/utils/AsyncStorage";
 
 export default function Login() {
+  // Dimensions of the window
   const dimensions = useWindowDimensions();
+  // Western ID and password entered by the user
   const [ID, setID] = useState("");
   const [password, setPassword] = useState("");
+  // Error message to be displayed if the ID or password were not filled.
   const [error, setError] = useState(false);
 
   return (
+    // TouchableWithoutFeedback is used to dismiss the keyboard when the user taps outside of the text fields.
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={{ flex: 1, backgroundColor: "white" }}>
         <SafeAreaView style={{ flex: 1 }}>
@@ -84,6 +92,8 @@ export default function Login() {
           </View>
           <CustomButton
             onPress={() => {
+              // If the ID or password are not filled, display an error message, otherwise, check if the user exists in the database.
+              // If the user exists, then push it to the main screen, otherwise, push it to the account screen.
               if (!ID || !password) setError(true);
               else {
                 axios

@@ -1,13 +1,21 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
+// Array of Cafeteria Names.
 interface resState {
     resList : Array<string>
 }
 
+// Initial State of the Residence Slice, the empty array.
 const initState : resState = {
     resList : []
 }
 
+/* Slice for the residence state, with the add, rid, and clear reducers.
+    
+        add : adds an array of residence naems to the list of residences.
+        rid : removes a residence from the list of residences.
+        clear : clears the list of residences.
+*/
 const resSlice = createSlice({
     name : "residence",
     initialState : initState,
