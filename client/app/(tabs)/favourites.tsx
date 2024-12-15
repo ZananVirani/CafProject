@@ -1,7 +1,7 @@
 /**
  * Screen to display the user's favourite foods.
  */
-
+import Constants from "expo-constants";
 import {
   Keyboard,
   SafeAreaView,
@@ -77,7 +77,7 @@ export default function Favourites() {
     setLoaded(false);
     const userID = await getUserID();
     axios
-      .get("http://10.0.0.135:3000/foods/allFoods", {
+      .get(`http://${Constants.expoConfig!.extra!.apiUrl}/foods/allFoods`, {
         params: {
           studentId: userID,
         },
@@ -230,7 +230,9 @@ export default function Favourites() {
                             },
                           });
                         }}
-                        source={`http://10.0.0.135:3000/images/${item.image}`}
+                        source={`http://${
+                          Constants.expoConfig!.extra!.apiUrl
+                        }/images/${item.image}`}
                         name={item.name}
                         rating={item.averageRating}
                         fontSize={12}

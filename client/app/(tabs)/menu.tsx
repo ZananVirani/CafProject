@@ -25,6 +25,7 @@ import TextField from "@/components/TextField";
 import PresetButton from "@/components/PresetButton";
 import axios from "axios";
 import { ActivityIndicator } from "react-native-paper";
+import Constants from "expo-constants";
 
 export default function Menu() {
   // Dimensions of the screen
@@ -49,7 +50,7 @@ export default function Menu() {
   // Fetch the presets from the backend.
   const getPresets = async () => {
     await axios
-      .get(`http://10.0.0.135:3000/presets/${cafName}`)
+      .get(`http://${Constants.expoConfig!.extra!.apiUrl}/presets/${cafName}`)
       .then((result) => {
         setAllPresets(result.data);
         setLoaded(true);
@@ -158,7 +159,9 @@ export default function Menu() {
                                 if (deletedPresets.size > 0) {
                                   axios
                                     .patch(
-                                      `http://10.0.0.135:3000/presets/deletePresets/${cafName}`,
+                                      `http://${
+                                        Constants.expoConfig!.extra!.apiUrl
+                                      }/presets/deletePresets/${cafName}`,
                                       {
                                         presetNames: Array.from(deletedPresets),
                                       }

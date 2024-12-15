@@ -1,7 +1,7 @@
 /**
  * Screen where the main selection process of the menu is done, only available to users with the role of admin.
  */
-
+import Constants from "expo-constants";
 import {
   Alert,
   SafeAreaView,
@@ -44,7 +44,11 @@ export default function Preset() {
   // Get the preset menu from the server, set it to the redux state.
   const getPresetMenu = async () => {
     await axios
-      .get(`http://10.0.0.135:3000/presets/getPreset/${presetName}`)
+      .get(
+        `http://${
+          Constants.expoConfig!.extra!.apiUrl
+        }/presets/getPreset/${presetName}`
+      )
       .then((result) => {
         result.data.forEach(
           (item: {
@@ -224,7 +228,9 @@ export default function Preset() {
                                 }}
                                 key={index}
                                 name={item.name}
-                                source={`http://10.0.0.135:3000/images/${item.image}`}
+                                source={`http://${
+                                  Constants.expoConfig!.extra!.apiUrl
+                                }/images/${item.image}`}
                                 rating={item.averageRating}
                                 fontSize={12}
                                 width={dimensions.width * 0.29}

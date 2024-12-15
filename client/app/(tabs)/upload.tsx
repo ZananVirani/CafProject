@@ -28,6 +28,7 @@ import { Dialog } from "react-native-simple-dialogs";
 import * as FileSystem from "expo-file-system";
 import { useDispatch } from "react-redux";
 import { add } from "@/state/presets/presetSlice";
+import Constants from "expo-constants";
 
 export default function UploadScreen() {
   // Dimensions of the window
@@ -93,7 +94,6 @@ export default function UploadScreen() {
       });
 
       if (!result.canceled) {
-        console.log(result);
         setImage(result.assets![0]);
         setDialog(false);
       }
@@ -361,7 +361,9 @@ export default function UploadScreen() {
                           });
                           try {
                             const response = await FileSystem.uploadAsync(
-                              `http://10.0.0.135:3000/foods/uploadImage`,
+                              `http://${
+                                Constants.expoConfig!.extra!.apiUrl
+                              }/foods/uploadImage`,
                               image.uri,
                               {
                                 headers: {
@@ -377,7 +379,7 @@ export default function UploadScreen() {
                             );
 
                             let another = await axios.post(
-                              "http://10.0.0.135:3000/foods/",
+                              "http://${Constants.expoConfig!.extra!.apiUrl}/foods/",
                               {
                                 name: foodName,
                                 image: response.body,

@@ -1,7 +1,7 @@
 /**
  * Cafeteria Staff screen that allows staff to select food items to add to the menu.
  */
-
+import Constants from "expo-constants";
 import {
   Alert,
   Keyboard,
@@ -72,11 +72,10 @@ export default function ItemSelect() {
       cafeterias: string[];
     }[]
   >([]);
-
   // Get all items from the database.
   const getItems = async () => {
     axios
-      .get("http://10.0.0.135:3000/foods/allFoods")
+      .get(`http://${Constants.expoConfig!.extra!.apiUrl}/foods/allFoods`)
       .then((result) => {
         setAllItems(result.data);
         setFinalFoods(result.data);
@@ -226,7 +225,9 @@ export default function ItemSelect() {
                                 ? toggleSelect(item)
                                 : visitPreset(item.name);
                             }}
-                            source={`http://10.0.0.135:3000/images/${item.image}`}
+                            source={`http://${
+                              Constants.expoConfig!.extra!.apiUrl
+                            }/images/${item.image}`}
                             selected={
                               // Check if the food item is selected.
                               selectMode &&

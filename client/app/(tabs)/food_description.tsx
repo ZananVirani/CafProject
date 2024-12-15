@@ -31,6 +31,7 @@ import axios, { all } from "axios";
 import { router, useGlobalSearchParams } from "expo-router";
 import { ActivityIndicator } from "react-native-paper";
 import { getUserID } from "@/utils/AsyncStorage";
+import Constants from "expo-constants";
 
 export default function FoodDescription() {
   // Food information
@@ -55,7 +56,11 @@ export default function FoodDescription() {
     const userID = await getUserID();
     setID(userID!);
     await axios
-      .get(`http://10.0.0.135:3000/foods/food/${itemName}/${userID}`)
+      .get(
+        `http://${
+          Constants.expoConfig!.extra!.apiUrl
+        }/foods/food/${itemName}/${userID}`
+      )
       .then((value) => {
         setApiInfo(value.data.foods);
         setLoaded(true);
@@ -141,7 +146,9 @@ export default function FoodDescription() {
               const userID = await getUserID();
               await axios
                 .post(
-                  `http://10.0.0.135:3000/reviews/${userID}/${apiInfo?._id}`,
+                  `http://${
+                    Constants.expoConfig!.extra!.apiUrl
+                  }/reviews/${userID}/${apiInfo?._id}`,
                   { rating: rating }
                 )
                 .then((response) => {
@@ -214,7 +221,9 @@ export default function FoodDescription() {
           <ScrollView>
             <Image
               source={{
-                uri: `http://10.0.0.135:3000/images/${apiInfo?.image}`,
+                uri: `http://${Constants.expoConfig!.extra!.apiUrl}/images/${
+                  apiInfo?.image
+                }`,
               }}
               style={{
                 alignSelf: "center",
@@ -258,7 +267,9 @@ export default function FoodDescription() {
                   onPress={async () => {
                     await axios
                       .patch(
-                        `http://10.0.0.135:3000/users/changeFavouriteFoods/${ID}/${apiInfo?._id}`
+                        `http://${
+                          Constants.expoConfig!.extra!.apiUrl
+                        }/users/changeFavouriteFoods/${ID}/${apiInfo?._id}`
                       )
                       .then((result) => {
                         if (!checked) {

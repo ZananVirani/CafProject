@@ -25,6 +25,7 @@ import { AntDesign, Octicons } from "@expo/vector-icons";
 import { clear } from "@/state/residence/resSlice";
 import { getUserID, setUserID } from "@/utils/AsyncStorage";
 import axios from "axios";
+import Constants from "expo-constants";
 
 export default function AccountInfo() {
   // Get the studentId and password from the last login screen, if it exists.
@@ -312,26 +313,36 @@ export default function AccountInfo() {
                     });
                     userID
                       ? axios
-                          .patch("http://10.0.0.135:3000/users/editUser", {
-                            studentId: userID,
-                            firstName,
-                            lastName,
-                            allergies: newList,
-                            favouriteCafeterias: resList.resList,
-                          })
+                          .patch(
+                            `http://${
+                              Constants.expoConfig!.extra!.apiUrl
+                            }/users/editUser`,
+                            {
+                              studentId: userID,
+                              firstName,
+                              lastName,
+                              allergies: newList,
+                              favouriteCafeterias: resList.resList,
+                            }
+                          )
                           .then((result) => {
                             setDialog(true);
                           })
                           .catch((e) => console.log(e))
                       : axios
-                          .post("http://10.0.0.135:3000/users/register", {
-                            studentId: studentId ?? "Student 4",
-                            firstName,
-                            lastName,
-                            password,
-                            allergies: newList,
-                            favouriteCafeterias: resList.resList,
-                          })
+                          .post(
+                            `http://${
+                              Constants.expoConfig!.extra!.apiUrl
+                            }/users/register`,
+                            {
+                              studentId: studentId ?? "Student 4",
+                              firstName,
+                              lastName,
+                              password,
+                              allergies: newList,
+                              favouriteCafeterias: resList.resList,
+                            }
+                          )
                           .then(async (result) => {
                             setDialog(true);
                             await setUserID(

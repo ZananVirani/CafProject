@@ -26,6 +26,7 @@ import { presetState } from "@/state/presets/presetSlice";
 import { RootState } from "@/state/store";
 import axios from "axios";
 import { clear } from "@/state/presets/presetSlice";
+import Constants from "expo-constants";
 
 export default function Preview() {
   // Get the preset name and cafeteria name from the global search params
@@ -137,10 +138,15 @@ export default function Preview() {
                           });
                           setDialog(false);
                           await axios
-                            .post(`http://10.0.0.135:3000/presets/${cafName}`, {
-                              presetName: nameText,
-                              foodIDs: menu,
-                            })
+                            .post(
+                              `http://${
+                                Constants.expoConfig!.extra!.apiUrl
+                              }/presets/${cafName}`,
+                              {
+                                presetName: nameText,
+                                foodIDs: menu,
+                              }
+                            )
                             .then((result) => {
                               Alert.alert(
                                 "Menu Uploaded Successfully",
@@ -275,7 +281,9 @@ export default function Preview() {
                               },
                             });
                           }}
-                          source={`http://10.0.0.135:3000/images/${item.image}`}
+                          source={`http://${
+                            Constants.expoConfig!.extra!.apiUrl
+                          }/images/${item.image}`}
                           key={index}
                           name={item.name}
                           rating={item.averageRating}
@@ -354,7 +362,9 @@ export default function Preview() {
                         });
                         await axios
                           .patch(
-                            `http://10.0.0.135:3000/presets/editPreset/${cafName}`,
+                            `http://${
+                              Constants.expoConfig!.extra!.apiUrl
+                            }/presets/editPreset/${cafName}`,
                             {
                               presetName: presetName,
                               foodIDs: menu,
@@ -428,7 +438,9 @@ export default function Preview() {
                   });
                   await axios
                     .patch(
-                      `http://10.0.0.135:3000/presets/tempUpload/${cafName}`,
+                      `http://${
+                        Constants.expoConfig!.extra!.apiUrl
+                      }/presets/tempUpload/${cafName}`,
                       {
                         foodIDs: menu,
                       }

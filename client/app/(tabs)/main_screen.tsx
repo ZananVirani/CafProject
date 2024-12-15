@@ -1,7 +1,7 @@
 /**
  * The main screen of the application.
  */
-
+import Constants from "expo-constants";
 import {
   SafeAreaView,
   ScrollView,
@@ -123,7 +123,6 @@ export default function MainScreen() {
       source: require("../../assets/images/saugeen_caf.jpg"),
     },
   ];
-
   // The list of cafeterias to be displayed, this list is mutable.
   const [cafBoxes, setCafBoxes] =
     useState<
@@ -179,7 +178,7 @@ export default function MainScreen() {
     // at least one of the user's favourite foods.
     else {
       const response = await axios.get(
-        `http://10.0.0.135:3000/users/getFavFoods`,
+        `http://${Constants.expoConfig!.extra!.apiUrl}/users/getFavFoods`,
         {
           params: {
             foodIDs: favFoods,
@@ -228,7 +227,9 @@ export default function MainScreen() {
     try {
       const userID = await getUserID();
       const result = await axios.get(
-        `http://10.0.0.135:3000/cafeterias/favouriteCafs`,
+        `http://${
+          Constants.expoConfig!.extra!.apiUrl
+        }/cafeterias/favouriteCafs`,
         {
           params: {
             userID,
@@ -263,7 +264,6 @@ export default function MainScreen() {
           .then((value) => {
             setCategories(value);
             setFilterChosen(value[0]);
-            console.log(value);
             setPartialLoaded(false);
             determineList(value[0], result?.data.user.favouriteFoods).then(
               () => {
@@ -400,7 +400,9 @@ export default function MainScreen() {
                         });
                       }}
                       key={index}
-                      source={`http://10.0.0.135:3000/images/${item.image}`}
+                      source={`http://${
+                        Constants.expoConfig!.extra!.apiUrl
+                      }/images/${item.image}`}
                       name={item.name}
                       rating={item.averageRating}
                       fontSize={10.5}

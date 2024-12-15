@@ -20,6 +20,7 @@ import TextField from "@/components/TextField";
 import { router } from "expo-router";
 import axios from "axios";
 import { setUserID } from "@/utils/AsyncStorage";
+import Constants from "expo-constants";
 
 export default function Login() {
   // Dimensions of the window
@@ -97,7 +98,11 @@ export default function Login() {
               if (!ID || !password) setError(true);
               else {
                 axios
-                  .get(`http://10.0.0.135:3000/users/getUser/${ID}`)
+                  .get(
+                    `http://${
+                      Constants.expoConfig!.extra!.apiUrl
+                    }/users/getUser/${ID}`
+                  )
                   .then(async (value) => {
                     await setUserID(value.data.studentId);
                     router.replace("/(tabs)/main_screen");

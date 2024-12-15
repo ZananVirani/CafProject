@@ -31,6 +31,7 @@
     "date-fns": "^3.6.0",
     "expo": "~52.0.14",
     "expo-constants": "~17.0.3",
+    "expo-env": "^1.1.1",
     "expo-font": "~13.0.1",
     "expo-image-picker": "~16.0.3",
     "expo-linking": "~7.0.3",

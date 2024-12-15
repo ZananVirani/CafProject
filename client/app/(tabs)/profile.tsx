@@ -89,7 +89,6 @@ export default function ProfileScreen() {
               onPress={async () => {
                 let { status } =
                   await Location.requestForegroundPermissionsAsync();
-                console.log(status);
 
                 if (status == "granted") {
                   Alert.alert(`Location Access Granted`, undefined, [

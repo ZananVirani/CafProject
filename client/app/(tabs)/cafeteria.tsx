@@ -27,6 +27,7 @@ import CustomButton from "@/components/CustomButton";
 import axios from "axios";
 import { ActivityIndicator } from "react-native-paper";
 import { getUserID } from "@/utils/AsyncStorage";
+import Constants from "expo-constants";
 
 export default function Cafeteria() {
   // Name of the cafeteria for the header.
@@ -75,7 +76,11 @@ export default function Cafeteria() {
     setLoaded(false);
     const userID = await getUserID();
     await axios
-      .get(`http://10.0.0.135:3000/cafeterias/getFood/${cafName}/${userID}`)
+      .get(
+        `http://${
+          Constants.expoConfig!.extra!.apiUrl
+        }/cafeterias/getFood/${cafName}/${userID}`
+      )
       .then((result) => {
         setFoods(result.data.foods);
         setUser(result.data.user);
@@ -356,7 +361,9 @@ export default function Cafeteria() {
                                     });
                                   }}
                                   key={index}
-                                  source={`http://10.0.0.135:3000/images/${item.image}`}
+                                  source={`http://${
+                                    Constants.expoConfig!.extra!.apiUrl
+                                  }/images/${item.image}`}
                                   name={item.name}
                                   rating={item.averageRating}
                                   fontSize={12}
@@ -377,7 +384,9 @@ export default function Cafeteria() {
                                   });
                                 }}
                                 key={index}
-                                source={`http://10.0.0.135:3000/images/${item.image}`}
+                                source={`http://${
+                                  Constants.expoConfig!.extra!.apiUrl
+                                }/images/${item.image}`}
                                 name={item.name}
                                 rating={item.averageRating}
                                 fontSize={12}

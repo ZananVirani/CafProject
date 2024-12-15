@@ -4,10 +4,8 @@
  */
 
 import React from "react";
-
 import { useColorScheme } from "react-native";
 import { Stack } from "expo-router";
-import MainScreen from "./main_screen";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
