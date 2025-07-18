@@ -4,7 +4,7 @@ This project is a full-stack mobile application designed to enhance the dining e
 
 ## Key features include:
 
-- Personalized user experiences with options to favorite foods, set allergy preferences, and provide reviews on menu items.
+- Personalized user experiences with options to **favorite foods**, set **allergy preferences**, and provide **reviews** on menu items.
 - A modern, intuitive interface built with React Native, ensuring seamless performance on both iOS and Android devices.
 - A scalable backend powered by Express.js and MongoDB, delivering fast, reliable data management and API functionality.
 
